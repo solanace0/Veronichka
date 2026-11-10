@@ -189,6 +189,7 @@ html[data-theme=light] body::before{display:none}
 .boot .nav{--bd:.45s}.boot .top{--bd:.55s}.boot .hello{--bd:.62s}
 }
 .avwhy{display:flex;gap:12px;align-items:flex-start;padding:15px 16px}.avwhy .ic{flex:none;width:38px;height:38px;border-radius:12px;background:var(--acs);display:grid;place-items:center;font-size:19px}.avwhy b{display:block;font-weight:800;margin-bottom:2px}.avwhy p{margin:0;font-size:13.5px;color:var(--mu);line-height:1.45}
+.anl{margin:6px 0 4px;padding-left:18px}.anl li{margin:3px 0}.note small{display:block;color:var(--mu);margin-top:4px;font-size:12px}
 .av-go{margin-top:14px;padding-top:12px;border-top:1px dashed var(--bd);font-size:13px;color:var(--mu);line-height:1.4}.av-go .ref{display:block;text-align:center;margin-top:10px}
 #av-city{margin-bottom:14px}
 </style></head><body>
@@ -253,7 +254,7 @@ html[data-theme=light] body::before{display:none}
 <div id="av-hero" class="card hero"></div>
 </div>
 <div class="c2"><div class="card"><h2>Усі черги</h2><div class="sub" style="margin-bottom:12px">Чи діє зараз звичайний графік, чи оператор запровадив екстрені відключення. Натисни чергу, щоб побачити її графік.</div><div class="chips" id="av-grid"></div>
-<div class="legend"><span><i style="background:var(--onx)"></i>за графіком</span><span><i style="background:var(--offx)"></i>екстрено</span><span><i style="background:var(--wx)"></i>аварій не заявлено, графік не оновлено</span></div><div class="meta" id="av-meta"></div></div>
+<div class="legend"><span><i style="background:var(--onx)"></i>за графіком</span><span><i style="background:var(--offx)"></i>екстрено</span><span><i style="background:var(--wx)"></i>статус ще не оновлено</span></div><div class="meta" id="av-meta"></div></div>
 <div class="cen"><button class="ref" onclick="avRetry()">↻ Оновити</button></div><div class="card"><h2>Про ці дані</h2><div class="sub" style="font-size:13.5px">Статуси беруться з YASNO (ДТЕК Дніпровські електромережі) — з тих самих відкритих даних, що й графіки, і стосуються черги загалом. Вибір міста змінює, для якого міста завантажується графік. Адресні аварійні роботи (вулиця, будинок, причина, час відновлення) публікує лише сайт ДТЕК за захистом від автоматичних запитів, тому застосунок їх не показує і нічого не вигадує.</div><a class="ref w" style="text-decoration:none" href="https://www.dtek-dnem.com.ua/ua/shutdowns" target="_blank" rel="noopener">Перевірити адресу на сайті ДТЕК</a></div></div></div></main>
 
 <main id="v3" class="hid"><div class="sgrid">
@@ -309,8 +310,8 @@ const CITIES={kr:'Кривий Ріг',dp:'Дніпро',kz:'Кам’янськ
 const SRC_NAME={mirror:'Сайт ДТЕК (дзеркало)',yasno:'YASNO / ДТЕК',kolybude:'kolybude.com'};
 /* ---------- вкладка «Аварії»: статус екстрених відключень + графік вибраного міста й черги ---------- */
 let AV={j:null,err:null,loading:false,t:0,c:null,q:null,tab:0,S:{}};
-const AVT={emergency:['em','екстрено'],waiting:['wt','не заявлено'],normal:['ok','за графіком'],unknown:['na','—']};
-const AVL={emergency:'діють екстрені відключення',waiting:'аварій не заявлено',normal:'діє звичайний графік',unknown:'статус невідомий'};
+const AVT={emergency:['em','екстрено'],waiting:['wt','не оновлено'],normal:['ok','за графіком'],unknown:['na','—']};
+const AVL={emergency:'діють екстрені відключення',waiting:'статус не оновлено',normal:'діє звичайний графік',unknown:'статус невідомий'};
 /* AV.c / AV.q = null означає «як у профілі» */
 const avC=()=>AV.c||P.c,avQ=()=>AV.q||P.q,avMine=()=>avC()===P.c&&avQ()===P.q;
 function avJ(){const e=AV.S[avC()+':'+avQ()];return e&&e.j?e.j:(avMine()?data:null)}
@@ -335,14 +336,19 @@ const loc='<div class="loc">'+CITIES[c]+' · Черга '+q+'</div>'+(mine&&P.a?
 if(!g||!me){setH(hero,AV.loading||!AV.err?loc+'<div class="status" style="opacity:.4">⋯</div><div class="sub">Перевіряємо джерела…</div>':loc+`<div class="warn">Не вдалося отримати статус: ${esc(AV.err||'немає даних для цієї черги')}</div><button class="ref" onclick="avRetry()">Спробувати ще</button><div class="av-go"><span>Поки статус недоступний, перевір ситуацію на сайті ДТЕК.</span>${BTN}</div>`,'card hero');setH($('av-grid'),'<div class="sub" style="grid-column:1/-1">'+(AV.err?'Дані недоступні':'Завантаження…')+'</div>');setH($('av-meta'),'');return}
 const td=me.today?me.today.state:'unknown',tm=me.tomorrow?me.tomorrow.state:null,k=kv(),j=avJ(),sd=avDay(j,0),sdt=avDay(j,1),now=sd&&!isEmpty(sd)?!!sd[Math.floor(k.sec/1800)]:null;
 const upd=me.updatedOn?new Date(me.updatedOn).toLocaleString('uk-UA',{timeZone:TZ,day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):null;
-const head={emergency:['off','Діють екстрені відключення'],waiting:['','Аварійних відключень не заявлено'],normal:['on','Екстрених відключень не заявлено'],unknown:['','Статус черги невідомий']}[td];
-const sub={emergency:`Для ${who} планові графіки зараз не застосовуються: світло може зникати без попередження.`,waiting:`Для ${who} джерело не повідомляє про аварійні чи екстрені відключення. Графік на сьогодні там ще не оновлено${upd?' (останнє оновлення '+upd+')':''}, тож це не гарантія, що світло не вимикатимуть: за розпорядженням Укренерго можуть діяти погодинні відключення — звір із сайтом ДТЕК.`,normal:`Для ${who} діє звичайний графік відключень.`,unknown:'Джерело не повідомило статус для цієї черги.'}[td];
+const head={emergency:['off','Діють екстрені відключення'],waiting:['','Екстрених відключень у даних немає'],normal:['on','Екстрених відключень не заявлено'],unknown:['','Статус черги невідомий']}[td];
+const sub={emergency:`Для ${who} планові графіки зараз не застосовуються: світло може зникати без попередження.`,waiting:`Статус черги в YASNO ще не оновлено${upd?' (останнє оновлення '+upd+')':''}: там нема ні графіка на сьогодні, ні позначки про екстрені відключення. Це не означає, що їх немає — оператор може оголосити їх раніше, ніж оновиться статус. Остаточно перевір на сайті ДТЕК.`,normal:`Для ${who} діє звичайний графік відключень.`,unknown:'Джерело не повідомило статус для цієї черги.'}[td];
+const ann=((AV.j.announcements||[]).filter(a=>a.cities&&a.cities.includes(c))),act=ann.filter(a=>!a.cancelled);
+let H=head,S=sub;if(act.length&&td!=='emergency'){H=['off','Оголошено екстрені чи аварійні відключення'];S='Статус черги в даних ще не оновлено, але на сайті YASNO зараз є оголошення для міста: '+CITIES[c]+' (нижче). Під час екстрених відключень графіки не діють.'}
+const restNote='<div class="note"><b>Орієнтовний час відновлення</b>Відкриті джерела його не публікують: під час екстрених відключень він залежить від розпорядження Укренерго та ремонтних робіт. Точніше повідомляє ДТЕК за адресою.</div>';
 let note='';
-if(td==='emergency')note='<div class="note"><b>Світла немає, хоча за графіком воно є?</b>Так і має бути: під час екстрених відключень графік не діє. Це не помилка застосунку.</div><div class="note"><b>Орієнтовний час відновлення</b>Відкриті джерела його не публікують: під час екстрених відключень він залежить від розпорядження Укренерго та ремонтних робіт. Точніше повідомляє ДТЕК за адресою.</div>';
+if(td==='emergency')note='<div class="note"><b>Світла немає, хоча за графіком воно є?</b>Так і має бути: під час екстрених відключень графік не діє. Це не помилка застосунку.</div>'+restNote;
 else if((td==='normal'||td==='waiting')&&now===true)note='<div class="note"><b>Світла немає, хоча за графіком воно має бути?</b>Відкриті джерела не повідомляють про екстрену ситуацію для '+who+'. Ймовірно, це локальна аварія на лінії, підстанції чи в будинку — такі випадки у відкритих даних не публікуються. Час відновлення за адресою показує сайт ДТЕК.</div>';
 else if((td==='normal'||td==='waiting')&&now===false){const r=avRestore(sd,sdt,k);note='<div class="note"><b>Зараз за графіком відключення</b>Це планова пауза, а не аварія.'+(r?'<br>Орієнтовний час відновлення за графіком: <b>'+r+'</b>.':'')+'</div>'}
-const lab=(s,tomorrow)=>!s?'—':s==='waiting'?(tomorrow?'буде відомо ввечері':'аварій не заявлено'):AVL[s];
-setH(hero,loc+`<div class="status">${head[1]}</div><div class="sub">${sub}</div><div class="grid"><div><span class="sub">Сьогодні</span><b style="font-size:14px">${lab(td)}</b></div><div><span class="sub">Завтра</span><b style="font-size:14px">${tm?lab(tm,true):'—'}</b></div></div>${note}<div class="av-go"><span>Причини тут немає? Адресні аварії, будинки та час відновлення показує лише сайт ДТЕК.</span>${BTN}${mine?'':'<button class="ref w" onclick="avAdopt()">Зробити моєю чергою</button>'}</div><div class="meta">Джерело: ${esc(AV.j.source||'YASNO')} · оновлено ${upd||'—'}</div>`,'card hero '+head[0]);
+if(td!=='emergency'&&ann.length)note=(ann.length?'<div class="note"><b>Оголошення оператора (YASNO)</b><ul class="anl">'+ann.map(a=>'<li>'+esc(a.text)+(a.cancelled?' <i>(скасовано)</i>':'')+'</li>').join('')+'</ul><small>Дата оголошення на сайті не вказана — звір із ДТЕК.</small></div>':'')+(act.length?restNote:'');
+else if(td==='waiting'&&AV.j.announceOk===false)note+='<div class="meta">Оголошення оператора перевірити не вдалося.</div>';
+const lab=(s,tomorrow)=>!s?'—':s==='waiting'?(tomorrow?'буде відомо ввечері':'статус не оновлено'):AVL[s];
+setH(hero,loc+`<div class="status">${H[1]}</div><div class="sub">${S}</div><div class="grid"><div><span class="sub">Сьогодні</span><b style="font-size:14px">${act.length&&td!=='emergency'?'є оголошення про екстрені':lab(td)}</b></div><div><span class="sub">Завтра</span><b style="font-size:14px">${tm?lab(tm,true):'—'}</b></div></div>${note}<div class="av-go"><span>Причини тут немає? Адресні аварії, будинки та час відновлення показує лише сайт ДТЕК.</span>${BTN}${mine?'':'<button class="ref w" onclick="avAdopt()">Зробити моєю чергою</button>'}</div><div class="meta">Джерело: ${esc(AV.j.source||'YASNO')} · оновлено ${upd||'—'}</div>`,'card hero '+H[0]);
 setH($('av-grid'),QS.map(x=>{const gs=g[x],st=gs&&gs.today?gs.today.state:'unknown',t=AVT[st]||AVT.unknown;return`<button class="chip aq ${t[0]} ${c===P.c&&x===P.q?'mine':''} ${x===q?'sel':''}" onclick="avPick('${x}')">${x}<small>${t[1]}</small></button>`}).join(''));
 const n=AV.j.emergencyGroups,tot=Object.keys(g).length,w=Object.values(g).filter(x=>x.today&&x.today.state==='waiting').length;
 setH($('av-meta'),n?`Екстрені відключення діють у <b>${n} з ${tot}</b> черг.`:'Екстрених відключень джерело не заявляє.'+(w?` Для ${w} з ${tot} черг графік на сьогодні там ще не оновлено — це не означає, що відключень немає.`:''))}
