@@ -1,0 +1,14 @@
+{
+  "name": "ТребаСвітло?",
+  "short_name": "ТребаСвітло?",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4f1fb",
+  "theme_color": "#7c5cd6",
+  "lang": "uk",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
