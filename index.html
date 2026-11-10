@@ -142,6 +142,11 @@ body.nonav .nav{display:none}
 .acitem b{display:block;font-weight:700;font-size:15px;line-height:1.25}.acitem small{display:block;color:var(--mu);font-size:12.5px;line-height:1.3}
 .acitem.s,.acitem:hover{background:var(--bg2)}
 .acnone{padding:10px 11px;color:var(--mu);font-size:13px}
+.aq small{display:block;font-size:11px;font-weight:700;margin-top:2px;opacity:.92}
+.aq.em{background:var(--offb);color:var(--offx)}.aq.ok{background:var(--onb);color:var(--onx)}.aq.wt{background:var(--wb);color:var(--wx)}.aq.na{opacity:.6}
+.aq.mine{box-shadow:inset 0 0 0 2px var(--ac)}.aq.mine::after{display:none}
+.note{background:var(--bg2);border-radius:14px;padding:12px 14px;font-size:14px;margin-top:12px;line-height:1.45}.note b{display:block;margin-bottom:3px;font-weight:800}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font-size:12.5px;color:var(--mu)}.legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:baseline}
 @media(hover:hover){.card{transition:box-shadow .3s}.card:hover{box-shadow:0 8px 28px #6a4bc41f}.ref:hover{box-shadow:0 4px 14px #6a4bc428}}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01s!important;animation-delay:0s!important;animation-iteration-count:1!important;transition:none!important}}
 /* ---- ПК / планшет ---- */
@@ -214,6 +219,7 @@ html[data-theme=light] body::before{display:none}
 <nav class="nav" aria-label="Основна навігація"><div class="brand"><img src="icon-192.png" alt=""><span>ТребаСвітло?</span></div>
 <button id="n1" class="a" onclick="setView(1)"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3Z"/></svg>Світло</button>
 <button id="n2" onclick="setView(2)"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg>Черги</button>
+<button id="n4" onclick="setView(4)"><svg viewBox="0 0 24 24"><path d="M12 4 2.8 19.5h18.4L12 4Z"/><path d="M12 10v4.2M12 17h.01"/></svg>Аварії</button>
 <button id="n3" onclick="setView(3)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>Налаштування</button></nav>
 
 <div class="wrap">
@@ -237,6 +243,13 @@ html[data-theme=light] body::before{display:none}
 <main id="v2" class="hid"><div class="cols"><div class="c1"><div class="card"><h2>Вибір черги</h2><div class="sub" style="margin-bottom:12px">Переглянь графік будь-якої черги. Твоя черга позначена зеленою крапкою.</div>
 <div class="seg" id="q-city"></div><div class="chips" id="q-chips"></div></div></div>
 <div class="c2"><div id="q-detail"></div></div></div></main>
+
+<main id="v4" class="hid"><div class="cols"><div class="c1">
+<div id="av-hero" class="card hero"></div>
+</div>
+<div class="c2"><div class="card"><h2>Усі черги</h2><div class="sub" style="margin-bottom:12px">Чи діє зараз звичайний графік, чи оператор запровадив екстрені відключення. Натисни чергу, щоб побачити її графік.</div><div class="chips" id="av-grid"></div>
+<div class="legend"><span><i style="background:var(--onx)"></i>за графіком</span><span><i style="background:var(--offx)"></i>екстрено</span><span><i style="background:var(--wx)"></i>очікується</span></div><div class="meta" id="av-meta"></div></div>
+<div class="cen"><button class="ref" onclick="loadAv(true)">↻ Оновити</button></div><div class="card"><h2>Про ці дані</h2><div class="sub" style="font-size:13.5px">Статуси беруться з YASNO (ДТЕК Дніпровські електромережі) — з тих самих відкритих даних, що й графіки. Адресні аварійні роботи (вулиця, будинок, причина, час відновлення) публікує лише сайт ДТЕК за захистом від автоматичних запитів, тому застосунок їх не показує і нічого не вигадує.</div><a class="ref w" style="text-decoration:none" href="https://www.dtek-dnem.com.ua/ua/shutdowns" target="_blank" rel="noopener">Перевірити адресу на сайті ДТЕК</a></div></div></div></main>
 
 <main id="v3" class="hid"><div class="sgrid">
 <div class="card"><h2>Мій графік</h2><div class="f"><label for="st-n">Ім’я</label><input type="text" id="st-n" maxlength="30" autocomplete="given-name"><label for="st-c">Місто</label><select id="st-c"></select><label for="st-q">Черга</label><select id="st-q"></select><label for="st-a">Адреса або позначка (необов’язково)</label><div class="ac" id="st-ac"><input type="text" id="st-a" maxlength="60" placeholder="Почни вводити: проспект Металургів 12" autocomplete="off" autocapitalize="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="st-al"><ul class="aclist" id="st-al" role="listbox"></ul></div><button class="ref p" onclick="saveP('st')">Зберегти</button></div>
@@ -282,13 +295,34 @@ html[data-theme=light] body::before{display:none}
 
 <script>
 const API='';/* для обгортки в App Store вкажи тут повну адресу сервера, напр. https://svitlo.example.com */
-const APP_V='2.4.0',TZ='Europe/Kyiv',$=s=>document.getElementById(s);
+const APP_V='2.5.0',TZ='Europe/Kyiv',$=s=>document.getElementById(s);
 const LS=(()=>{try{localStorage.setItem('_t','1');localStorage.removeItem('_t');return localStorage}catch(e){const m={};return{getItem:k=>k in m?m[k]:null,setItem:(k,v)=>{m[k]=String(v)},removeItem:k=>{delete m[k]},clear:()=>{for(const k in m)delete m[k]}}}})();
 const jget=(k,d)=>{try{const v=JSON.parse(LS.getItem(k));return v==null?d:v}catch(e){return d}};
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const MON=['січня','лютого','березня','квітня','травня','червня','липня','серпня','вересня','жовтня','листопада','грудня'],DOW=['неділя','понеділок','вівторок','середа','четвер','п’ятниця','субота'];
 const CITIES={kr:'Кривий Ріг',dp:'Дніпро',kz:'Кам’янське'},QS=[];for(let i=1;i<=6;i++)for(let j=1;j<=2;j++)QS.push(i+'.'+j);
 const SRC_NAME={mirror:'Сайт ДТЕК (дзеркало)',yasno:'YASNO / ДТЕК',kolybude:'kolybude.com'};
+/* ---------- вкладка «Аварії»: статус екстрених відключень по чергах ---------- */
+let AV={j:null,err:null,loading:false,t:0};
+const AVT={emergency:['em','екстрено'],waiting:['wt','очікується'],normal:['ok','за графіком'],unknown:['na','—']};
+const AVL={emergency:'діють екстрені відключення',waiting:'графік ще не опубліковано',normal:'діє звичайний графік',unknown:'статус невідомий'};
+function loadAv(force){if(!ready()||AV.loading||(!force&&Date.now()-AV.t<60e3))return;AV.loading=true;AV.t=Date.now();renderAv();
+fetch(API+'/api/outages?t='+Math.floor(Date.now()/6e4),{cache:'no-store'}).catch(()=>{throw new Error(navigator.onLine?'сервер недоступний':'немає з’єднання з інтернетом')}).then(r=>r.text().then(t=>{let j=null;try{j=JSON.parse(t)}catch(e){}if(!j)throw new Error('сервер даних тимчасово недоступний (код '+r.status+')');if(!j.ok)throw new Error(j.error||'невідома помилка');return j}))
+.then(j=>{AV.j=j;AV.err=null;if(force)play('ok')}).catch(e=>{AV.err=e.message}).finally(()=>{AV.loading=false;renderAv()})}
+function renderAv(){const hero=$('av-hero');if(!hero||!P)return;const g=AV.j&&AV.j.groups,me=g&&g[P.q],loc='<div class="loc">'+CITIES[P.c]+' · Черга '+P.q+'</div>'+(P.a?'<div class="addr">'+esc(P.a)+'</div>':'');
+if(!g||!me){setH(hero,AV.loading||!AV.err?loc+'<div class="status" style="opacity:.4">⋯</div><div class="sub">Перевіряємо джерела…</div>':loc+`<div class="warn">Не вдалося отримати статус: ${esc(AV.err||'немає даних для цієї черги')}</div><button class="ref" onclick="loadAv(true)">Спробувати ще</button>`,'card hero');setH($('av-grid'),'<div class="sub" style="grid-column:1/-1">'+(AV.err?'Дані недоступні':'Завантаження…')+'</div>');setH($('av-meta'),'');return}
+const td=me.today?me.today.state:'unknown',tm=me.tomorrow?me.tomorrow.state:null,k=kv(),sd=day(k.date),now=sd&&!isEmpty(sd)?!!sd[Math.floor(k.sec/1800)]:null;
+const head={emergency:['off','Діють екстрені відключення'],waiting:['','Графік ще не підтверджено'],normal:['on','Екстрених відключень не заявлено'],unknown:['','Статус черги невідомий']}[td];
+const sub={emergency:'Для твоєї черги планові графіки зараз не застосовуються: світло може зникати без попередження, а таблиця нижче — лише довідкова.',waiting:'Джерело ще очікує на новий графік для цієї черги.',normal:'Для твоєї черги діє звичайний графік відключень.',unknown:'Джерело не повідомило статус для цієї черги.'}[td];
+let note='';
+if(td==='emergency')note='<div class="note"><b>Світла немає, хоча за графіком воно є?</b>Так і має бути: під час екстрених відключень графік не діє. Це не помилка застосунку.</div>';
+else if(td==='normal'&&now===true)note='<div class="note"><b>Світла немає, хоча за графіком воно має бути?</b>Відкриті джерела не повідомляють про екстрену ситуацію для твоєї черги. Ймовірно, це локальна аварія на лінії, підстанції чи в будинку — такі випадки в відкритих даних не публікуються. Перевір свою адресу на сайті ДТЕК або повідом оператору.<br><a class="ref" style="text-decoration:none" href="'+DTEK+'" target="_blank" rel="noopener">Відкрити сайт ДТЕК</a></div>';
+else if(td==='normal'&&now===false)note='<div class="note"><b>Зараз за графіком відключення</b>Це планова пауза: екстрених відключень для твоєї черги не заявлено.</div>';
+const lab=s=>s?AVL[s]:'—';
+setH(hero,loc+`<div class="status">${head[1]}</div><div class="sub">${sub}</div><div class="grid"><div><span class="sub">Сьогодні</span><b style="font-size:14px">${lab(td)}</b></div><div><span class="sub">Завтра</span><b style="font-size:14px">${tm?lab(tm):'—'}</b></div></div>${note}<div class="meta">Джерело: ${esc(AV.j.source||'YASNO')} · оновлено ${me.updatedOn?new Date(me.updatedOn).toLocaleString('uk-UA',{timeZone:TZ,day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'—'}</div>`,'card hero '+head[0]);
+setH($('av-grid'),QS.map(q=>{const gs=g[q],st=gs&&gs.today?gs.today.state:'unknown',t=AVT[st]||AVT.unknown;return`<button class="chip aq ${t[0]} ${q===P.q?'mine':''}" onclick="avOpen('${q}')">${q}<small>${t[1]}</small></button>`}).join(''));
+const n=AV.j.emergencyGroups,tot=Object.keys(g).length;setH($('av-meta'),n?`Екстрені відключення діють у <b>${n} з ${tot}</b> черг.`:'Екстрені відключення не заявлені в жодній черзі.')}
+function avOpen(q){QV.c=P.c;setView(2);pickQ(q)}
 /* ---------- налаштування ---------- */
 const DEF={sound:true,vol:45,sClick:true,sSwitch:true,sAlert:true,intro:true,notify:false,lead:15,stale:true,auto:true};
 let ST={...DEF,...jget('settings',{})};const saveST=()=>LS.setItem('settings',JSON.stringify(ST));
@@ -422,16 +456,16 @@ if(!P||P.c!==np.c||P.q!==np.q)resetData();
 const first=!ready();P=np;LS.setItem('profile',JSON.stringify(P));QV.c=P.c;play('ok');if(!first)toast('Збережено');setView(1);tick();load(true)}
 function syncOb(){const o=$('ob-ok').checked,b=$('ob-go');b.setAttribute('aria-disabled',String(!o));$('ob-need').classList.toggle('ok',o)}
 $('ob-ok').addEventListener('change',()=>{syncOb();play($('ob-ok').checked?'on':'off','sSwitch')});
-function wipe(){if(confirm('Видалити всі дані з цього пристрою?')){loadSeq++;LS.clear();$('ob-n').value='';$('ob-a').value='';$('ob-ok').checked=false;CON=false;syncOb();try{sessionStorage.clear()}catch(e){}P=null;data=null;loading=false;ST={...DEF};setView(0);tick();applyTheme()}}
+function wipe(){if(confirm('Видалити всі дані з цього пристрою?')){loadSeq++;LS.clear();$('ob-n').value='';$('ob-a').value='';$('ob-ok').checked=false;CON=false;syncOb();try{sessionStorage.clear()}catch(e){}P=null;data=null;AV.j=null;AV.t=0;loading=false;ST={...DEF};setView(0);tick();applyTheme()}}
 /* ---------- навігація ---------- */
-function setView(i){if(!ready())i=0;view=i;[0,1,2,3].forEach(n=>{$('v'+n).className=n==i?'':'hid';if(n)$('n'+n).className=n==i?'a':''});document.body.classList.toggle('nonav',!ready());document.querySelector('.hello').style.display=ready()?'':'none';if(i==0){if(P)fillP('ob');syncOb()}
-if(i==3){fillP('st');syncSwitches();renderInfo();$('h-c').value=P.c;$('h-q').value=P.q;fillHist()}if(i==2){if(!QV.q){QV.c=P.c}renderQueues()}if(i==1)render();scrollTo({top:0});enter($('v'+i))}
+function setView(i){if(!ready())i=0;view=i;[0,1,2,3,4].forEach(n=>{$('v'+n).className=n==i?'':'hid';if(n)$('n'+n).className=n==i?'a':''});document.body.classList.toggle('nonav',!ready());document.querySelector('.hello').style.display=ready()?'':'none';if(i==0){if(P)fillP('ob');syncOb()}
+if(i==3){fillP('st');syncSwitches();renderInfo();$('h-c').value=P.c;$('h-q').value=P.q;fillHist()}if(i==2){if(!QV.q){QV.c=P.c}renderQueues()}if(i==4){loadAv();renderAv()}if(i==1)render();scrollTo({top:0});enter($('v'+i))}
 function setTab(i){tab=i;enter($('sched'));$('t0').className=i==0?'a':'';$('t1').className=i==1?'a':'';$('t2').className='mini'+(i==2?' a':'');render()}
 function setHi(g){$('hi').innerHTML=g.split(' ').map((w,i)=>`<span class="w" style="--w:${i}">${esc(w)}</span>`).join(' ')}
 function tick(){const k=kv();$('clock').textContent=k.t;$('date').textContent=`${DOW[new Date(Date.UTC(k.y,k.mo-1,k.d)).getUTCDay()]}, ${k.d} ${MON[k.mo-1]} ${k.y}`;
 const nm=P?P.name:'',g=k.h<6?'Доброї ночі, '+nm+' 🌙':k.h<12?'Доброго ранку, '+nm+' ☀️':k.h<18?'Доброго дня, '+nm+' 💜':'Доброго вечора, '+nm+' ✨';if($('hi').textContent!==g)setHi(g);
 if(!tick.d)tick.d=k.date;if(tick.d!==k.date){tick.d=k.date;load()}
-if(nextCheck&&Date.now()>=nextCheck){nextCheck=0;load()}render();checkAlert();if(view===2&&k.sec%30===0&&QV.j)renderQueues()}
+if(nextCheck&&Date.now()>=nextCheck){nextCheck=0;load()}render();checkAlert();if(view===2&&k.sec%30===0&&QV.j)renderQueues();if(view===4){if(Date.now()-AV.t>120e3)loadAv();else if(k.sec%30===0)renderAv()}}
 /* ---------- вступна анімація ---------- */
 let introT=null;const wide=()=>matchMedia('(min-width:900px)').matches;
 /* плавна поява елементів: вішаємо клас на секцію на ~1.4 с */
