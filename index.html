@@ -2,18 +2,39 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>ТребаСвітло?</title>
 <meta name="description" content="Графік відключень світла для Кривого Рогу, Дніпра та Кам’янського: вибери свою чергу й завжди знай, коли буде світло.">
+<script>/* тема до першого малювання: без спалаху світлої версії */
+(function(){try{var t=localStorage.getItem('theme')||'auto',d=t==='dark'||(t==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.dataset.theme=d?'dark':'light';document.documentElement.dataset.boot='1'}catch(e){}})()</script>
 <meta name="theme-color" content="#F7F4FF"><link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="ТребаСвітло?">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap"></noscript>
 <style>
 :root{--bg:#F7F4FF;--bg2:#EFEAFD;--card:#FFFFFF;--bd:#2a244018;--ac:#8C75EE;--acs:#E9E2FE;--acx:#FFFFFF;--tx:#2A2440;--mu:#7A7394;
 --onb:#E2F4EA;--onx:#1D8458;--offb:#FCE7EC;--offx:#C0405F;--wb:#FFF3D6;--wx:#9A6A06;--sh:0 4px 18px #6a4bc414;--r:20px;--sw:#D9D2EE;
---font:"Nunito",ui-rounded,"SF Pro Rounded",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-html[data-theme=dark]{--bg:#4D4670;--bg2:#5E5784;--card:#5A5380;--bd:#ffffff26;--ac:#E0D6FF;--acs:#70689A;--acx:#2F2952;--tx:#FBF9FF;--mu:#D8D2EC;
---onb:#4E7377;--onx:#AAF6D8;--offb:#7A5879;--offx:#FFC8D8;--wb:#6B6246;--wx:#F9E1A0;--sh:0 4px 18px #2a244a33;--sw:#7C74A2}
+--font:"Segoe UI","Segoe UI Variable Text","Open Sans",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif}
+html[data-theme=dark]{--bg:#08070C;--bg2:#1A1724;--card:#15131F;--bd:#ffffff14;--ac:#FFD23F;--acs:#FFD23F24;--acx:#16120A;--tx:#F5F3FA;--mu:#A9A6B8;
+--onb:#12281F;--onx:#3FD79A;--offb:#2C1519;--offx:#FF6B7D;--wb:#2B2410;--wx:#F5C542;--sh:0 6px 24px #00000066;--sw:#37343F;color-scheme:dark}
+/* темна тема: чорний фон з м’якими відблисками (зверху зліва — холодний, зверху справа — теплий), без лілового */
+html[data-theme=dark] body{background:transparent}
+html[data-theme=dark] body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+background:radial-gradient(ellipse min(46vw,380px) min(40vh,380px) at 0% 9%,#7A5AE61D 0%,#7A5AE60E 45%,#7A5AE600 100%),
+radial-gradient(ellipse min(62vw,560px) min(24vh,230px) at 86% 0%,#FFBE4623 0%,#FFBE4611 50%,#FFBE4600 100%),#08070C}
+html[data-theme=dark] .tabs button.a,html[data-theme=dark] .seg button.a{box-shadow:0 2px 10px #00000055}
+html[data-theme=dark] .card:hover{box-shadow:0 10px 30px #00000080}
+html[data-theme=dark] .ref:hover{box-shadow:0 4px 14px #00000066}
+html[data-theme=dark] .chip.a.mine::after{background:#16120A}
+html[data-theme=dark] .aclist{box-shadow:0 14px 34px #000000b0}
+html[data-theme=dark] .acitem svg{stroke:var(--ac)}
+html[data-theme=dark] .nav{background:#0d0b12d9}
+html[data-theme=dark] #intro{background:radial-gradient(ellipse min(60vw,520px) min(46vh,420px) at 0% 8%,#7A5AE62A,#7A5AE600),radial-gradient(ellipse min(70vw,640px) min(30vh,260px) at 86% 0%,#FFBE4630,#FFBE4600),#08070C}
+html[data-theme=dark] #intro .ttl{color:#F5F3FA}
+html[data-theme=dark] #intro .tag{color:#A9A6B8}
+html[data-theme=dark] #intro .bar{background:#ffffff1c}
+html[data-theme=dark] #intro .bar i{background:linear-gradient(90deg,#FFD23F,#FF9F1C)}
+html[data-theme=dark] #intro .aur::before{background:#7A5AE633}
+html[data-theme=dark] #intro .aur::after{background:#FFBE4633}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{-webkit-text-size-adjust:100%}
 html,body{margin:0;background:var(--bg);color:var(--tx);font:500 16px/1.45 var(--font);transition:background .35s,color .35s}
@@ -109,7 +130,7 @@ body.nonav .nav{display:none}
 @keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @keyframes inL{from{opacity:0;transform:translateX(-26px)}to{opacity:1;transform:none}}
 @keyframes wordin{from{opacity:0;transform:translateY(7px);filter:blur(5px)}to{opacity:1;transform:none;filter:none}}
-@keyframes glow{50%{box-shadow:inset 0 0 0 2px var(--ac),0 0 0 5px #8c75ee24}}
+@keyframes glow{50%{box-shadow:inset 0 0 0 2px var(--ac),0 0 0 5px color-mix(in srgb,var(--ac) 14%,transparent)}}
 @keyframes shake{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
 @keyframes spin{to{transform:rotate(360deg)}}
 .ent .cols>div>*,.ent .sgrid>.card,.ent>.card,.ent>.hint{animation:pop .6s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*65ms)}
@@ -255,7 +276,7 @@ html[data-theme=light] body::before{display:none}
 </div>
 <div class="c2"><div class="card"><h2>Усі черги</h2><div class="sub" style="margin-bottom:12px">Чи діє зараз звичайний графік, чи оператор запровадив екстрені відключення. Натисни чергу, щоб побачити її графік.</div><div class="chips" id="av-grid"></div>
 <div class="legend"><span><i style="background:var(--onx)"></i>за графіком</span><span><i style="background:var(--offx)"></i>екстрено</span><span><i style="background:var(--wx)"></i>статус ще не оновлено</span></div><div class="meta" id="av-meta"></div></div>
-<div class="cen"><button class="ref" onclick="avRetry()">↻ Оновити</button></div><div class="card"><h2>Про ці дані</h2><div class="sub" style="font-size:13.5px">Статуси беруться з YASNO (ДТЕК Дніпровські електромережі) — з тих самих відкритих даних, що й графіки, і стосуються черги загалом. Вибір міста змінює, для якого міста завантажується графік. Адресні аварійні роботи (вулиця, будинок, причина, час відновлення) публікує лише сайт ДТЕК за захистом від автоматичних запитів, тому застосунок їх не показує і нічого не вигадує.</div><a class="ref w" style="text-decoration:none" href="https://www.dtek-dnem.com.ua/ua/shutdowns" target="_blank" rel="noopener">Перевірити адресу на сайті ДТЕК</a></div></div></div></main>
+<div class="cen"><button class="ref" onclick="avRetry()">↻ Оновити</button></div><div class="card"><h2>Про ці дані</h2><div class="sub" style="font-size:13.5px">Статуси беруться з YASNO (ДТЕК Дніпровські електромережі) — з тих самих відкритих даних, що й графіки, і стосуються черги загалом. Вибір міста змінює, для якого міста завантажується графік. Адресні аварійні роботи (вулиця, будинок, причина, час відновлення) публікує лише сайт ДТЕК за захистом від автоматичних запитів, тому застосунок їх не показує і нічого не вигадує.</div><a class="ref w" style="text-decoration:none" href="https://www.dtek-dnem.com.ua/ua/shutdowns" target="_blank" rel="noopener">Перевірити адресу на сайті ДТЕК</a><a class="ref w" style="text-decoration:none" href="https://t.me/DTEKDniprovskiElektromerezhiBot" target="_blank" rel="noopener">Telegram-бот ДТЕК: аварії за адресою</a><a class="ref w" style="text-decoration:none" href="viber://pa?chatURI=dtekdniprovskielektromerezhi">Viber ДТЕК Дніпровські електромережі</a></div></div></div></main>
 
 <main id="v3" class="hid"><div class="sgrid">
 <div class="card"><h2>Мій графік</h2><div class="f"><label for="st-n">Ім’я</label><input type="text" id="st-n" maxlength="30" autocomplete="given-name"><label for="st-c">Місто</label><select id="st-c"></select><label for="st-q">Черга</label><select id="st-q"></select><label for="st-a">Адреса або позначка (необов’язково)</label><div class="ac" id="st-ac"><input type="text" id="st-a" maxlength="60" placeholder="Почни вводити: проспект Металургів 12" autocomplete="off" autocapitalize="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="st-al"><ul class="aclist" id="st-al" role="listbox"></ul></div><button class="ref p" onclick="saveP('st')">Зберегти</button></div>
@@ -280,6 +301,10 @@ html[data-theme=light] body::before{display:none}
 <div class="opt"><div><b>Автооновлення графіка</b><small>Перевіряти джерела, поки застосунок відкрито</small></div><button class="sw" role="switch" data-nosound="1" data-k="auto" aria-label="Автооновлення"></button></div>
 <div class="opt"><div><b>Попередження про застарілі дані</b><small>Показувати, якщо графік давно не оновлювався</small></div><button class="sw" role="switch" data-nosound="1" data-k="stale" aria-label="Застарілі дані"></button></div></div>
 
+<div class="card" id="wgt"><h2>Віджет на iPhone</h2><div class="sub" style="margin-bottom:10px">Віджет показує графік на сьогодні для твоєї черги: статус зараз, час наступної зміни та всі відключення дня. Застосунок у браузері не може створити системний віджет, тому використовується безкоштовна програма Scriptable.</div>
+<ol class="anl"><li>Встанови <a href="https://apps.apple.com/app/scriptable/id1405459188" target="_blank" rel="noopener">Scriptable</a> з App Store.</li><li>Натисни кнопку нижче — скрипт скопіюється разом із твоєю чергою.</li><li>У Scriptable натисни «+», встав скрипт, назви його «ТребаСвітло» й збережи.</li><li>На головному екрані: утримуй порожнє місце → «+» → Scriptable → оберіть розмір → «Додати віджет» → торкнись його → Script: «ТребаСвітло».</li></ol>
+<button class="ref p w" data-nosound="1" onclick="copyWidget()">Скопіювати скрипт віджета</button><textarea id="wgt-out" class="hid" readonly rows="6" style="width:100%;margin-top:10px;border-radius:12px;border:1px solid var(--bd);background:var(--bg2);color:var(--tx);padding:10px;font:12px/1.35 ui-monospace,Menlo,monospace"></textarea><div class="meta" id="wgt-note"></div></div>
+
 <div class="card"><h2>Інформація про дані</h2><div id="info"></div>
 <button class="ref" onclick="checkSources()" id="chk-btn">Перевірити джерела</button><div id="chk-out"></div>
 <div class="meta">Дані беруться з публічних джерел: дзеркало сайту ДТЕК, YASNO і kolybude.com (для Кривого Рогу). Застосунок неофіційний — звіряйся з сайтом оператора.</div></div>
@@ -301,7 +326,7 @@ html[data-theme=light] body::before{display:none}
 
 <script>
 const API='';/* для обгортки в App Store вкажи тут повну адресу сервера, напр. https://svitlo.example.com */
-const APP_V='2.6.0',TZ='Europe/Kyiv',$=s=>document.getElementById(s);
+const APP_V='2.7.0',TZ='Europe/Kyiv',$=s=>document.getElementById(s);
 const LS=(()=>{try{localStorage.setItem('_t','1');localStorage.removeItem('_t');return localStorage}catch(e){const m={};return{getItem:k=>k in m?m[k]:null,setItem:(k,v)=>{m[k]=String(v)},removeItem:k=>{delete m[k]},clear:()=>{for(const k in m)delete m[k]}}}})();
 const jget=(k,d)=>{try{const v=JSON.parse(LS.getItem(k));return v==null?d:v}catch(e){return d}};
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -374,13 +399,13 @@ lp.type='lowpass';lp.frequency.value=1700;
 n.gain.setValueAtTime(.0001,t);n.gain.linearRampToValueAtTime(v,t+.007);n.gain.exponentialRampToValueAtTime(.0001,t+.12);
 o.connect(n);h.connect(hg);hg.connect(n);n.connect(lp);lp.connect(a.destination);o.start(t);h.start(t);o.stop(t+.14);h.stop(t+.14)}
 const SND={tap:()=>tick1(.55),on:()=>{tone(659,0,.28,.7);tone(988,.09,.4,.6)},off:()=>{tone(784,0,.26,.6);tone(523,.09,.36,.55)},
-ok:()=>{tone(784,0,.5,.6);tone(1175,.12,.7,.5)},alert:()=>{tone(880,0,.55,.65);tone(659,.2,.8,.6)},light:()=>{tone(523,0,.6,.5);tone(659,.16,.6,.5);tone(784,.32,.9,.5)}};
+ok:()=>{tone(784,0,.5,.6);tone(1175,.12,.7,.5)},alert:()=>{tone(880,0,.55,.65);tone(659,.2,.8,.6)},light:(o=0)=>{tone(523,o,.6,.5);tone(659,o+.16,.6,.5);tone(784,o+.32,.9,.5)}};
 function play(k,cat){if(!ST.sound||(cat&&!ST[cat]))return;try{SND[k]()}catch(e){}}
 document.addEventListener('pointerdown',e=>{const t=e.target.closest&&e.target.closest('button,.chip,a.ref,a.lnk,select');if(t&&!t.dataset.nosound)play('tap','sClick')},true);
 function testSound(){const was=ST.sound;ST.sound=true;SND.tap();setTimeout(SND.on,260);setTimeout(SND.ok,800);ST.sound=was;if(!was)toast('Звуки зараз вимкнено — це лише перевірка')}
 function toast(m){const t=$('toast');t.textContent=m;t.classList.add('s');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('s'),3600)}
 /* ---------- тема ---------- */
-function applyTheme(){const t=LS.getItem('theme')||'auto',e=t==='auto'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):t;document.documentElement.dataset.theme=e;document.querySelector('meta[name=theme-color]').content=e==='light'?'#F7F4FF':'#4D4670';document.querySelectorAll('.seg button[data-t]').forEach(b=>b.classList.toggle('a',b.dataset.t===t))}
+function applyTheme(){const t=LS.getItem('theme')||'auto',e=t==='auto'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):t;document.documentElement.dataset.theme=e;document.querySelector('meta[name=theme-color]').content=e==='light'?'#F7F4FF':'#08070C';document.querySelectorAll('.seg button[data-t]').forEach(b=>b.classList.toggle('a',b.dataset.t===t))}
 function setTheme(t){LS.setItem('theme',t);applyTheme()}
 /* ---------- час ---------- */
 function kv(){const p={};new Intl.DateTimeFormat('en-GB',{timeZone:TZ,hour12:false,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'}).formatToParts(new Date()).forEach(x=>p[x.type]=x.value);
@@ -419,7 +444,7 @@ else if(isEmpty(today)){setH(hero,loc+'<div class="status">Графік уточ
 else{let tl=periods(today);
 if(tom&&!isEmpty(tom)){const t2=periods(tom,1440);if(tl[tl.length-1].on===t2[0].on){tl[tl.length-1].to=t2[0].to;t2.shift()}tl=tl.concat(t2)}
 const nm=k.sec/60,cur=tl.find(p=>nm>=p.from&&nm<p.to)||tl[0],on=cur.on,end=cur.to,known=end<1440||(tom&&!isEmpty(tom)&&end<2880);
-if(known)NEXT={ts:Date.now()+(end*60-k.sec)*1000,on:!on};
+if(known)NEXT={ts:Date.now()+(end*60-k.sec)*1000,on:!on,key:k.date+'|'+end+'|'+(on?'off':'on')};
 // скільки вже триває поточний стан (з урахуванням вчорашнього дня)
 let since=cur.from;if(cur.from===0&&yest&&!isEmpty(yest)){const yp=periods(yest),lp=yp[yp.length-1];if(lp.on===on)since=lp.from-1440}
 setH(hero,loc+`<div class="status">${on?'Зараз світло є 💡':'Зараз світла немає 🌙'}</div>
@@ -462,8 +487,23 @@ if(k==='notify'&&v&&'Notification'in window&&Notification.permission==='default'
 if(k==='auto')lastTry=Date.now();saveST();syncSwitches()});
 $('vol').addEventListener('input',e=>{ST.vol=+e.target.value;$('vol-v').textContent=ST.vol+'%'});$('vol').addEventListener('change',()=>{saveST();play('tap')});
 $('lead').addEventListener('change',e=>{ST.lead=+e.target.value;saveST()});
-function checkAlert(){if(!ST.notify||!NEXT)return;const left=(NEXT.ts-Date.now())/6e4,key=NEXT.ts+':'+NEXT.on;if(left<=ST.lead&&left>0&&LS.getItem('alerted')!==key){LS.setItem('alerted',key);const m=NEXT.on?`Через ${Math.ceil(left)} хв за графіком з’явиться світло 💡`:`Через ${Math.ceil(left)} хв за графіком вимкнення світла`;toast(m);play('alert','sAlert');
-if('Notification'in window&&Notification.permission==='granted'&&navigator.serviceWorker){navigator.serviceWorker.ready.then(r=>r.showNotification('ТребаСвітло?',{body:m,icon:'icon-192.png',tag:'next-change'})).catch(()=>{})}}}
+/* Нагадування: РІВНО одне на кожну зміну світла.
+   Ключ береться зі стабільної межі графіка (дата + хвилина зміни), а не з часу «зараз», тому не змінюється щосекунди.
+   Показані ключі запам’ятовуються в сховищі, тож повторів немає ні після перезапуску, ні в іншій вкладці. */
+let alertBusy='';
+function checkAlert(){if(!ST.notify||!NEXT||!NEXT.key)return;const left=(NEXT.ts-Date.now())/6e4;if(!(left>0&&left<=ST.lead))return;
+const key=NEXT.key;if(alertBusy===key)return;let seen=jget('alerted2',[]);if(!Array.isArray(seen))seen=[];if(seen.includes(key)){alertBusy=key;return}
+alertBusy=key;seen.push(key);LS.setItem('alerted2',JSON.stringify(seen.slice(-40)));LS.removeItem('alerted');
+const m=NEXT.on?`Через ${Math.ceil(left)} хв за графіком з’явиться світло 💡`:`Через ${Math.ceil(left)} хв за графіком вимкнення світла`;toast(m);play('alert','sAlert');
+if('Notification'in window&&Notification.permission==='granted'&&navigator.serviceWorker){navigator.serviceWorker.ready.then(r=>r.showNotification('ТребаСвітло?',{body:m,icon:'icon-192.png',tag:'next-change-'+key,renotify:false,silent:false})).catch(()=>{})}}
+/* ---------- віджет для iPhone (Scriptable) ---------- */
+async function copyWidget(){const note=$('wgt-note'),out=$('wgt-out');if(!P){toast('Спочатку вкажи свою чергу');return}
+try{const r=await fetch('widget/svitlo-widget.js',{cache:'no-store'});if(!r.ok)throw 0;let t=await r.text();
+t=t.replace('__ORIGIN__',location.origin).replace('__CITY__',P.c).replace('__GROUP__',P.q).replace('__NAME__',CITIES[P.c]);
+let ok=false;try{await navigator.clipboard.writeText(t);ok=true}catch(e){}
+if(ok){out.classList.add('hid');note.textContent='Скрипт скопійовано. Відкрий Scriptable → «+» → встав.';toast('Скрипт скопійовано');play('ok')}
+else{out.value=t;out.classList.remove('hid');out.focus();out.select();note.textContent='Автокопіювання недоступне: виділи весь текст вище, скопіюй і встав у Scriptable.'}}
+catch(e){note.textContent='Не вдалося завантажити скрипт. Перевір з’єднання й спробуй ще раз.'}}
 function renderInfo(){if(!P){$('info').innerHTML='';return}const k=kv(),t=day(k.date),m=day(addDay(k.date,1));
 const st=s=>!s?'немає даних':isEmpty(s)?'не підтверджено':'підтверджено';
 $('info').innerHTML=[['Місто / черга',CITIES[P.c]+' · '+P.q],['Джерело',esc(data&&data.source||'—')],['Графік оновлено',esc(data&&data.updated||'—')],['Востаннє перевірено',data&&data.fetchedAt?new Date(data.fetchedAt).toLocaleString('uk-UA',{timeZone:TZ,day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'—'],['Графік на сьогодні',st(t)],['Графік на завтра',st(m)],['З’єднання',navigator.onLine?'онлайн':'офлайн'],['Стан даних',err?'помилка оновлення':data?'ок':'очікуємо']].map(r=>`<div class="kv"><span>${r[0]}</span><span>${r[1]}</span></div>`).join('')}
@@ -502,7 +542,15 @@ function enter(el){if(!el||matchMedia('(prefers-reduced-motion: reduce)').matche
 function boot(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;document.body.classList.add('boot');enter($('v'+view));setTimeout(()=>document.body.classList.remove('boot'),2200)}
 function runIntro(){const el=$('intro');if(!ST.intro||matchMedia('(prefers-reduced-motion: reduce)').matches){boot();return}try{if(sessionStorage.getItem('intro')){boot();return}sessionStorage.setItem('intro','1')}catch(e){}
 $('ittl').innerHTML=[...'ТребаСвітло?'].map((c,i)=>`<i style="--i:${i}">${c}</i>`).join('');
-el.classList.remove('hid');el.setAttribute('aria-hidden','false');el.onclick=endIntro;setTimeout(()=>play('light'),1500);introT=setTimeout(endIntro,wide()?4400:3600)}
+el.classList.remove('hid');el.setAttribute('aria-hidden','false');el.onclick=endIntro;introSound();introT=setTimeout(endIntro,wide()?4400:3600)}
+/* Звук входу. Ставимо ноти на годинник аудіо (точно в момент, коли загорається лампочка, ~1.45 с),
+   а не через setTimeout. Якщо браузер ще не дозволив звук (потрібен перший дотик) — граємо одразу після дотику,
+   поки заставка ще на екрані; запізнілий звук через 10–15 с більше не вмикається. */
+function introSound(){if(!ST.sound)return;const t0=performance.now();let done=false;
+const go=()=>{if(done)return;const a=ac();if(!a||a.state!=='running')return;const el=(performance.now()-t0)/1000;if(el>7){off();return}done=true;off();try{bus(a);SND.light(Math.max(0,1.45-el))}catch(e){}};
+const arm=()=>{const a=ac();if(!a)return;if(a.state==='running')go();else a.resume().then(go).catch(()=>{})};
+const evs=['pointerdown','touchstart','mousedown','keydown'],off=()=>evs.forEach(e=>removeEventListener(e,arm,true));
+evs.forEach(e=>addEventListener(e,arm,true));arm();setTimeout(off,7500)}
 function endIntro(){if($('intro').classList.contains('out'))return;clearTimeout(introT);const el=$('intro');el.classList.add('out');boot();setTimeout(()=>el.classList.add('hid'),wide()?1200:650)}
 /* ---------- підказки адрес: вулиця + номер будинку ---------- */
 const PIN='<svg viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z"/><circle cx="12" cy="10" r="2.3"/></svg>',acMem=new Map();
