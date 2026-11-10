@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs>
+<radialGradient id="bg" cx="50%" cy="38%" r="75%"><stop offset="0" stop-color="#3b2680"/><stop offset=".55" stop-color="#1b1238"/><stop offset="1" stop-color="#0c0820"/></radialGradient>
+<radialGradient id="halo" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#8b5cf6" stop-opacity=".55"/><stop offset="1" stop-color="#8b5cf6" stop-opacity="0"/></radialGradient>
+<radialGradient id="glow" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ffd24a" stop-opacity=".75"/><stop offset=".5" stop-color="#ffb02e" stop-opacity=".25"/><stop offset="1" stop-color="#ffb02e" stop-opacity="0"/></radialGradient>
+<linearGradient id="bulb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff6bd"/><stop offset=".55" stop-color="#ffd84d"/><stop offset="1" stop-color="#ffb21e"/></linearGradient>
+<linearGradient id="face" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e2d8ff"/><stop offset="1" stop-color="#b394fa"/></linearGradient>
+<linearGradient id="body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b99dff"/><stop offset="1" stop-color="#7a58de"/></linearGradient>
+<linearGradient id="hair" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9a78f7"/><stop offset="1" stop-color="#6a44d4"/></linearGradient>
+<linearGradient id="neck" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9d7df0"/><stop offset="1" stop-color="#b394fa"/></linearGradient>
+<linearGradient id="fade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0c0820" stop-opacity="0"/><stop offset=".55" stop-color="#0c0820" stop-opacity=".85"/><stop offset="1" stop-color="#0c0820"/></linearGradient>
+</defs>
+<rect width="512" height="512" fill="url(#bg)"/>
+<circle cx="236" cy="330" r="200" fill="url(#halo)"/>
+<circle cx="312" cy="134" r="125" fill="url(#glow)"/>
+<g stroke="#ffd24a" stroke-width="9" stroke-linecap="round"><line x1="248.0" y1="134.0" x2="232.0" y2="134.0"/><line x1="256.6" y1="102.0" x2="242.7" y2="94.0"/><line x1="280.0" y1="78.6" x2="272.0" y2="64.7"/><line x1="312.0" y1="70.0" x2="312.0" y2="48.0"/><line x1="344.0" y1="78.6" x2="352.0" y2="64.7"/><line x1="367.4" y1="102.0" x2="381.3" y2="94.0"/><line x1="376.0" y1="134.0" x2="392.0" y2="134.0"/></g>
+<!-- woman -->
+<path d="M104 452C104 386 160 352 236 352S368 386 368 452Z" fill="url(#body)"/>
+<rect x="212" y="306" width="48" height="58" rx="22" fill="url(#neck)"/>
+<ellipse cx="236" cy="326" rx="30" ry="12" fill="#6b48d0" opacity=".45"/>
+<ellipse cx="236" cy="262" rx="56" ry="66" fill="url(#face)"/>
+<path d="M180 262A56 66 0 0 1 292 262C272 232 236 228 208 247C196 255 187 260 180 262Z" fill="url(#hair)"/>
+<circle cx="208" cy="188" r="31" fill="url(#hair)"/>
+<path d="M192 178Q204 166 222 170" stroke="#c4b0ff" stroke-width="5" stroke-linecap="round" fill="none" opacity=".7"/>
+<rect x="0" y="400" width="512" height="112" fill="url(#fade)"/>
+<!-- bulb -->
+<circle cx="312" cy="134" r="42" fill="url(#bulb)"/>
+<rect x="293" y="164" width="38" height="26" rx="9" fill="url(#bulb)"/>
+<ellipse cx="298" cy="118" rx="9" ry="14" fill="#fff" opacity=".55" transform="rotate(25 298 118)"/>
+<rect x="294" y="188" width="36" height="9" rx="4.5" fill="#e6ddff"/>
+<rect x="298" y="199" width="28" height="9" rx="4.5" fill="#cbbcf7"/>
+<rect x="304" y="210" width="16" height="8" rx="4" fill="#b39cf0"/>
+<path d="M128 157Q128 170 141 170Q128 170 128 183Q128 170 115 170Q128 170 128 157Z" fill="#fff" opacity="0.9"/><path d="M392 252Q392 262 402 262Q392 262 392 272Q392 262 382 262Q392 262 392 252Z" fill="#fff" opacity="0.8"/><path d="M96 293Q96 300 103 300Q96 300 96 307Q96 300 89 300Q96 300 96 293Z" fill="#fff" opacity="0.6"/><path d="M404 169Q404 176 411 176Q404 176 404 183Q404 176 397 176Q404 176 404 169Z" fill="#fff" opacity="0.7"/>
+</svg>
