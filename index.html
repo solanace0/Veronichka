@@ -302,7 +302,7 @@ html[data-theme=light] body::before{display:none}
 <div class="opt"><div><b>Попередження про застарілі дані</b><small>Показувати, якщо графік давно не оновлювався</small></div><button class="sw" role="switch" data-nosound="1" data-k="stale" aria-label="Застарілі дані"></button></div></div>
 
 <div class="card" id="wgt"><h2>Віджет на iPhone</h2><div class="sub" style="margin-bottom:10px">Віджет показує графік на сьогодні для твоєї черги: статус зараз, час наступної зміни та всі відключення дня. Застосунок у браузері не може створити системний віджет, тому використовується безкоштовна програма Scriptable.</div>
-<ol class="anl"><li>Встанови <a href="https://apps.apple.com/app/scriptable/id1405459188" target="_blank" rel="noopener">Scriptable</a> з App Store.</li><li>Натисни кнопку нижче — скрипт скопіюється разом із твоєю чергою.</li><li>У Scriptable натисни «+», встав скрипт, назви його «ТребаСвітло» й збережи.</li><li>На головному екрані: утримуй порожнє місце → «+» → Scriptable → оберіть розмір → «Додати віджет» → торкнись його → Script: «ТребаСвітло».</li></ol>
+<ol class="anl"><li>Встанови <a href="https://apps.apple.com/app/scriptable/id1405459188" target="_blank" rel="noopener">Scriptable</a> (безкоштовно).</li><li>Натисни кнопку нижче, у Scriptable натисни «+» і встав.</li><li>Додай віджет Scriptable на головний екран і обери цей скрипт.</li></ol>
 <button class="ref p w" data-nosound="1" onclick="copyWidget()">Скопіювати скрипт віджета</button><textarea id="wgt-out" class="hid" readonly rows="6" style="width:100%;margin-top:10px;border-radius:12px;border:1px solid var(--bd);background:var(--bg2);color:var(--tx);padding:10px;font:12px/1.35 ui-monospace,Menlo,monospace"></textarea><div class="meta" id="wgt-note"></div></div>
 
 <div class="card"><h2>Інформація про дані</h2><div id="info"></div>
@@ -322,11 +322,164 @@ html[data-theme=light] body::before{display:none}
 <button class="ref w" onclick="resetSettings()">Скинути налаштування</button><button class="ref w" onclick="wipe()">Видалити мої дані</button></div>
 </div></main>
 </div>
+<script type="text/plain" id="wgt-src">// ТребаСвітло? — віджет для iPhone (програма Scriptable).
+// Показує графік на СЬОГОДНІ для вибраної черги: статус зараз, час наступної зміни, смужку доби та відключення дня.
+// Налаштування підставляються автоматично, коли скрипт копіюється зі застосунку (Налаштування → Віджет на iPhone).
+// Інша черга без редагування: у налаштуваннях віджета в полі Parameter напиши, наприклад: kr 3.1  (kr — Кривий Ріг, dp — Дніпро, kz — Кам’янське)
+
+const CFG = { origin: "__ORIGIN__", city: "__CITY__", group: "__GROUP__", name: "__NAME__" };
+const CITY_NAMES = { kr: "Кривий Ріг", dp: "Дніпро", kz: "Кам’янське" };
+const TZ = "Europe/Kyiv";
+
+let city = CFG.city, group = CFG.group;
+const prm = (args.widgetParameter || "").trim().split(/\s+/);
+if (prm.length === 2 && CITY_NAMES[prm[0]] && /^[1-6]\.[12]$/.test(prm[1])) { city = prm[0]; group = prm[1]; }
+const cityName = CITY_NAMES[city] || CFG.name;
+
+// ---------- час за Києвом ----------
+function kyivNow() {
+  const p = {};
+  new Intl.DateTimeFormat("en-GB", { timeZone: TZ, hour12: false, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" })
+    .formatToParts(new Date()).forEach(x => (p[x.type] = x.value));
+  const h = +p.hour % 24;
+  return { date: `${p.year}-${p.month}-${p.day}`, min: h * 60 + +p.minute, sec: h * 3600 + +p.minute * 60 + +p.second };
+}
+const p2 = n => String(n).padStart(2, "0");
+const hm = m => `${p2(Math.floor(m / 60) % 24)}:${p2(m % 60)}`;
+const hmE = m => (m >= 1440 ? "24:00" : hm(m));
+const dh = m => { const h = Math.floor(m / 60), mm = m % 60; return h ? (mm ? `${h} год ${mm} хв` : `${h} год`) : `${mm} хв`; };
+function periods(slots) {
+  const o = [];
+  slots.forEach((v, i) => {
+    const on = !!v, a = i * 30;
+    if (o.length && o[o.length - 1].on === on) o[o.length - 1].to = a + 30;
+    else o.push({ from: a, to: a + 30, on });
+  });
+  return o;
+}
+
+// ---------- дані (з кешем на випадок, коли немає мережі) ----------
+async function load() {
+  const fm = FileManager.local();
+  const path = fm.joinPath(fm.documentsDirectory(), `svitlo-${city}-${group}.json`);
+  try {
+    const req = new Request(`${CFG.origin}/api/schedule?group=${group}&city=${city}&t=${Date.now()}`);
+    req.timeoutInterval = 12;
+    const j = await req.loadJSON();
+    if (!j || !j.ok) throw new Error("no data");
+    fm.writeString(path, JSON.stringify({ j, at: Date.now() }));
+    return { j, stale: false };
+  } catch (e) {
+    if (fm.fileExists(path)) { const c = JSON.parse(fm.readString(path)); return { j: c.j, stale: true }; }
+    return { j: null, stale: true };
+  }
+}
+
+const COL = {
+  bg1: new Color("#14111F"), bg2: new Color("#08070C"),
+  tx: new Color("#F5F3FA"), mu: new Color("#A9A6B8"),
+  on: new Color("#3FD79A"), off: new Color("#FF6B7D"), warn: new Color("#F5C542"),
+  barOn: new Color("#2FA676"), barOff: new Color("#FF5D6C"), yellow: new Color("#FFD23F")
+};
+
+function bar(slots, nowMin, w, h) {
+  const ctx = new DrawContext();
+  ctx.size = new Size(w, h + 6); ctx.opaque = false; ctx.respectScreenScale = true;
+  const sw = w / 48;
+  slots.forEach((v, i) => {
+    ctx.setFillColor(v ? COL.barOn : COL.barOff);
+    ctx.fillRect(new Rect(i * sw, 4, sw + 0.6, h));
+  });
+  ctx.setFillColor(Color.white());
+  ctx.fillRect(new Rect(Math.min(w - 2, (nowMin / 1440) * w - 1), 0, 2.4, h + 6));
+  return ctx.getImage();
+}
+
+function text(stack, s, size, color, weight) {
+  const t = stack.addText(s);
+  t.textColor = color; t.font = weight ? Font.heavySystemFont(size) : Font.systemFont(size);
+  t.minimumScaleFactor = 0.7; t.lineLimit = 1;
+  return t;
+}
+
+async function build() {
+  const { j, stale } = await load();
+  const w = new ListWidget();
+  const g = new LinearGradient(); g.colors = [COL.bg1, COL.bg2]; g.locations = [0, 0.7];
+  w.backgroundGradient = g;
+  w.setPadding(14, 14, 12, 14);
+  w.url = CFG.origin;
+  w.refreshAfterDate = new Date(Date.now() + 15 * 60 * 1000);
+
+  const fam = config.widgetFamily || "medium";
+  const small = fam === "small";
+  const k = kyivNow();
+
+  const head = w.addStack(); head.centerAlignContent();
+  text(head, `💡 ${group} · ${cityName}`, small ? 11 : 12, COL.mu, false);
+
+  const day = j && j.days && j.days[k.date];
+  const slots = day && day.slots && day.slots.length === 48 ? day.slots : null;
+  const noInfo = !slots || slots.every(v => v === 1) && !day.confirmed;
+
+  if (!j || noInfo) {
+    w.addSpacer(6);
+    const emg = j && j.emergency;
+    text(w, emg ? "Екстрені відключення" : j ? "Графік уточнюється" : "Немає даних", small ? 16 : 20, emg ? COL.off : COL.warn, true);
+    w.addSpacer(4);
+    text(w, emg ? "Планові графіки зараз не діють" : "Відкрий застосунок або сайт ДТЕК", 11, COL.mu, false);
+    return w;
+  }
+
+  const pr = periods(slots), cur = pr.find(p => k.min >= p.from && k.min < p.to) || pr[0];
+  const on = cur.on, minsLeft = cur.to - k.min;
+  const offs = pr.filter(p => !p.on);
+
+  w.addSpacer(small ? 4 : 5);
+  text(w, on ? "Світло є" : "Світла немає", small ? 22 : 26, on ? COL.on : COL.off, true);
+  const nextTxt = cur.to >= 1440
+    ? (on ? "Сьогодні більше відключень немає" : "Світло буде після 24:00")
+    : `${on ? "Вимкнення" : "Ввімкнення"} о ${hm(cur.to)} · через ${dh(minsLeft)}`;
+  text(w, nextTxt, small ? 10.5 : 12, COL.mu, false);
+
+  w.addSpacer(small ? 6 : 8);
+  w.addImage(bar(slots, k.min, small ? 140 : 300, 8)).imageSize = new Size(small ? 140 : 300, 14);
+
+  const maxRows = fam === "large" ? 9 : small ? 2 : 3;
+  w.addSpacer(6);
+  if (!offs.length) {
+    text(w, "Сьогодні без відключень", 12, COL.on, false);
+  } else {
+    const shown = offs.slice(0, maxRows);
+    shown.forEach(p => {
+      const row = w.addStack(); row.centerAlignContent(); row.spacing = 6;
+      const past = p.to <= k.min, now = k.min >= p.from && k.min < p.to;
+      const dot = row.addText("●"); dot.font = Font.systemFont(7); dot.textColor = past ? COL.mu : COL.off;
+      const t = text(row, `${hm(p.from)}–${hmE(p.to)}`, small ? 11.5 : 13, past ? COL.mu : COL.tx, true);
+      if (!small) { row.addSpacer(); text(row, dh(p.to - p.from), 11, now ? COL.off : COL.mu, false); }
+    });
+    if (offs.length > shown.length) text(w, `+ ще ${offs.length - shown.length}`, 10.5, COL.mu, false);
+  }
+  if (fam === "large") {
+    w.addSpacer();
+    const on_m = slots.filter(Boolean).length * 30;
+    text(w, `Зі світлом: ${dh(on_m)} · без світла: ${dh(1440 - on_m)}`, 11, COL.mu, false);
+  }
+  if (stale) { w.addSpacer(2); text(w, "офлайн: показано збережене", 9.5, COL.warn, false); }
+  else if (j.updated) { w.addSpacer(); text(w, `оновлено ${j.updated}`, 9.5, COL.mu, false); }
+  return w;
+}
+
+const widget = await build();
+if (config.runsInWidget) Script.setWidget(widget);
+else await widget.presentMedium();
+Script.complete();
+</script>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 const API='';/* для обгортки в App Store вкажи тут повну адресу сервера, напр. https://svitlo.example.com */
-const APP_V='2.7.0',TZ='Europe/Kyiv',$=s=>document.getElementById(s);
+const APP_V='2.8.0',TZ='Europe/Kyiv',$=s=>document.getElementById(s);
 const LS=(()=>{try{localStorage.setItem('_t','1');localStorage.removeItem('_t');return localStorage}catch(e){const m={};return{getItem:k=>k in m?m[k]:null,setItem:(k,v)=>{m[k]=String(v)},removeItem:k=>{delete m[k]},clear:()=>{for(const k in m)delete m[k]}}}})();
 const jget=(k,d)=>{try{const v=JSON.parse(LS.getItem(k));return v==null?d:v}catch(e){return d}};
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -364,13 +517,13 @@ const upd=me.updatedOn?new Date(me.updatedOn).toLocaleString('uk-UA',{timeZone:T
 const head={emergency:['off','Діють екстрені відключення'],waiting:['','Екстрених відключень у даних немає'],normal:['on','Екстрених відключень не заявлено'],unknown:['','Статус черги невідомий']}[td];
 const sub={emergency:`Для ${who} планові графіки зараз не застосовуються: світло може зникати без попередження.`,waiting:`Статус черги в YASNO ще не оновлено${upd?' (останнє оновлення '+upd+')':''}: там нема ні графіка на сьогодні, ні позначки про екстрені відключення. Це не означає, що їх немає — оператор може оголосити їх раніше, ніж оновиться статус. Остаточно перевір на сайті ДТЕК.`,normal:`Для ${who} діє звичайний графік відключень.`,unknown:'Джерело не повідомило статус для цієї черги.'}[td];
 const ann=((AV.j.announcements||[]).filter(a=>a.cities&&a.cities.includes(c))),act=ann.filter(a=>!a.cancelled);
-let H=head,S=sub;if(act.length&&td!=='emergency'){H=['off','Оголошено екстрені чи аварійні відключення'];S='Статус черги в даних ще не оновлено, але на сайті YASNO зараз є оголошення для міста: '+CITIES[c]+' (нижче). Під час екстрених відключень графіки не діють.'}
+let H=head,S=sub;if(act.length&&td!=='emergency'){H=['off','Оголошено екстрені чи аварійні відключення'];S='Статус черги в даних ще не оновлено, але є свіже оголошення офіційних джерел (ДТЕК, Укренерго, YASNO) для міста: '+CITIES[c]+' (нижче). Під час екстрених відключень графіки не діють.'}
 const restNote='<div class="note"><b>Орієнтовний час відновлення</b>Відкриті джерела його не публікують: під час екстрених відключень він залежить від розпорядження Укренерго та ремонтних робіт. Точніше повідомляє ДТЕК за адресою.</div>';
 let note='';
 if(td==='emergency')note='<div class="note"><b>Світла немає, хоча за графіком воно є?</b>Так і має бути: під час екстрених відключень графік не діє. Це не помилка застосунку.</div>'+restNote;
 else if((td==='normal'||td==='waiting')&&now===true)note='<div class="note"><b>Світла немає, хоча за графіком воно має бути?</b>Відкриті джерела не повідомляють про екстрену ситуацію для '+who+'. Ймовірно, це локальна аварія на лінії, підстанції чи в будинку — такі випадки у відкритих даних не публікуються. Час відновлення за адресою показує сайт ДТЕК.</div>';
 else if((td==='normal'||td==='waiting')&&now===false){const r=avRestore(sd,sdt,k);note='<div class="note"><b>Зараз за графіком відключення</b>Це планова пауза, а не аварія.'+(r?'<br>Орієнтовний час відновлення за графіком: <b>'+r+'</b>.':'')+'</div>'}
-if(td!=='emergency'&&ann.length)note=(ann.length?'<div class="note"><b>Оголошення оператора (YASNO)</b><ul class="anl">'+ann.map(a=>'<li>'+esc(a.text)+(a.cancelled?' <i>(скасовано)</i>':'')+'</li>').join('')+'</ul><small>Дата оголошення на сайті не вказана — звір із ДТЕК.</small></div>':'')+(act.length?restNote:'');
+if(td!=='emergency'&&ann.length)note=(ann.length?'<div class="note"><b>Оголошення офіційних джерел</b><ul class="anl">'+ann.map(a=>'<li>'+esc(a.text)+(a.cancelled?' <i>(скасовано)</i>':'')+'<br><small>'+esc(a.source||'YASNO')+(a.ts?' · '+new Date(a.ts).toLocaleString('uk-UA',{timeZone:TZ,day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):' · дата не вказана')+(a.link?' · <a href="'+esc(a.link)+'" target="_blank" rel="noopener">джерело</a>':'')+'</small></li>').join('')+'</ul></div>':'')+(act.length?restNote:'');
 else if(td==='waiting'&&AV.j.announceOk===false)note+='<div class="meta">Оголошення оператора перевірити не вдалося.</div>';
 const lab=(s,tomorrow)=>!s?'—':s==='waiting'?(tomorrow?'буде відомо ввечері':'статус не оновлено'):AVL[s];
 setH(hero,loc+`<div class="status">${H[1]}</div><div class="sub">${S}</div><div class="grid"><div><span class="sub">Сьогодні</span><b style="font-size:14px">${act.length&&td!=='emergency'?'є оголошення про екстрені':lab(td)}</b></div><div><span class="sub">Завтра</span><b style="font-size:14px">${tm?lab(tm,true):'—'}</b></div></div>${note}<div class="av-go"><span>Причини тут немає? Адресні аварії, будинки та час відновлення показує лише сайт ДТЕК.</span>${BTN}${mine?'':'<button class="ref w" onclick="avAdopt()">Зробити моєю чергою</button>'}</div><div class="meta">Джерело: ${esc(AV.j.source||'YASNO')} · оновлено ${upd||'—'}</div>`,'card hero '+H[0]);
@@ -435,9 +588,13 @@ if(!day(addDay(kv().date,1)))nextCheck=Date.now()+15*60e3;render();if(view===3)r
 const DTEK='https://www.dtek-dnem.com.ua/ua/shutdowns',BTN='<a class="ref" style="text-decoration:none" href="'+DTEK+'" target="_blank" rel="noopener">Відкрити сайт ДТЕК</a>';
 function setH(el,html,cls){if(cls!=null&&el.className!==cls)el.className=cls;if(el._h!==html){el._h=html;el.innerHTML=html}}
 function render(){if(!ready())return;renderHome();$('net').textContent=navigator.onLine?'● онлайн':'○ офлайн'}
+/* Екстрені відключення для моєї черги: статус YASNO або свіже оголошення ДТЕК/Укренерго (Telegram) */
+function emgInfo(){const j=AV.j;if(!j||!P)return null;const me=j.groups&&j.groups[P.q],st=me&&me.today&&me.today.state==='emergency',act=(j.announcements||[]).filter(a=>a.cities&&a.cities.includes(P.c)&&!a.cancelled);return st||act.length?{st,a:act[0]||null}:null}
+function loadOut(){if(!ready())return;fetch(API+'/api/outages?t='+Math.floor(Date.now()/18e4),{cache:'no-store'}).then(r=>r.json()).then(j=>{if(!j||!j.ok)return;AV.j=j;AV.t=Date.now();AV.err=null;renderHome();renderAv();
+const E=emgInfo();if(E&&ST.notify){const key='emg|'+(E.a?E.a.post:'yasno|'+kv().date+'|'+P.q);let seen=jget('alerted2',[]);if(!Array.isArray(seen))seen=[];if(!seen.includes(key)){seen.push(key);LS.setItem('alerted2',JSON.stringify(seen.slice(-40)));const m='Діють екстрені відключення: графіки не застосовуються';toast(m);play('alert','sAlert');if('Notification'in window&&Notification.permission==='granted'&&navigator.serviceWorker)navigator.serviceWorker.ready.then(r=>r.showNotification('ТребаСвітло?',{body:m,icon:'icon-192.png',tag:key,renotify:false})).catch(()=>{})}}}).catch(()=>{})}
 function renderHome(){const k=kv(),today=day(k.date),tom=day(addDay(k.date,1)),yest=day(addDay(k.date,-1));NEXT=null;
 const hero=$('hero'),loc='<div class="loc">'+CITIES[P.c]+' · Черга '+P.q+'</div>'+(P.a?'<div class="addr">'+esc(P.a)+'</div>':'');
-setH($('emg'),data&&data.emergency?'<div class="emg">Діють екстрені відключення<small>Планові графіки можуть не застосовуватися. Орієнтуйся на повідомлення оператора.</small></div>':'');
+{const E=emgInfo();setH($('emg'),E?'<div class="emg">Діють екстрені відключення<small>Планові графіки не застосовуються, світло може зникати без попередження.'+(E.a?'<br>'+esc(E.a.source)+(E.a.ts?', '+new Date(E.a.ts).toLocaleTimeString('uk-UA',{timeZone:TZ,hour:'2-digit',minute:'2-digit'}):'')+': '+esc(E.a.text.length>150?E.a.text.slice(0,147)+'…':E.a.text):'')+'</small></div>':(data&&data.emergency?'<div class="emg">Діють екстрені відключення<small>Планові графіки можуть не застосовуватися. Орієнтуйся на повідомлення оператора.</small></div>':''))}
 if(loading&&!data){setH(hero,'<div class="loc">Завантаження…</div><div class="status" style="opacity:.4">⋯</div>','card hero')}
 else if(!today){setH(hero,loc+'<div class="status">Графіка на сьогодні немає</div><div class="sub">Не показуємо застарілі дані.</div>'+(data&&data.emergency?'<div class="sub" style="margin-top:6px">Під час екстрених відключень графіки не публікуються.</div>':'')+BTN,'card hero')}
 else if(isEmpty(today)){setH(hero,loc+'<div class="status">Графік уточнюється ⏳</div><div class="sub">Джерело ще не підтвердило графік на сьогодні (можливо, ДТЕК його вже оновив). Не показуємо припущень.</div>'+BTN,'card hero')}
@@ -497,13 +654,11 @@ alertBusy=key;seen.push(key);LS.setItem('alerted2',JSON.stringify(seen.slice(-40
 const m=NEXT.on?`Через ${Math.ceil(left)} хв за графіком з’явиться світло 💡`:`Через ${Math.ceil(left)} хв за графіком вимкнення світла`;toast(m);play('alert','sAlert');
 if('Notification'in window&&Notification.permission==='granted'&&navigator.serviceWorker){navigator.serviceWorker.ready.then(r=>r.showNotification('ТребаСвітло?',{body:m,icon:'icon-192.png',tag:'next-change-'+key,renotify:false,silent:false})).catch(()=>{})}}
 /* ---------- віджет для iPhone (Scriptable) ---------- */
-async function copyWidget(){const note=$('wgt-note'),out=$('wgt-out');if(!P){toast('Спочатку вкажи свою чергу');return}
-try{const r=await fetch('widget/svitlo-widget.js',{cache:'no-store'});if(!r.ok)throw 0;let t=await r.text();
-t=t.replace('__ORIGIN__',location.origin).replace('__CITY__',P.c).replace('__GROUP__',P.q).replace('__NAME__',CITIES[P.c]);
-let ok=false;try{await navigator.clipboard.writeText(t);ok=true}catch(e){}
-if(ok){out.classList.add('hid');note.textContent='Скрипт скопійовано. Відкрий Scriptable → «+» → встав.';toast('Скрипт скопійовано');play('ok')}
-else{out.value=t;out.classList.remove('hid');out.focus();out.select();note.textContent='Автокопіювання недоступне: виділи весь текст вище, скопіюй і встав у Scriptable.'}}
-catch(e){note.textContent='Не вдалося завантажити скрипт. Перевір з’єднання й спробуй ще раз.'}}
+function copyWidget(){const note=$('wgt-note'),out=$('wgt-out');if(!P){toast('Спочатку вкажи свою чергу');return}
+const t=$('wgt-src').textContent.replace('__ORIGIN__',location.origin).replace('__CITY__',P.c).replace('__GROUP__',P.q).replace('__NAME__',CITIES[P.c]);
+const manual=()=>{out.value=t;out.classList.remove('hid');out.focus();out.select();try{out.setSelectionRange(0,t.length)}catch(e){}note.textContent='Не вдалося скопіювати автоматично: текст виділено — натисни «Копіювати» у меню, що з’явилося, і встав у Scriptable.'};
+let ok=false;try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(()=>{out.classList.add('hid');note.textContent='Готово! Скрипт скопійовано — відкрий Scriptable, натисни «+» і встав.';toast('Скрипт скопійовано');play('ok')},manual);ok=true}}catch(e){}
+if(!ok)manual()}
 function renderInfo(){if(!P){$('info').innerHTML='';return}const k=kv(),t=day(k.date),m=day(addDay(k.date,1));
 const st=s=>!s?'немає даних':isEmpty(s)?'не підтверджено':'підтверджено';
 $('info').innerHTML=[['Місто / черга',CITIES[P.c]+' · '+P.q],['Джерело',esc(data&&data.source||'—')],['Графік оновлено',esc(data&&data.updated||'—')],['Востаннє перевірено',data&&data.fetchedAt?new Date(data.fetchedAt).toLocaleString('uk-UA',{timeZone:TZ,day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'—'],['Графік на сьогодні',st(t)],['Графік на завтра',st(m)],['З’єднання',navigator.onLine?'онлайн':'офлайн'],['Стан даних',err?'помилка оновлення':data?'ок':'очікуємо']].map(r=>`<div class="kv"><span>${r[0]}</span><span>${r[1]}</span></div>`).join('')}
@@ -585,6 +740,6 @@ addEventListener('online',()=>load());addEventListener('offline',render);
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change',applyTheme);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)return;tick();if(ST.auto&&Date.now()-lastTry>6e4)load()});
 applyTheme();syncSwitches();['ob','st'].forEach(acAttach);setView(ready()?1:0);runIntro();
-setInterval(()=>{if(!ST.auto)return;const h=kv().h,need=(h>=21||h<3)?120e3:300e3;if(Date.now()-lastTry>=need-5e3)load()},30e3);setInterval(tick,1000);tick();load();
+setInterval(()=>{if(!ST.auto)return;const h=kv().h,need=(h>=21||h<3)?120e3:300e3;if(Date.now()-lastTry>=need-5e3)load()},30e3);setInterval(tick,1000);tick();load();loadOut();setInterval(loadOut,18e4);
 if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
 </script></body></html>
