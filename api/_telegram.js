@@ -31,25 +31,46 @@ export function parseChannel(html, channel) {
 }
 
 const L = '[а-яіїєґ]*';
+// Канали, чиї оголошення можуть запускати статус «оголошено». Усі інші (ОВА, Рада оборони) — лише стрічка новин.
+const OPERATORS = new Set(['dtek_ua', 'ukrenergo']);
+// Канал про одне місто: його пости стосуються цього міста, навіть якщо слово «Кривий Ріг» у тексті не згадано.
+const HOME = { vilkul: ['kr'] };
+const ANN_AGE_H = 8; // оголошення оператора вважаємо актуальним 8 годин, якщо його не скасовано
+
+const EM = `(?:екстрен${L}|аварійн${L})`;
+const OUTW = `(?:відключен${L}|знеструмлен${L}|вимкнен${L})`;
+const VERB = `(?:введен${L}|запровадж${L}|застосован${L}|застосовуєтьс${L}|застосовуютьс${L}|діють|діятимуть|розпочал${L}|почал${L})`;
 const RE = {
   region: /Дніпропетровськ[а-яіїєґ]*|Дніпропетровщин[а-яіїєґ]*/i,
   dp: /Дніпр(?:о|і|а|у|ом|ові)(?![а-яіїєґ])/i,
   kz: /Кам[’'ʼ`]?янськ(?:е|ого|ому|им)?(?![а-яіїєґ])(?!\s+(?:район|р-н))/i,
   // конкретні райони/міста області: якщо названо їх, а не наше місто, оголошення нашого міста НЕ стосується
-  dist: /Павлоград|Синельників|Нікопол|Марганец|Марганц|Покров(?![а-яіїєґ]*\s+(?:наш))|Новомосковськ|Підгородн|Петропавлів|Томаківк|Широків|Апостолов|Зеленодольськ|Жовт[а-яіїєґ]*\s+Вод|Верхньодніпровськ|Дніпровськ[а-яіїєґ]*\s+(?:район|р-н)|Кам[’'ʼ`]?янськ[а-яіїєґ]*\s+(?:район|р-н)|Криворізьк[а-яіїєґ]*\s+(?:район|р-н)|[а-яіїєґ]+ськ[а-яіїєґ]*\s+район/i,
+  dist: /Павлоград|Синельників|Нікопол|Марганец|Марганц|Новомосковськ|Підгородн|Петропавлів|Томаківк|Широків|Апостолов|Зеленодольськ|Жовт[а-яіїєґ]*\s+Вод|Верхньодніпровськ|Дніпровськ[а-яіїєґ]*\s+(?:район|р-н)|Кам[’'ʼ`]?янськ[а-яіїєґ]*\s+(?:район|р-н)|Криворізьк[а-яіїєґ]*\s+(?:район|р-н)|[а-яіїєґ]+ськ[а-яіїєґ]*\s+район|прилег|громад[аиу]/i,
   allq: /(?:усі|всі|усіх|всіх)\s+черг|по\s+всіх\s+чергах|без\s+розподілу\s+за\s+чергами/i,
   kr: /Крив(ий|ого|ому)\s+Р(іг|огу|озі)|Криворіж[а-яіїєґ]*/i,
-  start: new RegExp(`(екстрен${L}|аварійн${L})\\s+(відключен${L}|знеструмлен${L}|вимкнен${L})|(графік${L}|стабілізаційн${L})[^.!]{0,50}не\\s+(діють|діятимуть|застосовуються|застосовуватимуться)|відключен${L}\\s+(поза|без)\\s+графік${L}|екстрен${L}\\s+заход${L}`, 'i'),
-  cancel: new RegExp(`(скасован${L}|припинен${L}|завершен${L}|не\\s+застосовуютьс${L}|більше\\s+не\\s+діють)[^.!]{0,60}(екстрен${L}|аварійн${L})|(екстрен${L}|аварійн${L})\\s+(відключен${L}|знеструмлен${L})[^.!]{0,50}(скасован${L}|припинен${L}|завершен${L}|не\\s+діють\\s+більше)|повернул${L}\\s+до\\s+(графік|стабілізац)${L}|відновлен${L}\\s+(дію\\s+)?(графік|стабілізац)${L}|повертаємось\\s+до\\s+графік${L}`, 'i'),
-  feed: /екстрен[а-яіїєґ]*\s+(відключ|знеструм|заход)|аварійн|знеструм|без\s+(світл|електро)|відключен[а-яіїєґ]*\s+(світл|електро)|стабілізаційн|графік[а-яіїєґ]*\s+(відключ|стабіл)|енергетичн/i
+  // ЗАПРОВАДЖЕННЯ: потрібне дієслово введення поряд зі словосполученням «екстрені відключення» або «графіки не діють»
+  start: new RegExp(`${VERB}[^.!?]{0,40}${EM}\\s+${OUTW}|${EM}\\s+${OUTW}[^.!?]{0,40}${VERB}|(?:графік${L}|стабілізаційн${L})[^.!?]{0,50}не\\s+(?:діють|діятимуть|застосовуються|застосовуватимуться)|відключен${L}\\s+(?:поза|без)\\s+графік${L}`, 'i'),
+  // Заперечення: пост говорить, що екстрених немає / вони оминули / не вводилися
+  neg: /оминул|не\s+(?:вводил|вводят|запроваджувал|запроваджуютьс|застосовувал)|відсутн|без\s+екстрен|без\s+аварійн|не\s+було|не\s+плану/i,
+  cancel: new RegExp(`(скасован${L}|припинен${L}|завершен${L}|більше\\s+не\\s+діють)[^.!?]{0,60}${EM}|${EM}\\s+${OUTW}[^.!?]{0,50}(скасован${L}|припинен${L}|завершен${L}|не\\s+діють\\s+більше)|повернул${L}\\s+до\\s+(графік|стабілізац)${L}|відновлен${L}\\s+(дію\\s+)?(графік|стабілізац)${L}|повертаємось\\s+до\\s+графік${L}|екстрен${L}\\s+(відключен|вимкнен)${L}\\s+(скасов|припин|завершен)`, 'i'),
+  // Будь-яка інформація про світло (для стрічки). Окремі «війна»-пости без слів про світло відсікаємо.
+  feed: /(?:без|немає|нема|зникл[оа])\s+(?:світл|електр)|знеструм|відключен|вимкнен|екстрен[а-яіїєґ]*\s+(?:відключ|заход)|аварійн|стабілізаційн|електропостач|енергосистем|енергетичн|графік[а-яіїєґ]*\s+(?:відключ|погодин)|генератор/i
 };
-export function citiesOf(t) {
+const ALL = ['kr', 'dp', 'kz'];
+function explicitCities(t) {
   const c = [];
   if (RE.dp.test(t)) c.push('dp');
   if (RE.kz.test(t)) c.push('kz');
   if (RE.kr.test(t)) c.push('kr');
-  // загальне «Дніпропетровщина/область» стосується всіх трьох міст, лише коли не названо конкретні міста чи райони
-  if (!c.length && RE.region.test(t) && !RE.dist.test(t)) c.push('dp', 'kz', 'kr');
+  return c;
+}
+// «По всій області»: названа область, але не названо жодного міста чи району
+export const regionWide = (t) => RE.region.test(t) && !RE.dist.test(t) && !explicitCities(t).length;
+export function citiesOf(t, channel) {
+  const c = explicitCities(t);
+  const home = HOME[String(channel || '').toLowerCase()];
+  if (home) c.push(...home);
+  if (regionWide(t)) c.push(...ALL);
   return [...new Set(c)];
 }
 // Черги, названі в тексті (1.1–6.2). Рахуємо лише якщо в тексті є слово «черг», щоб не плутати з датами й часом.
@@ -60,36 +81,43 @@ export function queuesOf(t) {
   return { queues: [...q].sort(), allQueues: RE.allq.test(t) };
 }
 const clip = (s, n) => (s.length > n ? s.slice(0, n - 1) + '…' : s);
+export const isStart = (t) => RE.start.test(t) && !RE.neg.test(t);
+export const isCancel = (t) => RE.cancel.test(t);
 
-// Для кожного міста вирішує ОСТАННЄ релевантне повідомлення: про введення — «діє», про скасування — «скасовано».
+// Оголошення ОПЕРАТОРІВ (ДТЕК, Укренерго): для кожного міста вирішує останнє релевантне повідомлення.
+// Це лише рівень «оголошено, дані ще не підтверджено»: підтверджений статус дає прапорець на сайті ДТЕК.
 export function analyze(posts, now = Date.now()) {
   const items = [];
-  const recent = posts.filter((p) => now - p.ts <= MAX_AGE_H * 36e5 && p.ts <= now + 5 * 6e4).sort((a, b) => a.ts - b.ts);
+  const recent = posts
+    .filter((p) => OPERATORS.has(String(p.channel).toLowerCase()) && now - p.ts <= ANN_AGE_H * 36e5 && p.ts <= now + 5 * 6e4)
+    .sort((a, b) => a.ts - b.ts);
   const last = {};
   for (const p of recent) {
-    const t = p.text;
-    const isCancel = RE.cancel.test(t), isStart = RE.start.test(t);
-    if (!isCancel && !isStart) continue;
-    for (const c of citiesOf(t)) last[c] = { p, cancelled: isCancel && !(isStart && !RE.cancel.test(t.replace(RE.start, ''))) };
+    const t = p.text, st = isStart(t), ca = isCancel(t);
+    if (!st && !ca) continue;
+    const cancelled = ca && !(st && !isCancel(t.replace(RE.start, '')));
+    // «Діють» без явного міста/області нікому не приписуємо
+    for (const c of citiesOf(t, p.channel)) last[c] = { p, cancelled };
   }
   for (const c of Object.keys(last)) {
     const { p, cancelled } = last[c];
     const ex = items.find((i) => i.post === p.post && i.cancelled === cancelled);
     if (ex) { ex.cities.push(c); continue; }
-    items.push({ text: clip(p.text, 260), cities: [c], cancelled, ...queuesOf(p.text), source: label(p.channel) + ' (Telegram)', ts: p.ts, link: p.link, post: p.post });
+    items.push({ text: clip(p.text, 300), cities: [c], cancelled, ...queuesOf(p.text), source: label(p.channel) + ' (Telegram)', ts: p.ts, link: p.link, post: p.post });
   }
   return items.sort((a, b) => b.ts - a.ts);
 }
 
-// Стрічка: свіжі повідомлення офіційних каналів про світло для міст — показуємо людині як є, навіть якщо автоматично не вдалося визначити «діє/скасовано».
+// Стрічка: свіжі повідомлення офіційних каналів про світло для міст. Показуємо як є, без висновків «діє/не діє».
 export function buildFeed(posts, now = Date.now()) {
   const out = [];
   for (const p of [...posts].sort((a, b) => b.ts - a.ts)) {
     if (now - p.ts > FEED_AGE_H * 36e5 || p.ts > now + 5 * 6e4 || !RE.feed.test(p.text)) continue;
-    const cities = citiesOf(p.text);
+    const cities = citiesOf(p.text, p.channel);
     if (!cities.length) continue;
-    out.push({ text: clip(p.text, 320), cities, ...queuesOf(p.text), source: label(p.channel), ts: p.ts, link: p.link, post: p.post });
-    if (out.length >= 14) break;
+    const kind = isCancel(p.text) ? 'cancel' : isStart(p.text) ? 'start' : 'info';
+    out.push({ text: clip(p.text, 420), cities, kind, ...queuesOf(p.text), source: label(p.channel), ts: p.ts, link: p.link, post: p.post });
+    if (out.length >= 24) break;
   }
   return out;
 }
@@ -104,7 +132,8 @@ async function fetchChannel(ch) {
       page = parseChannel(await r.text(), ch);
     } catch (e) { if (i === 0) throw e; break; }
     if (!page.length) break;
-    posts = posts.concat(page);
+    const seen = new Set(posts.map((p) => p.post));
+    posts = posts.concat(page.filter((p) => !seen.has(p.post)));
     const ids = page.map((p) => +p.post.split('/')[1]).filter(Number.isFinite);
     if (!ids.length || Date.now() - Math.min(...page.map((p) => p.ts)) > FEED_AGE_H * 36e5) break;
     before = Math.min(...ids);
@@ -118,5 +147,5 @@ export async function fetchTelegram() {
     catch (e) { return { ch, ok: false, posts: [] }; }
   }));
   const all = results.flatMap((x) => x.posts);
-  return { items: analyze(all), feed: buildFeed(all), channels: results.map((x) => ({ channel: x.ch, ok: x.ok, posts: x.posts.length })), ok: results.some((x) => x.ok) };
+  return { items: analyze(all), feed: buildFeed(all), channels: results.map((x) => ({ channel: x.ch, ok: x.ok, posts: x.posts.length, newest: x.posts.length ? Math.max(...x.posts.map((p) => p.ts)) : null })), ok: results.some((x) => x.ok) };
 }

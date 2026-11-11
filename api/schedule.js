@@ -6,6 +6,7 @@
 // Сайт ДТЕК закритий захистом Incapsula, його не обходимо.
 // Якщо жодне джерело не дало підтвердженого графіка на день, цей день не повертається
 // (інтерфейс не має малювати «24 години світла» без даних).
+import { fetchFlags, cityStatus } from './_dtek.js';
 const kyivYmd = (s) => { const d = new Date(s); return isNaN(d) ? String(s).slice(0, 10) : new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Kyiv' }).format(d); };
 const YASNO = 'https://app.yasno.ua/api/blackout-service/public/shutdowns/regions/3/dsos/301/planned-outages';
 const MIRROR_BASE = 'https://raw.githubusercontent.com/Baskerville42/outage-data-ua/main/data/';
@@ -193,7 +194,7 @@ async function run(req, res) {
   // kolybude.com використовуємо лише для Кривого Рогу (сторінка міста)
   const all = city === 'kr' ? ['mirror', 'yasno', 'kolybude'] : ['mirror', 'yasno'];
   const names = q.src && fns[q.src] ? [q.src] : all;
-  const settled = await Promise.allSettled(names.map(n => fns[n]()));
+  const [settled, flagRes] = await Promise.all([Promise.allSettled(names.map(n => fns[n]())), fetchFlags().catch(() => ({ flags: [], errors: [] }))]);
   const ok = [], errors = [], report = [];
   settled.forEach((s, i) => {
     if (s.status === 'fulfilled') {
@@ -207,7 +208,9 @@ async function run(req, res) {
   });
   const m = merge(ok);
   // YASNO повідомляє статус «EmergencyShutdowns», коли діють екстрені відключення і планові графіки не застосовуються
-  const emergency = city === 'dp' && ok.some(r => Object.values(r.statuses || {}).some(st => /emergency/i.test(String(st || ''))));
+  // Екстрені відключення: прапорець сайту ДТЕК для цього міста або статус YASNO (YASNO — лише для Дніпра)
+  const dtekSt = cityStatus(flagRes.flags, city);
+  const emergency = dtekSt.emergency || (city === 'dp' && ok.some(r => Object.values(r.statuses || {}).some(st => /emergency/i.test(String(st || '')))));
   if (!Object.keys(m.days).length && emergency) {
     res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=30');
     return res.status(200).json({
