@@ -215,7 +215,35 @@ html[data-theme=light] body::before{display:none}
 .anl{margin:6px 0 4px;padding-left:18px}.anl li{margin:3px 0}.note small{display:block;color:var(--mu);margin-top:4px;font-size:12px}
 .av-go{margin-top:14px;padding-top:12px;border-top:1px dashed var(--bd);font-size:13px;color:var(--mu);line-height:1.4}.av-go .ref{display:block;text-align:center;margin-top:10px}
 #av-city{margin-bottom:14px}
+
+/* живий фон: три шари, між якими плавно перетікає прозорість */
+#mood{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+#mood .m{position:absolute;inset:0;opacity:0;transition:opacity 1.8s ease}
+#mood .on{background:radial-gradient(ellipse 85vw 55vh at 50% -6%,#FFC83D42,#FFC83D00 72%),radial-gradient(ellipse 70vw 45vh at 100% 100%,#3FD79A24,#3FD79A00 72%)}
+#mood .off{background:radial-gradient(ellipse 85vw 55vh at 50% -6%,#5B6CFF44,#5B6CFF00 72%),radial-gradient(ellipse 75vw 50vh at 0% 100%,#2A2F9A40,#2A2F9A00 72%)}
+#mood .emg{background:radial-gradient(ellipse 95vw 60vh at 50% -8%,#FF2D4A44,#FF2D4A00 74%),radial-gradient(ellipse 70vw 45vh at 100% 100%,#FF2D4A26,#FF2D4A00 72%)}
+body[data-mood=on] #mood .on,body[data-mood=off] #mood .off,body[data-mood=emg] #mood .emg{opacity:1}
+body[data-mood=emg] #mood .emg{animation:moodp 4.5s ease-in-out infinite}
+@keyframes moodp{0%,100%{opacity:.7}50%{opacity:1}}
+body.nomood #mood{display:none}
+/* коли живий фон увімкнено, старі кольорові відблиски темної теми вимикаємо, щоб не змішувалися */
+html[data-theme=dark] body:not(.nomood)[data-mood=on]::before,html[data-theme=dark] body:not(.nomood)[data-mood=off]::before,html[data-theme=dark] body:not(.nomood)[data-mood=emg]::before{background:#08070C}
+html[data-theme=light] #mood{opacity:.55}
+@media (prefers-reduced-motion:reduce){#mood .m{transition:none}body[data-mood=emg] #mood .emg{animation:none}}
+/* офлайн-банер */
+.offb{background:var(--wb);color:var(--wx);border-radius:16px;padding:12px 14px;margin-bottom:14px;font-size:14px;font-weight:800}.offb small{display:block;font-weight:500;margin-top:3px;line-height:1.45}
+/* статистика */
+.whead{display:flex;justify-content:space-between;align-items:center;gap:10px}.wks{margin:0;width:176px;flex:none}.wks button{padding:6px 4px;font-size:13px}
+.wbig{font-size:30px;font-weight:900;margin-top:8px;font-variant-numeric:tabular-nums;letter-spacing:-.3px}
+.wbars{display:flex;align-items:flex-end;gap:3px;height:84px;margin:14px 0 4px}.wbars .b{flex:1;min-width:2px;background:var(--offx);opacity:.78;border-radius:4px 4px 2px 2px}
+.wbars .b.na{background:var(--bd);opacity:1;height:4px!important}.wbars .b.em{background:var(--wx);opacity:1}.wbars .b.td{opacity:1;outline:2px solid var(--ac);outline-offset:1px}
+.wax{display:flex;justify-content:space-between;font-size:12px;color:var(--mu)}.winfo{font-size:13px}.winfo i{font-style:normal;font-weight:700}
+/* вікно «Поділитися» */
+.shm{position:fixed;inset:0;background:#000000bd;z-index:200;display:flex;align-items:center;justify-content:center;padding:14px;overflow:auto}
+.shb{background:var(--card);border-radius:20px;padding:14px;width:min(100%,420px);max-height:100%;overflow:auto;border:1px solid var(--bd)}
+#shi{width:100%;display:block;border-radius:14px;background:var(--bg2);aspect-ratio:1080/1350}.shr{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.shr .ref{margin-top:0;flex:1 1 auto;text-align:center}
 </style></head><body>
+<div id="mood" aria-hidden="true"><i class="m on"></i><i class="m off"></i><i class="m emg"></i></div>
 <div id="intro" class="hid" aria-hidden="true">
 <div class="aur"></div><div class="stage"><div class="fig"><svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ТребаСвітло?"><defs>
 <radialGradient id="ihalo" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff" stop-opacity=".6"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
@@ -260,9 +288,10 @@ html[data-theme=light] body::before{display:none}
 <button class="ref p w" id="ob-go" aria-disabled="true" onclick="saveP('ob')">Почати</button><div class="need" id="ob-need">Постав галочку згоди, щоб продовжити</div></div>
 <div class="meta">Дані зберігаються лише на твоєму пристрої. Не знаєш свою чергу? <a href="https://www.dtek-dnem.com.ua/ua/shutdowns" target="_blank" rel="noopener">Дізнатися за адресою на сайті ДТЕК</a>.</div></div></main>
 
-<main id="v1"><div id="emg"></div><div class="cols"><div class="c1">
+<main id="v1"><div id="offb"></div><div id="emg"></div><div class="cols"><div class="c1">
 <div id="hero" class="card hero"></div>
-<div class="card"><div class="sub">Статистика на сьогодні (за графіком)</div><div class="grid" id="stats"></div></div></div>
+<div class="card"><div class="sub">Статистика на сьогодні (за графіком)</div><div class="grid" id="stats"></div></div>
+<div class="card" id="wk"></div></div>
 <div class="c2"><div class="trow"><div class="tabs"><button id="t0" class="a" onclick="setTab(0)">Сьогодні</button><button id="t1" onclick="setTab(1)">Завтра</button></div><button id="t2" class="mini" onclick="setTab(2)">↩ Вчора</button></div>
 <div id="sched" class="card"></div>
 <div class="cen"><div class="sub" id="upd"></div><button class="ref" onclick="load(true)">↻ Оновити</button> <button class="ref" onclick="shareSched()">Поділитися</button></div></div></div></main>
@@ -298,6 +327,9 @@ html[data-theme=light] body::before{display:none}
 
 <div class="card"><h2>Важливе</h2>
 <div class="opt"><div><b>Нагадувати про зміну світла</b><small>Повідомлення перед вимкненням і ввімкненням. Працює, поки застосунок відкрито; у фоні залежить від пристрою.</small></div><button class="sw" role="switch" data-nosound="1" data-k="notify" aria-label="Нагадування"></button></div>
+<div class="opt"><div><b>Екстрені відключення</b><small>Повідомлення, щойно для твого міста з’являється оголошення чи ДТЕК підтверджує екстрені відключення. Працює, поки застосунок відкрито або живе в пам’яті пристрою.</small></div><button class="sw" role="switch" data-nosound="1" data-k="emgN" aria-label="Екстрені відключення"></button></div>
+<div class="opt"><div><b>Вібрація</b><small>Коротка вібрація, коли світло вмикається чи вимикається за графіком, і при екстрених відключеннях. Є на Android; iPhone вібрацію в застосунках не підтримує.</small></div><button class="sw" role="switch" data-nosound="1" data-k="vib" aria-label="Вібрація"></button></div>
+<div class="opt"><div><b>Живий фон</b><small>Фон плавно змінює колір: світло є, світла немає, екстрені відключення</small></div><button class="sw" role="switch" data-nosound="1" data-k="mood" aria-label="Живий фон"></button></div>
 <label class="lbl" for="lead">За скільки часу нагадувати</label><select id="lead" class="sel"><option value="5">за 5 хвилин</option><option value="10">за 10 хвилин</option><option value="15">за 15 хвилин</option><option value="30">за 30 хвилин</option><option value="60">за 1 годину</option></select>
 <div id="notif-note" class="meta"></div>
 <div class="opt"><div><b>Автооновлення графіка</b><small>Перевіряти джерела, поки застосунок відкрито</small></div><button class="sw" role="switch" data-nosound="1" data-k="auto" aria-label="Автооновлення"></button></div>
@@ -480,6 +512,7 @@ else await widget.presentMedium();
 Script.complete();
 </script>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div id="shm" class="shm hid" role="dialog" aria-modal="true" aria-label="Картка для поширення" onclick="if(event.target===this)closeShare()"><div class="shb"><img id="shi" alt="Картка з графіком"><div class="shr"><button class="ref p" id="shs" onclick="doShare()">Поділитися</button><button class="ref" onclick="saveCard()">Зберегти картинку</button><button class="ref" onclick="shareText()">Текстом</button><button class="ref" onclick="closeShare()">Закрити</button></div></div></div>
 
 <script>
 const API='';/* для обгортки в App Store вкажи тут повну адресу сервера, напр. https://svitlo.example.com */
@@ -491,7 +524,7 @@ const MON=['січня','лютого','березня','квітня','трав
 const CITIES={kr:'Кривий Ріг',dp:'Дніпро',kz:'Кам’янське'},QS=[];for(let i=1;i<=6;i++)for(let j=1;j<=2;j++)QS.push(i+'.'+j);
 const SRC_NAME={mirror:'Сайт ДТЕК (дзеркало)',yasno:'YASNO / ДТЕК',kolybude:'kolybude.com'};
 /* ---------- вкладка «Аварії»: статус екстрених відключень + графік вибраного міста й черги ---------- */
-let AV={j:null,err:null,loading:false,t:0,c:null,q:null,tab:0,S:{}};
+let AV={j:jget('lastOut',null),err:null,loading:false,t:0,c:null,q:null,tab:0,S:{}};
 const AVT={emergency:['em','екстрено'],announced:['wt','оголошено'],waiting:['wt','не оновлено'],normal:['ok','за графіком'],unknown:['na','—']};
 const AVL={local:'за офіційними оголошеннями',emergency:'діють екстрені відключення',waiting:'статус не оновлено',normal:'діє звичайний графік',unknown:'статус невідомий'};
 /* AV.c / AV.q = null означає «як у профілі» */
@@ -500,11 +533,11 @@ function avJ(){const e=AV.S[avC()+':'+avQ()];return e&&e.j?e.j:(avMine()?data:nu
 function avDay(j,i){if(!j)return null;const d=kv().date;return dayFrom(j,i?addDay(d,1):d)}
 function loadAv(force){if(!ready()||AV.loading||(!force&&Date.now()-AV.t<60e3))return;AV.loading=true;AV.t=Date.now();renderAv();loadAvS(force);
 fetch(API+'/api/outages?t='+Math.floor(Date.now()/6e4),{cache:'no-store'}).catch(()=>{throw new Error(navigator.onLine?'сервер недоступний':'немає з’єднання з інтернетом')}).then(r=>r.text().then(t=>{let j=null;try{j=JSON.parse(t)}catch(e){}if(!j)throw new Error('сервер даних тимчасово недоступний (код '+r.status+')');if(!j.ok)throw new Error(j.error||'невідома помилка');return j}))
-.then(j=>{AV.j=j;AV.err=null;if(force)play('ok')}).catch(e=>{AV.err=e.message}).finally(()=>{AV.loading=false;renderAv()})}
+.then(j=>{AV.j=j;AV.err=null;try{LS.setItem('lastOut',JSON.stringify(j))}catch(e){}if(P&&j.cities&&j.cities[P.c]&&j.cities[P.c].level==='emergency')markEm(P.c);if(force)play('ok')}).catch(e=>{AV.err=e.message}).finally(()=>{AV.loading=false;renderAv()})}
 /* графік для вибраного міста й черги (кеш на 2 хв по ключу місто:черга) */
 function loadAvS(force){if(!ready())return;const c=avC(),q=avQ(),key=c+':'+q,e=AV.S[key]||(AV.S[key]={j:null,err:null,loading:false,t:0});
 if(e.loading||(!force&&e.t&&Date.now()-e.t<120e3))return;e.loading=true;e.t=Date.now();if(view===4)renderAv();
-fetchSched(q,c).then(j=>{e.j=j;e.err=null}).catch(er=>{e.err=er.message}).finally(()=>{e.loading=false;if(view===4)renderAv()})}
+fetchSchedC(q,c).then(j=>{e.j=j;e.err=null;recDays(c,q,j)}).catch(er=>{e.err=er.message}).finally(()=>{e.loading=false;if(view===4)renderAv()})}
 function avRetry(){loadAv(true);loadAvS(true)}
 function avCity(c){if(c===avC())return;AV.c=c;renderAv();loadAvS();enter($('av-hero'))}
 function avPick(q){if(q===avQ())return;AV.q=q;renderAv();loadAvS();enter($('av-hero'))}
@@ -517,7 +550,7 @@ function renderAv(){const hero=$('av-hero');if(!hero||!P)return;const c=avC(),q=
 setH($('av-city'),Object.entries(CITIES).map(x=>`<button role="tab" aria-selected="${c===x[0]}" class="${c===x[0]?'a':''}" onclick="avCity('${x[0]}')">${x[1]}</button>`).join(''));
 const loc='<div class="loc">'+CITIES[c]+' · Черга '+q+'</div>'+(mine&&P.a?'<div class="addr">'+esc(P.a)+'</div>':'');
 if(!cs){setH(hero,AV.loading||!AV.err?loc+'<div class="status" style="opacity:.4">⋯</div><div class="sub">Перевіряємо джерела…</div>':loc+`<div class="warn">Не вдалося отримати статус: ${esc(AV.err||'немає даних')}</div><button class="ref" onclick="avRetry()">Спробувати ще</button><div class="av-go"><span>Поки статус недоступний, перевір ситуацію на сайті ДТЕК.</span>${BTN}</div>`,'card hero');setH($('av-grid'),'<div class="sub" style="grid-column:1/-1">'+(AV.err?'Дані недоступні':'Завантаження…')+'</div>');setH($('av-meta'),'');return}
-const k=kv(),j=avJ(),sd=avDay(j,0),sdt=avDay(j,1),now=sd&&!isEmpty(sd)?!!sd[Math.floor(k.sec/1800)]:null,lv=cs.level;
+const k=kv(),j=avJ(),sd=avDay(j,0),sdt=avDay(j,1),now=sd&&!isEmpty(sd)?!!sd[Math.floor(k.sec/1800)]:null,fa=AV.j.fetchedAt,stale=!!(fa&&Date.now()-fa>10*6e4),lv=(fa&&Date.now()-fa>30*6e4&&cs.level==='none')?'unknown':cs.level,stw=stale?'<div class="warn">'+(OFFL()?'Немає з’єднання. ':'')+'Показано статус, збережений '+avTime(fa)+' ('+agoTxt(Date.now()-fa)+'). Він міг змінитися.</div>':'';
 const qHit=cs.allQueues||(cs.queues||[]).includes(q);
 /* заголовок за рівнем */
 const HD={emergency:['off','Діють екстрені відключення','Для міста '+CITIES[c]+' планові графіки зараз не застосовуються: світло може зникати без попередження.'],
@@ -543,7 +576,7 @@ else if(now===false&&lv==='none'){const r=avRestore(sd,sdt,k);note='<div class="
 /* які джерела перевірено */
 const chk=(cs.checked||[]).map(x=>'<span class="ck '+(x.ok?'ok':'bad')+'">'+(x.ok?'✓ ':'✕ ')+esc(x.name)+(x.ok&&x.ts?' · '+avTime(x.ts):'')+(x.stale?' (застаріло)':'')+'</span>').join('')+(AV.j.telegramOk?'<span class="ck ok">✓ Telegram-канали</span>':'<span class="ck bad">✕ Telegram-канали</span>');
 const today=lv==='emergency'?'діють екстрені':lv==='announced'?'є оголошення':lv==='none'?'за графіком':'невідомо';
-setH(hero,loc+`<div class="status">${H[1]}</div><div class="sub">${H[2]}</div><div class="grid"><div><span class="sub">Статус</span><b style="font-size:14px">${today}</b></div><div><span class="sub">Перевірено</span><b style="font-size:14px">${AV.j.fetchedAt?avTime(AV.j.fetchedAt):'—'}</b></div></div>${reasonHtml}${note}${feedHtml}<div class="ckrow">${chk}</div><div class="av-go"><span>Адреси аварій, причину й час відновлення показує лише сайт ДТЕК: його захист ми не обходимо.</span>${BTN}${mine?'':'<button class="ref w" onclick="avAdopt()">Зробити моєю чергою</button>'}</div>`,'card hero '+H[0]);
+setH(hero,loc+stw+`<div class="status">${H[1]}</div><div class="sub">${H[2]}</div><div class="grid"><div><span class="sub">Статус</span><b style="font-size:14px">${today}</b></div><div><span class="sub">Перевірено</span><b style="font-size:14px">${AV.j.fetchedAt?avTime(AV.j.fetchedAt):'—'}</b></div></div>${reasonHtml}${note}${feedHtml}<div class="ckrow">${chk}</div><div class="av-go"><span>Адреси аварій, причину й час відновлення показує лише сайт ДТЕК: його захист ми не обходимо.</span>${BTN}${mine?'':'<button class="ref w" onclick="avAdopt()">Зробити моєю чергою</button>'}</div>`,'card hero '+H[0]);
 /* сітка черг */
 setH($('av-grid'),QS.map(x=>{let st='unknown';
  if(lv==='emergency'||lv==='announced'){st=(cs.allQueues||(cs.queues||[]).includes(x))?(lv==='emergency'?'emergency':'announced'):(cs.queues&&cs.queues.length?(c==='dp'&&g[x]&&g[x].today?g[x].today.state:'normal'):'normal')}
@@ -551,7 +584,7 @@ setH($('av-grid'),QS.map(x=>{let st='unknown';
  const t=AVT[st]||AVT.unknown;return`<button class="chip aq ${t[0]} ${c===P.c&&x===P.q?'mine':''} ${x===q?'sel':''}" onclick="avPick('${x}')">${x}<small>${t[1]}</small></button>`}).join(''));
 setH($('av-meta'),lv==='emergency'?(cs.allQueues?'Екстрені відключення стосуються всіх черг міста '+CITIES[c]+'.':'Екстрені відключення діють для черг: <b>'+cs.queues.join(', ')+'</b>.'):lv==='announced'?'Є оголошення про екстрені відключення'+(cs.allQueues?' для всіх черг':cs.queues&&cs.queues.length?' для черг: <b>'+cs.queues.join(', ')+'</b>':'. Черги в тексті не названо')+'. Статус ще не підтверджено сайтом ДТЕК.':lv==='none'?'Екстрених відключень для міста '+CITIES[c]+' не заявлено; діє графік.':'Статус невідомий.')}
 /* ---------- налаштування ---------- */
-const DEF={sound:true,vol:45,sClick:true,sSwitch:true,sAlert:true,intro:true,notify:false,lead:15,stale:true,auto:true};
+const DEF={sound:true,vol:45,sClick:true,sSwitch:true,sAlert:true,intro:true,notify:false,lead:15,stale:true,auto:true,vib:true,mood:true,emgN:true};
 let ST={...DEF,...jget('settings',{})};const saveST=()=>LS.setItem('settings',JSON.stringify(ST));
 /* ---------- звук (м’які синтезовані тони, без файлів) ---------- */
 let AC=null;
@@ -572,7 +605,7 @@ lp.type='lowpass';lp.frequency.value=1700;
 n.gain.setValueAtTime(.0001,t);n.gain.linearRampToValueAtTime(v,t+.007);n.gain.exponentialRampToValueAtTime(.0001,t+.12);
 o.connect(n);h.connect(hg);hg.connect(n);n.connect(lp);lp.connect(a.destination);o.start(t);h.start(t);o.stop(t+.14);h.stop(t+.14)}
 const SND={tap:()=>tick1(.55),on:()=>{tone(659,0,.28,.7);tone(988,.09,.4,.6)},off:()=>{tone(784,0,.26,.6);tone(523,.09,.36,.55)},
-ok:()=>{tone(784,0,.5,.6);tone(1175,.12,.7,.5)},alert:()=>{tone(880,0,.55,.65);tone(659,.2,.8,.6)},light:(o=0)=>{tone(523,o,.6,.5);tone(659,o+.16,.6,.5);tone(784,o+.32,.9,.5)}};
+ok:()=>{tone(784,0,.5,.6);tone(1175,.12,.7,.5)},alert:()=>{tone(880,0,.55,.65);tone(659,.2,.8,.6)},light:(o=0)=>{tone(523,o,.6,.5);tone(659,o+.16,.6,.5);tone(784,o+.32,.9,.5)},dark:()=>{tone(784,0,.5,.55);tone(587,.16,.55,.5);tone(392,.32,.95,.5)}};
 function play(k,cat){if(!ST.sound||(cat&&!ST[cat]))return;try{SND[k]()}catch(e){}}
 document.addEventListener('pointerdown',e=>{const t=e.target.closest&&e.target.closest('button,.chip,a.ref,a.lnk,select');if(t&&!t.dataset.nosound)play('tap','sClick')},true);
 function testSound(){const was=ST.sound;ST.sound=true;SND.tap();setTimeout(SND.on,260);setTimeout(SND.ok,800);ST.sound=was;if(!was)toast('Звуки зараз вимкнено — це лише перевірка')}
@@ -594,39 +627,91 @@ let P=jget('profile',null),CON=!!jget('consent',null),data=jget('last',null);con
 let loadSeq=0;
 let tab=0,err=null,nextCheck=0,loading=!data,lastTry=0,view=1,NEXT=null,QV={c:(P&&P.c)||'kr',q:null,j:null,loading:false,err:null,tab:0};
 function dayFrom(d,date){const x=d&&d.days&&d.days[date];if(x&&x.slots.every(v=>v!==null)){x.slots.confirmed=!!x.confirmed;return x.slots}return null}
-const day=date=>dayFrom(data,date);
+function fbFrom(date){const ds=Object.keys((data&&data.days)||{}).filter(d=>d<date).sort().reverse();for(const d of ds){const x=data.days[d];if(x&&x.confirmed&&x.slots&&x.slots.length===48&&x.slots.every(v=>v!==null)){const sl=x.slots.slice();sl.confirmed=true;sl.approx=d;return sl}}return null}
+const day=date=>dayFrom(data,date)||(OFFL()&&date===kv().date?fbFrom(date):null);
 const isEmpty=s=>s&&s.every(v=>v===1)&&!s.confirmed;
 function periods(slots,base=0){const o=[];slots.forEach((v,i)=>{const L=!!v,a=base+i*30;if(o.length&&o[o.length-1].on===L)o[o.length-1].to=a+30;else o.push({from:a,to:a+30,on:L})});return o}
 /* ---------- завантаження даних ---------- */
-function fetchSched(q,c,extra){return fetch(API+'/api/schedule?group='+q+'&city='+c+(extra||'')+'&t='+Math.floor(Date.now()/12e4),{cache:'no-store'}).catch(()=>{throw new Error(navigator.onLine?'сервер недоступний':'немає з’єднання з інтернетом')}).then(r=>r.text().then(t=>{let j=null;try{j=JSON.parse(t)}catch(e){}if(!j)throw new Error('сервер даних тимчасово недоступний (код '+r.status+')');if(!j.ok)throw new Error(j.error||'невідома помилка');return j}))}
+function netErr(){const e=new Error(navigator.onLine?'сервер недоступний':'немає з’єднання з інтернетом');e.net=true;return e}
+function fetchSched(q,c,extra){return fetch(API+'/api/schedule?group='+q+'&city='+c+(extra||'')+'&t='+Math.floor(Date.now()/12e4),{cache:'no-store'}).catch(()=>{throw netErr()}).then(r=>r.text().then(t=>{let j=null;try{j=JSON.parse(t)}catch(e){}if(!j)throw new Error('сервер даних тимчасово недоступний (код '+r.status+')');if(!j.ok)throw new Error(j.error||'невідома помилка');return j}))}
+/* Офлайн: кожен успішно отриманий графік зберігається окремо для кожної пари «місто:черга» */
+let netFail=false;const OFFL=()=>!navigator.onLine||netFail;
+const scKey=(c,q)=>'sc:'+c+':'+q;
+function scSave(c,q,j){try{const lim=addDay(kv().date,-3),days={};Object.keys(j.days||{}).forEach(d=>{if(d>=lim)days[d]=j.days[d]});LS.setItem(scKey(c,q),JSON.stringify({...j,days,city:c}))}catch(e){}}
+function fetchSchedC(q,c){return fetchSched(q,c).then(j=>{scSave(c,q,j);return j}).catch(e=>{const cj=e.net?jget(scKey(c,q),null):null;if(cj){cj.cached=true;return cj}throw e})}
 function recHist(c,q,j){const H=jget('histq',{}),k=c+':'+q,a=H[k]||[];if(a[0]&&a[0].u===(j.updated||null))return;const kd=kv().date,off=s=>s&&!isEmpty(s)?(48-s.filter(Boolean).length)*30:null;
 a.unshift({at:Date.now(),u:j.updated||null,s:j.source||null,t:off(dayFrom(j,kd)),m:off(dayFrom(j,addDay(kd,1)))});H[k]=a.slice(0,40);LS.setItem('histq',JSON.stringify(H))}
 function load(manual){if(!ready())return;const my=++loadSeq,pp=P;if(manual)loading=true;lastTry=Date.now();render();
-fetchSched(pp.q,pp.c).then(j=>{if(my!==loadSeq)return;recHist(pp.c,pp.q,j);const old=data&&data.days||{},keep={};Object.keys(old).forEach(d=>{if(d>=addDay(kv().date,-7))keep[d]=old[d]});j.days={...keep,...j.days};j.city=pp.c;data=j;err=null;LS.setItem('last',JSON.stringify(j));if(manual)play('ok')}).catch(e=>{if(my===loadSeq)err=e.message}).finally(()=>{if(my!==loadSeq)return;loading=false;
+fetchSched(pp.q,pp.c).then(j=>{if(my!==loadSeq)return;netFail=false;scSave(pp.c,pp.q,j);recDays(pp.c,pp.q,j);recHist(pp.c,pp.q,j);const old=data&&data.days||{},keep={};Object.keys(old).forEach(d=>{if(d>=addDay(kv().date,-35))keep[d]=old[d]});j.days={...keep,...j.days};j.city=pp.c;data=j;err=null;LS.setItem('last',JSON.stringify(j));if(manual)play('ok')}).catch(e=>{if(my===loadSeq){err=e.message;netFail=!!e.net}}).finally(()=>{if(my!==loadSeq)return;loading=false;
 if(!day(addDay(kv().date,1)))nextCheck=Date.now()+15*60e3;render();if(view===3)renderInfo()})}
+
+/* ---------- статистика «скільки без світла» (зберігається лише на пристрої) ---------- */
+let SD=jget('statd',{}),SDv=0,WK=+(LS.getItem('wk')||0);
+const slotStr=a=>a.map(v=>v?1:0).join('');
+function saveSD(){SDv++;try{LS.setItem('statd',JSON.stringify(SD))}catch(e){}}
+function recDays(c,q,j){if(!j||!j.days)return;const key=c+':'+q,t=kv().date,m=SD[key]||(SD[key]={});let ch=false;
+ Object.keys(j.days).forEach(d=>{const x=j.days[d];if(!x||!x.slots||x.slots.length!==48||x.slots.some(v=>v===null))return;if(x.slots.every(v=>v===1)&&!x.confirmed)return;
+  if(d<t&&m[d])return;const sx=slotStr(x.slots);if(!m[d]||m[d].s!==sx){m[d]={...(m[d]||{}),s:sx,a:Date.now()};ch=true}});
+ const lim=addDay(t,-62);Object.keys(m).forEach(d=>{if(d<lim){delete m[d];ch=true}});if(ch)saveSD()}
+function markEm(c){const t=kv().date;let ch=false;Object.keys(SD).forEach(k=>{if(k.split(':')[0]===c&&SD[k][t]&&!SD[k][t].e){SD[k][t].e=1;ch=true}});if(ch)saveSD()}
+function statsFor(n){const k=kv().date,m=(P&&SD[P.c+':'+P.q])||{},days=[];
+ for(let i=n-1;i>=0;i--){const d=addDay(k,-i),r=m[d];days.push({d,off:r?(48-(r.s.match(/1/g)||[]).length)*30:null,e:!!(r&&r.e)})}
+ const got=days.filter(x=>x.off!==null),tot=got.reduce((a,x)=>a+x.off,0),mx=got.reduce((a,x)=>(!a||x.off>a.off)?x:a,null);
+ return{days,got:got.length,n,tot,avg:got.length?Math.round(tot/got.length):0,mx,em:got.filter(x=>x.e).length,on:got.length*1440-tot}}
+function setWk(i){WK=i;LS.setItem('wk',String(i));renderWk()}
+function clearStats(){if(!confirm('Очистити збережену статистику на цьому пристрої?'))return;SD={};LS.removeItem('statd');SDv++;if(P)recDays(P.c,P.q,data);renderWk();toast('Статистику очищено')}
+function renderWk(){const el=$('wk');if(!el||!P)return;const k=kv().date,key=SDv+'|'+k+'|'+WK+'|'+P.c+P.q;if(renderWk.k===key)return;renderWk.k=key;
+ const n=WK?30:7,S=statsFor(n),mxv=Math.max(360,...S.days.map(x=>x.off||0));
+ const bars=S.days.map(x=>`<i class="b${x.off==null?' na':''}${x.d===k?' td':''}${x.e?' em':''}" style="height:${x.off==null?4:Math.max(6,Math.round(x.off/mxv*100))}%" title="${esc(fmtDate(x.d))}: ${x.off==null?'немає даних':dh(x.off)}${x.e?' · були екстрені':''}"></i>`).join('');
+ setH(el,`<div class="whead"><div class="sub" style="font-weight:800">Скільки без світла</div><div class="seg wks"><button class="${WK?'':'a'}" onclick="setWk(0)">Тиждень</button><button class="${WK?'a':''}" onclick="setWk(1)">Місяць</button></div></div>
+<div class="wbig">${S.got?dh(S.tot):'—'}</div>
+<div class="sub">${S.got?'за графіками: '+S.got+' з '+S.n+' днів, у середньому '+dh(S.avg)+' на добу':'Поки немає збережених графіків. Вони накопичуються, коли застосунок отримує дані.'}</div>
+<div class="wbars">${bars}</div><div class="wax"><span>${fmtDate(S.days[0].d)}</span><span>сьогодні</span></div>
+<div class="grid"><div><span class="sub">Найдовше без світла</span><b>${S.mx?dh(S.mx.off)+' · '+fmtDate(S.mx.d):'—'}</b></div><div><span class="sub">Зі світлом</span><b>${S.got?dh(S.on):'—'}</b></div></div>
+${S.em?`<div class="warn">⚠ Днів з екстреними відключеннями: ${S.em} (жовті стовпчики). Тоді графік не діяв, і світла могло бути менше, ніж показано.</div>`:''}
+<div class="note winfo"><b>ⓘ Про ці дані</b>Це години без світла за <i>графіками</i>, які застосунок отримав на цьому пристрої для черги ${esc(P.q)}. Це планові дані, а не заміри: реальне світло могло вимикатися частіше чи рідше.<br>Дні, коли графік не завантажився (немає інтернету чи застосунок не відкривали), не враховуються, тому підсумок може бути меншим за справжній. Скільки днів враховано, показано вище. Сьогоднішній день рахується повністю, за весь графік доби.<br>Історія зберігається лише на твоєму пристрої, до двох місяців.</div>
+<button class="ref" onclick="clearStats()">Очистити статистику</button>`)}
+
+/* ---------- офлайн-банер ---------- */
+function agoTxt(ms){const m=Math.max(0,Math.round(ms/6e4));if(m<2)return 'щойно';if(m<60)return m+' хв тому';const h=Math.floor(m/60);if(h<24)return h+' год тому';return Math.floor(h/24)+' дн тому'}
+function offBanner(today){if(!OFFL())return '';const t=data&&data.fetchedAt,ttl=navigator.onLine?'Сервер даних недоступний':'Немає з’єднання з інтернетом';
+ if(!data)return `<div class="offb"><b>${ttl}</b><small>Збереженого графіка поки немає. Відкрий застосунок з інтернетом хоча б раз, і далі він працюватиме й без мережі.</small></div>`;
+ return `<div class="offb"><b>${ttl}</b><small>Показуємо останній збережений графік: отримано ${t?new Date(t).toLocaleString('uk-UA',{timeZone:TZ,day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})+' ('+agoTxt(Date.now()-t)+')':'раніше'}${data.updated?', джерело оновило його '+esc(data.updated):''}. ${today&&today.approx?'На сьогодні збереженого графіка немає, тому показано графік за '+fmtDate(today.approx)+': він може відрізнятися. ':''}Таймер, лічильники, статистика й картка для поширення працюють без інтернету. Зміни ДТЕК після цього моменту не враховано.</small></div>`}
+
+/* ---------- живий фон, вібро й звук при зміні стану ---------- */
+let MOODC='unk';
+function applyMood(m){MOODC=m;document.body.dataset.mood=m;document.body.classList.toggle('nomood',!ST.mood)}
+function buzz(p){if(ST.vib&&navigator.vibrate){try{navigator.vibrate(p)}catch(e){}}}
+let SW={prev:null,t:0};
+function stateSwitch(on,cur,k){const now=Date.now(),since=k.sec-cur.from*60;
+ if(SW.prev!==null&&SW.prev!==on&&now-SW.t<5000&&since>=0&&since<=10){play(on?'light':'dark','sAlert');buzz(on?[120,70,120]:[400]);toast(on?'За графіком світло з’явилося 💡':'За графіком світло вимкнулося 🌙')}
+ SW.prev=on;SW.t=now}
+
 /* ---------- головний екран ---------- */
 const DTEK='https://www.dtek-dnem.com.ua/ua/shutdowns',BTN='<a class="ref" style="text-decoration:none" href="'+DTEK+'" target="_blank" rel="noopener">Відкрити сайт ДТЕК</a>';
 function setH(el,html,cls){if(cls!=null&&el.className!==cls)el.className=cls;if(el._h!==html){el._h=html;el.innerHTML=html}}
 function render(){if(!ready())return;renderHome();$('net').textContent=navigator.onLine?'● онлайн':'○ офлайн'}
 /* Екстрені відключення для моєї черги: статус YASNO або свіже оголошення ДТЕК/Укренерго (Telegram) */
 const CSTAT=()=>{const j=AV.j;return j&&j.cities&&P?j.cities[P.c]||null:null};
-function emgInfo(){const cs=CSTAT();if(!cs||(cs.level!=='emergency'&&cs.level!=='announced'))return null;const r=cs.reasons&&cs.reasons[0]||null;return{lvl:cs.level,a:r}}
-function loadOut(){if(!ready())return;fetch(API+'/api/outages?t='+Math.floor(Date.now()/18e4),{cache:'no-store'}).then(r=>r.json()).then(j=>{if(!j||!j.ok)return;AV.j=j;AV.t=Date.now();AV.err=null;renderHome();renderAv();
-const E=emgInfo();if(E&&ST.notify){const key='emg2|'+E.lvl+'|'+P.c+'|'+kv().date+'|'+(E.a&&E.a.ts?Math.floor(E.a.ts/36e5):'x');let seen=jget('alerted2',[]);if(!Array.isArray(seen))seen=[];if(!seen.includes(key)){seen.push(key);LS.setItem('alerted2',JSON.stringify(seen.slice(-40)));const m=E.lvl==='emergency'?'Діють екстрені відключення: графіки не застосовуються':'Є оголошення про екстрені відключення. Перевір деталі в застосунку';toast(m);play('alert','sAlert');if('Notification'in window&&Notification.permission==='granted'&&navigator.serviceWorker)navigator.serviceWorker.ready.then(r=>r.showNotification('ТребаСвітло?',{body:m,icon:'icon-192.png',tag:key,renotify:false})).catch(()=>{})}}}).catch(()=>{})}
-function renderHome(){const k=kv(),today=day(k.date),tom=day(addDay(k.date,1)),yest=day(addDay(k.date,-1));NEXT=null;
+function emgInfo(){if(AV.j&&AV.j.fetchedAt&&Date.now()-AV.j.fetchedAt>3*36e5)return null;const cs=CSTAT();if(!cs||(cs.level!=='emergency'&&cs.level!=='announced'))return null;const r=cs.reasons&&cs.reasons[0]||null;return{lvl:cs.level,a:r}}
+function loadOut(){if(!ready())return;fetch(API+'/api/outages?t='+Math.floor(Date.now()/18e4),{cache:'no-store'}).then(r=>r.json()).then(j=>{if(!j||!j.ok)return;AV.j=j;AV.t=Date.now();AV.err=null;try{LS.setItem('lastOut',JSON.stringify(j))}catch(e){}if(P&&j.cities&&j.cities[P.c]&&j.cities[P.c].level==='emergency')markEm(P.c);renderHome();renderAv();
+const E=emgInfo();if(E&&ST.emgN){const key='emg2|'+E.lvl+'|'+P.c+'|'+kv().date+'|'+(E.a&&E.a.ts?Math.floor(E.a.ts/36e5):'x');let seen=jget('alerted2',[]);if(!Array.isArray(seen))seen=[];if(!seen.includes(key)){seen.push(key);LS.setItem('alerted2',JSON.stringify(seen.slice(-40)));const m=E.lvl==='emergency'?'Діють екстрені відключення: графіки не застосовуються':'Є оголошення про екстрені відключення. Перевір деталі в застосунку';toast(m);play('alert','sAlert');buzz(E.lvl==='emergency'?[250,120,250,120,500]:[200,100,200]);if('Notification'in window&&Notification.permission==='granted'&&navigator.serviceWorker)navigator.serviceWorker.ready.then(r=>r.showNotification(E.lvl==='emergency'?'⚠ Екстрені відключення':'ТребаСвітло?',{body:m,icon:'icon-192.png',tag:key,renotify:false,vibrate:[250,120,250]})).catch(()=>{})}}}).catch(()=>{})}
+function renderHome(){const k=kv(),today=day(k.date),tom=day(addDay(k.date,1)),yest=day(addDay(k.date,-1));NEXT=null;let mood='unk';
 const hero=$('hero'),loc='<div class="loc">'+CITIES[P.c]+' · Черга '+P.q+'</div>'+(P.a?'<div class="addr">'+esc(P.a)+'</div>':'');
 {const E=emgInfo(),at=E&&E.a&&E.a.ts?', '+new Date(E.a.ts).toLocaleTimeString('uk-UA',{timeZone:TZ,hour:'2-digit',minute:'2-digit'}):'';
 setH($('emg'),E?(E.lvl==='emergency'?'<div class="emg">Діють екстрені відключення<small>Планові графіки не застосовуються, світло може зникати без попередження.'+(E.a?'<br>'+esc(E.a.src||'')+at+(E.a.text?': '+esc(E.a.text.length>150?E.a.text.slice(0,147)+'…':E.a.text):''):'')+'</small></div>':'<div class="emg w">Є оголошення про екстрені відключення<small>Сайт ДТЕК ще не підтвердив. Зазирни у вкладку «Аварії».'+(E.a?'<br>'+esc(E.a.src||'')+at+': '+esc(E.a.text.length>130?E.a.text.slice(0,127)+'…':E.a.text):'')+'</small></div>'):(data&&data.emergency?'<div class="emg">Діють екстрені відключення<small>Планові графіки можуть не застосовуватися. Орієнтуйся на повідомлення оператора.</small></div>':''))}
-if(loading&&!data){setH(hero,'<div class="loc">Завантаження…</div><div class="status" style="opacity:.4">⋯</div>','card hero')}
-else if(!today){setH(hero,loc+'<div class="status">Графіка на сьогодні немає</div><div class="sub">Не показуємо застарілі дані.</div>'+(data&&data.emergency?'<div class="sub" style="margin-top:6px">Під час екстрених відключень графіки не публікуються.</div>':'')+BTN,'card hero')}
+if((emgInfo()||{}).lvl==='emergency'||(!emgInfo()&&data&&data.emergency))mood='emg';
+setH($('offb'),offBanner(today));document.body.classList.toggle('offl',OFFL());
+if(loading&&!data){SW.prev=null;setH(hero,'<div class="loc">Завантаження…</div><div class="status" style="opacity:.4">⋯</div>','card hero')}
+else if(!today){setH(hero,loc+'<div class="status">Графіка на сьогодні немає</div><div class="sub">'+(OFFL()?'Немає з’єднання, а збереженого графіка ще немає. Відкрий застосунок з інтернетом хоча б раз.':'Не показуємо застарілі дані.')+'</div>'+(data&&data.emergency?'<div class="sub" style="margin-top:6px">Під час екстрених відключень графіки не публікуються.</div>':'')+BTN,'card hero')}
 else if(isEmpty(today)){setH(hero,loc+'<div class="status">Графік уточнюється ⏳</div><div class="sub">Джерело ще не підтвердило графік на сьогодні (можливо, ДТЕК його вже оновив). Не показуємо припущень.</div>'+BTN,'card hero')}
 else{let tl=periods(today);
 if(tom&&!isEmpty(tom)){const t2=periods(tom,1440);if(tl[tl.length-1].on===t2[0].on){tl[tl.length-1].to=t2[0].to;t2.shift()}tl=tl.concat(t2)}
-const nm=k.sec/60,cur=tl.find(p=>nm>=p.from&&nm<p.to)||tl[0],on=cur.on,end=cur.to,known=end<1440||(tom&&!isEmpty(tom)&&end<2880);
+const nm=k.sec/60,cur=tl.find(p=>nm>=p.from&&nm<p.to)||tl[0],on=cur.on,end=cur.to,known=end<1440||(tom&&!isEmpty(tom)&&end<2880);if(mood!=='emg')mood=on?'on':'off';stateSwitch(on,cur,k);
 if(known)NEXT={ts:Date.now()+(end*60-k.sec)*1000,on:!on,key:k.date+'|'+end+'|'+(on?'off':'on')};
 // скільки вже триває поточний стан (з урахуванням вчорашнього дня)
 let since=cur.from;if(cur.from===0&&yest&&!isEmpty(yest)){const yp=periods(yest),lp=yp[yp.length-1];if(lp.on===on)since=lp.from-1440}
-setH(hero,loc+`<div class="status">${on?'Зараз світло є 💡':'Зараз світла немає 🌙'}</div>
+setH(hero,loc+(today.approx?'<div class="warn">Показано графік за '+fmtDate(today.approx)+': на сьогодні збереженого графіка немає, тому реальні години можуть відрізнятися.</div>':'')+`<div class="status">${on?'Зараз світло є 💡':'Зараз світла немає 🌙'}</div>
 ${known?`<div class="sub" style="margin-top:8px">${on?'До вимкнення залишилося':'Світло буде через'}</div><div class="big" style="font-size:40px;margin:0 0 6px">${dur(end*60-k.sec)}</div><div class="sub">${on?'Наступне вимкнення':'Наступне ввімкнення'}: <b>${hmE(end)}</b></div>`:`<div class="sub">Наступних змін за графіком поки немає</div>`}
 <div class="grid"><div><span class="sub">${on?'Зі світлом уже':'Без світла вже'}</span><b>${dur(Math.max(0,k.sec-since*60))}</b></div><div><span class="sub">Оновлено</span><b>${data.updated?data.updated.split(' ').pop():'—'}</b></div></div>`,'card hero '+(on?'on':'off'))}
 const s0=tab==1?tom:tab==2?yest:today,s=s0&&!isEmpty(s0)?s0:null,sd=$('sched');
@@ -635,13 +720,68 @@ setH(sd,`<div class="empty"><div class="ico">💡</div><p>${msg}</p>${tab==2?'':
 else{const pr=periods(s),isT=tab===0,nm=k.sec/60,cp=pr.find(p=>nm>=p.from&&nm<p.to);
 setH(sd,(isT&&cp?`<div class="pill ${cp.on?'on':'off'}">${cp.on?'Світло є':'Світла немає'} · ще ${dh(Math.floor((cp.to*60-k.sec)/60))}</div>`:'')+
 pr.map((p,ri)=>`<div style="--r:${ri}" class="row ${p.on?'on':'off'} ${isT&&nm>=p.from&&nm<p.to?'cur':''}"><span>${hm(p.from)} – ${hmE(p.to)}</span><span>${p.on?'Світло є':'Світла немає'}</span></div>`).join('')+
-`<div class="meta">Останнє оновлення: ${esc(data&&data.updated||'—')}</div>`)}
+`<div class="meta">${s.approx?'Графік за '+fmtDate(s.approx)+' (на сьогодні даних немає). ':''}Останнє оновлення: ${esc(data&&data.updated||'—')}</div>`)}
 if(today&&!isEmpty(today)){const on=today.filter(Boolean).length*30;setH($('stats'),`<div><span class="sub">Зі світлом</span><b>${dh(on)}</b></div><div><span class="sub">Без світла</span><b>${dh(1440-on)}</b></div>`)}else setH($('stats'),'<div class="sub">—</div>');
 const age=data?(Date.now()-data.fetchedAt)/6e4:0;
-setH($('upd'),(data?`Джерело: ${esc(data.source||'ДТЕК')} · перевірено ${new Date(data.fetchedAt).toLocaleTimeString('uk-UA',{timeZone:TZ,hour:'2-digit',minute:'2-digit'})}`:'')+(err?`<div class="warn">Не вдалося оновити${data?' — показуємо останній збережений графік':''}: ${esc(err)}</div>`:'')+(ST.stale&&age>20?'<div class="warn">Дані давно не оновлювалися. Перевіряємо…</div>':''))}
-function shareSched(){const k=kv(),s=day(k.date);if(!P||!s||isEmpty(s)){toast('Поки немає підтвердженого графіка');return}
-const txt=`ТребаСвітло? · ${CITIES[P.c]}, черга ${P.q}, ${fmtDate(k.date)}\n`+periods(s).map(p=>`${hm(p.from)}–${hmE(p.to)} ${p.on?'світло є':'світла немає'}`).join('\n')+'\nНеофіційні дані, звіряйся з сайтом ДТЕК.';
-if(navigator.share)navigator.share({text:txt}).catch(()=>{});else if(navigator.clipboard)navigator.clipboard.writeText(txt).then(()=>toast('Графік скопійовано'),()=>toast('Не вдалося скопіювати'))}
+setH($('upd'),(data?`Джерело: ${esc(data.source||'ДТЕК')} · перевірено ${new Date(data.fetchedAt).toLocaleTimeString('uk-UA',{timeZone:TZ,hour:'2-digit',minute:'2-digit'})}`:'')+(err&&!OFFL()?`<div class="warn">Не вдалося оновити${data?' — показуємо останній збережений графік':''}: ${esc(err)}</div>`:'')+(ST.stale&&age>20?'<div class="warn">Дані давно не оновлювалися. Перевіряємо…</div>':''));applyMood(mood);renderWk()}
+/* ---------- картка для поширення (PNG 1080×1350) ---------- */
+const CFONT='Nunito,"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif';
+function rr(c,x,y,w,h,r){r=Math.min(r,w/2,h/2);c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
+function cardData(){const k=kv(),s=day(k.date);if(!P||!s||isEmpty(s))return null;const E=emgInfo();return{k,s,emg:!!E&&E.lvl==='emergency',pr:periods(s)}}
+function drawCard(cv,d,logo){const W=1080,H=1350,M=72,c=cv.getContext('2d');cv.width=W;cv.height=H;
+ const k=d.k,pr=d.pr,nm=k.sec/60,cur=pr.find(p=>nm>=p.from&&nm<p.to)||pr[0],on=cur.on,mood=d.emg?'emg':on?'on':'off';
+ const COL={on:'#3FD79A',off:'#FF6B7D',warn:'#F5C542',tx:'#F5F3FA',mu:'#A9A6B8',card:'#171521',bg:'#0B0A12'};
+ c.fillStyle=COL.bg;c.fillRect(0,0,W,H);
+ const glow=mood==='emg'?'#FF2D4A':mood==='on'?'#FFC83D':'#5B6CFF',glow2=mood==='on'?'#3FD79A':mood==='emg'?'#FF2D4A':'#2A2F9A';
+ let g=c.createRadialGradient(W/2,-60,20,W/2,-60,920);g.addColorStop(0,glow+'66');g.addColorStop(1,glow+'00');c.fillStyle=g;c.fillRect(0,0,W,H);
+ g=c.createRadialGradient(W,H,20,W,H,820);g.addColorStop(0,glow2+'40');g.addColorStop(1,glow2+'00');c.fillStyle=g;c.fillRect(0,0,W,H);
+ c.textBaseline='alphabetic';c.textAlign='left';
+ /* шапка */
+ if(logo){c.save();rr(c,M,64,92,92,24);c.clip();c.drawImage(logo,M,64,92,92);c.restore()}
+ c.fillStyle=COL.tx;c.font='800 46px '+CFONT;c.fillText('ТребаСвітло?',M+(logo?112:0),124);
+ c.fillStyle=COL.mu;c.font='600 30px '+CFONT;c.textAlign='right';c.fillText(DOW[new Date(Date.UTC(k.y,k.mo-1,k.d)).getUTCDay()]+', '+k.d+' '+MON[k.mo-1],W-M,122);c.textAlign='left';
+ c.fillStyle=COL.mu;c.font='700 40px '+CFONT;c.fillText(CITIES[P.c],M,236);
+ c.fillStyle=COL.tx;c.font='900 150px '+CFONT;c.fillText('Черга '+P.q,M,376);
+ /* стан зараз */
+ const lab=d.emg?'Діють екстрені відключення':on?'Зараз світло є':'Зараз світла немає',pc=d.emg||!on?COL.off:COL.on;let fs=54;c.font='900 '+fs+'px '+CFONT;
+ while(c.measureText(lab).width+100>W-2*M&&fs>34){fs-=2;c.font='900 '+fs+'px '+CFONT}
+ const pw=Math.min(c.measureText(lab).width+100,W-2*M);c.fillStyle=pc+'2A';rr(c,M,412,pw,96,48);c.fill();c.fillStyle=pc;c.beginPath();c.arc(M+44,460,13,0,7);c.fill();c.fillText(lab,M+72,fs>=50?478:474);
+ c.fillStyle=COL.tx;c.font='700 36px '+CFONT;c.fillText(d.emg?'Планові графіки зараз не застосовуються':cur.to>=1440?'До кінця доби без змін':'Наступна зміна о '+hmE(cur.to),M,562);
+ c.fillStyle=COL.mu;c.font='600 28px '+CFONT;
+ const note=d.s.approx?'Збережений графік за '+fmtDate(d.s.approx)+', на сьогодні даних немає':(OFFL()&&data&&data.fetchedAt?'Без інтернету: графік збережено '+new Date(data.fetchedAt).toLocaleTimeString('uk-UA',{timeZone:TZ,hour:'2-digit',minute:'2-digit'}):'Станом на '+k.t.slice(0,5));
+ c.fillStyle=d.s.approx||OFFL()?COL.warn:COL.mu;c.fillText(note,M,604);
+ /* шкала доби */
+ c.fillStyle=COL.mu;c.font='700 30px '+CFONT;c.fillText(d.emg?'Графік, який діяв би за планом':'Графік на сьогодні',M,650);
+ const bx=M,bw=W-2*M,by=690,bh=76,sw=bw/48;
+ c.save();rr(c,bx,by,bw,bh,22);c.clip();for(let i=0;i<48;i++){c.fillStyle=d.s[i]?COL.on:COL.off;c.fillRect(bx+i*sw,by,sw+1,bh)}if(d.emg){c.fillStyle='#0B0A12A6';c.fillRect(bx,by,bw,bh)}c.restore();
+ const nx=bx+nm/1440*bw;c.fillStyle='#FFFFFF';rr(c,nx-3,by-12,6,bh+24,3);c.fill();c.beginPath();c.arc(nx,by-14,9,0,7);c.fill();
+ c.fillStyle=COL.mu;c.font='600 26px '+CFONT;[0,6,12,18,24].forEach(h=>{c.textAlign=h===0?'left':h===24?'right':'center';c.fillText(p2(h),bx+h/24*bw,812)});c.textAlign='left';
+ /* список періодів */
+ const lim=12,list=pr.slice(0,lim),n=list.length,cols=n>6?2:1,per=Math.ceil(n/cols),gap=12,cw=(bw-(cols-1)*20)/cols,rh=Math.min(64,Math.floor((360+gap)/per)-gap),y0=856;
+ c.globalAlpha=d.emg?.55:1;list.forEach((p,i)=>{const col=Math.floor(i/per),row=i%per,x=bx+col*(cw+20),y=y0+row*(rh+gap),cl=p.on?COL.on:COL.off;
+  c.fillStyle=cl+'22';rr(c,x,y,cw,rh,rh/3);c.fill();c.fillStyle=COL.tx;c.font='800 '+(rh>=58?34:30)+'px '+CFONT;c.fillText(hm(p.from)+' – '+hmE(p.to),x+22,y+rh/2+11);
+  c.fillStyle=cl;c.font='800 '+(rh>=58?30:27)+'px '+CFONT;c.textAlign='right';c.fillText(p.on?'Світло є':'Світла немає',x+cw-22,y+rh/2+10);c.textAlign='left'});c.globalAlpha=1;
+ if(pr.length>lim){c.fillStyle=COL.mu;c.font='600 26px '+CFONT;c.fillText('… і ще '+(pr.length-lim),bx,y0+per*(rh+gap)+8)}
+ /* підсумок і підпис */
+ const onm=d.s.filter(Boolean).length*30;c.fillStyle=COL.tx;c.font='800 34px '+CFONT;c.fillText('Зі світлом '+dh(onm)+' · Без світла '+dh(1440-onm),M,1276);
+ c.fillStyle=COL.mu;c.font='600 25px '+CFONT;c.fillText('Неофіційні дані · звіряйся з сайтом ДТЕК',M,1322);c.textAlign='right';c.fillText(location.host||'ТребаСвітло?',W-M,1322);c.textAlign='left'}
+async function buildCard(){const d=cardData();if(!d)return null;try{await document.fonts.load('800 40px Nunito')}catch(e){}
+ const logo=await new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src='icon-192.png';setTimeout(()=>r(null),2000)});
+ const cv=document.createElement('canvas');drawCard(cv,d,logo);return cv}
+let SH={blob:null};
+async function shareSched(){const k=kv(),s=day(k.date);if(!P||!s||isEmpty(s)){toast('Поки немає підтвердженого графіка');return}
+ const cv=await buildCard();if(!cv){toast('Не вдалося створити картку');return}
+ SH.blob=null;$('shi').src=cv.toDataURL('image/png');$('shm').classList.remove('hid');cv.toBlob(b=>{SH.blob=b},'image/png')}
+function closeShare(){$('shm').classList.add('hid')}
+addEventListener('keydown',e=>{if(e.key==='Escape')closeShare()});
+function saveCard(){if(!SH.blob){toast('Картка ще готується…');return}const u=URL.createObjectURL(SH.blob),a=document.createElement('a');a.href=u;a.download='trebasvitlo-'+P.q.replace('.','-')+'.png';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);toast('Картинку збережено')}
+async function doShare(){if(!SH.blob){toast('Картка ще готується…');return}const f=new File([SH.blob],'trebasvitlo-'+P.q.replace('.','-')+'.png',{type:'image/png'});
+ try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'ТребаСвітло?',text:CITIES[P.c]+', черга '+P.q});return}}catch(e){if(e&&e.name==='AbortError')return}
+ saveCard()}
+function cardText(){const k=kv(),s=day(k.date);if(!P||!s||isEmpty(s))return null;
+ return`ТребаСвітло? · ${CITIES[P.c]}, черга ${P.q}, ${fmtDate(k.date)}\n`+periods(s).map(p=>`${hm(p.from)}–${hmE(p.to)} ${p.on?'світло є':'світла немає'}`).join('\n')+(s.approx?`\n(збережений графік за ${fmtDate(s.approx)}, на сьогодні даних немає)`:'')+'\nНеофіційні дані, звіряйся з сайтом ДТЕК.'}
+function shareText(){const txt=cardText();if(!txt){toast('Поки немає підтвердженого графіка');return}
+ if(navigator.share)navigator.share({text:txt}).catch(()=>{});else if(navigator.clipboard)navigator.clipboard.writeText(txt).then(()=>toast('Графік скопійовано'),()=>toast('Не вдалося скопіювати'))}
 /* ---------- вкладка «Черги» ---------- */
 function renderQueues(){$('q-city').innerHTML=Object.entries(CITIES).map(c=>`<button class="${QV.c===c[0]?'a':''}" onclick="QV.c='${c[0]}';QV.q=null;QV.j=null;renderQueues()">${c[1]}</button>`).join('');
 $('q-chips').innerHTML=QS.map(q=>`<button class="chip ${QV.q===q?'a':''} ${P&&P.c===QV.c&&P.q===q?'mine':''}" onclick="pickQ('${q}')">${q}</button>`).join('');
@@ -653,8 +793,8 @@ const k=kv(),dd=[k.date,addDay(k.date,1)],sl=dayFrom(QV.j,dd[QV.tab]),mine=P&&P.
 if(!sl||isEmpty(sl))body=`<div class="empty"><div class="ico">💡</div><p>${QV.tab?'Графіка на завтра ще немає.':'Графік на сьогодні ще не підтверджено джерелом.'}</p>${BTN}</div>`;
 else{const nm=QV.tab?null:k.sec/60,pr=periods(sl),cp=nm!=null?pr.find(p=>nm>=p.from&&nm<p.to):null;
 body=(cp?`<div class="pill ${cp.on?'on':'off'}">${cp.on?'Зараз світло є':'Зараз світла немає'} · ще ${dh(Math.floor((cp.to*60-k.sec)/60))}</div>`:'')+pr.map((p,ri)=>`<div style="--r:${ri}" class="row ${p.on?'on':'off'}"><span>${hm(p.from)} – ${hmE(p.to)}</span><span>${p.on?'Світло є':'Світла немає'}</span></div>`).join('')}
-d.innerHTML=`<div class="card">${hd}<div class="sub" style="margin-bottom:12px">${mine?'Це твоя черга':'Перегляд — твоя черга не змінюється'}</div><div class="seg"><button class="${QV.tab?'':'a'}" onclick="QV.tab=0;renderQueues()">Сьогодні</button><button class="${QV.tab?'a':''}" onclick="QV.tab=1;renderQueues()">Завтра</button></div>${body}<div class="meta">Оновлено: ${esc(QV.j.updated||'—')} · ${esc(QV.j.source||'')}</div>${mine?'':`<button class="ref p w" onclick="adopt()">Зробити моєю чергою</button>`}</div>`}
-function pickQ(q){QV.q=q;QV.j=null;QV.err=null;QV.loading=true;renderQueues();const c=QV.c;fetchSched(q,c).then(j=>{if(QV.q===q&&QV.c===c){QV.j=j}recHist(c,q,j)}).catch(e=>{if(QV.q===q)QV.err=e.message}).finally(()=>{if(QV.q===q&&QV.c===c)QV.loading=false;if(view===2){renderQueues();enter($('q-detail'))}})}
+d.innerHTML=`<div class="card">${hd}<div class="sub" style="margin-bottom:12px">${mine?'Це твоя черга':'Перегляд — твоя черга не змінюється'}</div><div class="seg"><button class="${QV.tab?'':'a'}" onclick="QV.tab=0;renderQueues()">Сьогодні</button><button class="${QV.tab?'a':''}" onclick="QV.tab=1;renderQueues()">Завтра</button></div>${body}${QV.j.cached?`<div class="warn">Немає з’єднання: показано збережений графік${QV.j.fetchedAt?' від '+esc(new Date(QV.j.fetchedAt).toLocaleString('uk-UA',{timeZone:TZ,day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})):''}.</div>`:''}<div class="meta">Оновлено: ${esc(QV.j.updated||'—')} · ${esc(QV.j.source||'')}</div>${mine?'':`<button class="ref p w" onclick="adopt()">Зробити моєю чергою</button>`}</div>`}
+function pickQ(q){QV.q=q;QV.j=null;QV.err=null;QV.loading=true;renderQueues();const c=QV.c;fetchSchedC(q,c).then(j=>{if(QV.q===q&&QV.c===c){QV.j=j}recDays(c,q,j);recHist(c,q,j)}).catch(e=>{if(QV.q===q)QV.err=e.message}).finally(()=>{if(QV.q===q&&QV.c===c)QV.loading=false;if(view===2){renderQueues();enter($('q-detail'))}})}
 function adopt(){P={...P,c:QV.c,q:QV.q};resetData();LS.setItem('profile',JSON.stringify(P));toast('Тепер твоя черга — '+P.q);play('ok');setView(1);tick();load(true)}
 function resetData(){loadSeq++;AV.c=null;AV.q=null;AV.S={};AV.tab=0;data=null;LS.removeItem('last');loading=true;err=null}
 /* ---------- налаштування ---------- */
@@ -662,7 +802,7 @@ function syncSwitches(){document.querySelectorAll('.sw').forEach(b=>b.setAttribu
 const n=$('notif-note');n.textContent=ST.notify?('Notification'in window?(Notification.permission==='granted'?'Системні сповіщення дозволено.':Notification.permission==='denied'?'Системні сповіщення заблоковано в налаштуваннях пристрою — показуватимемо повідомлення в застосунку.':'Системні сповіщення ще не дозволено.'):'Цей пристрій не підтримує системні сповіщення — показуватимемо повідомлення в застосунку.'):''}
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('.sw');if(!b)return;const k=b.dataset.k,v=!ST[k];
 if(k==='sound'){if(v){ST.sound=true;play('on')}else{play('off');ST.sound=false}}else{ST[k]=v;if(k!=='intro')play(v?'on':'off','sSwitch')}
-if(k==='notify'&&v&&'Notification'in window&&Notification.permission==='default')Notification.requestPermission().then(syncSwitches);
+if(k==='vib'&&v)buzz(40);if(k==='mood')applyMood(MOODC);if((k==='notify'||k==='emgN')&&v&&'Notification'in window&&Notification.permission==='default')Notification.requestPermission().then(syncSwitches);
 if(k==='auto')lastTry=Date.now();saveST();syncSwitches()});
 $('vol').addEventListener('input',e=>{ST.vol=+e.target.value;$('vol-v').textContent=ST.vol+'%'});$('vol').addEventListener('change',()=>{saveST();play('tap')});
 $('lead').addEventListener('change',e=>{ST.lead=+e.target.value;saveST()});
@@ -765,10 +905,11 @@ function hideHint(){$('hint').className='hint hid';LS.setItem('hint','1')}
 if(/iPhone|iPad/.test(navigator.userAgent)&&!navigator.standalone&&!LS.getItem('hint'))$('hint').className='hint';
 /* міграція старої історії в історію по чергах */
 (()=>{const old=jget('hist',null);if(old&&P){const H=jget('histq',{}),k=P.c+':'+P.q;if(!H[k]){H[k]=old.map(h=>({at:h.at,u:h.u,s:null,t:null,m:null}));LS.setItem('histq',JSON.stringify(H))}LS.removeItem('hist')}})();
-addEventListener('online',()=>load());addEventListener('offline',render);
+addEventListener('online',()=>{netFail=false;load();loadOut()});addEventListener('offline',render);
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change',applyTheme);
-document.addEventListener('visibilitychange',()=>{if(document.hidden)return;tick();if(ST.auto&&Date.now()-lastTry>6e4)load()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)return;tick();loadOut();if(ST.auto&&Date.now()-lastTry>6e4)load()});
+if(P&&data)recDays(P.c,P.q,data);applyMood('unk');
 applyTheme();syncSwitches();['ob','st'].forEach(acAttach);setView(ready()?1:0);runIntro();
-setInterval(()=>{if(!ST.auto)return;const h=kv().h,need=(h>=21||h<3)?120e3:300e3;if(Date.now()-lastTry>=need-5e3)load()},30e3);setInterval(tick,1000);tick();load();loadOut();setInterval(loadOut,18e4);
+setInterval(()=>{if(!ST.auto)return;const h=kv().h,need=(h>=21||h<3)?120e3:300e3;if(Date.now()-lastTry>=need-5e3)load()},30e3);setInterval(tick,1000);tick();load();loadOut();setInterval(loadOut,12e4);
 if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
 </script></body></html>
