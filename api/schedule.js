@@ -207,7 +207,7 @@ async function run(req, res) {
   });
   const m = merge(ok);
   // YASNO повідомляє статус «EmergencyShutdowns», коли діють екстрені відключення і планові графіки не застосовуються
-  const emergency = ok.some(r => Object.values(r.statuses || {}).some(st => /emergency/i.test(String(st || ''))));
+  const emergency = city === 'dp' && ok.some(r => Object.values(r.statuses || {}).some(st => /emergency/i.test(String(st || ''))));
   if (!Object.keys(m.days).length && emergency) {
     res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=30');
     return res.status(200).json({

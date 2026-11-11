@@ -33,8 +33,11 @@ export function parseChannel(html, channel) {
 const L = '[а-яіїєґ]*';
 const RE = {
   region: /Дніпропетровськ[а-яіїєґ]*|Дніпропетровщин[а-яіїєґ]*/i,
-  dp: /Дніпр(?:о|і|а|у|ом|ові)(?![а-яіїєґ])|Дніпровськ[а-яіїєґ]*\s+(район|міськ)/i,
-  kz: /Кам[’'ʼ`]?янськ/i,
+  dp: /Дніпр(?:о|і|а|у|ом|ові)(?![а-яіїєґ])/i,
+  kz: /Кам[’'ʼ`]?янськ(?:е|ого|ому|им)?(?![а-яіїєґ])(?!\s+(?:район|р-н))/i,
+  // конкретні райони/міста області: якщо названо їх, а не наше місто, оголошення нашого міста НЕ стосується
+  dist: /Павлоград|Синельників|Нікопол|Марганец|Марганц|Покров(?![а-яіїєґ]*\s+(?:наш))|Новомосковськ|Підгородн|Петропавлів|Томаківк|Широків|Апостолов|Зеленодольськ|Жовт[а-яіїєґ]*\s+Вод|Верхньодніпровськ|Дніпровськ[а-яіїєґ]*\s+(?:район|р-н)|Кам[’'ʼ`]?янськ[а-яіїєґ]*\s+(?:район|р-н)|Криворізьк[а-яіїєґ]*\s+(?:район|р-н)|[а-яіїєґ]+ськ[а-яіїєґ]*\s+район/i,
+  allq: /(?:усі|всі|усіх|всіх)\s+черг|по\s+всіх\s+чергах|без\s+розподілу\s+за\s+чергами/i,
   kr: /Крив(ий|ого|ому)\s+Р(іг|огу|озі)|Криворіж[а-яіїєґ]*/i,
   start: new RegExp(`(екстрен${L}|аварійн${L})\\s+(відключен${L}|знеструмлен${L}|вимкнен${L})|(графік${L}|стабілізаційн${L})[^.!]{0,50}не\\s+(діють|діятимуть|застосовуються|застосовуватимуться)|відключен${L}\\s+(поза|без)\\s+графік${L}|екстрен${L}\\s+заход${L}`, 'i'),
   cancel: new RegExp(`(скасован${L}|припинен${L}|завершен${L}|не\\s+застосовуютьс${L}|більше\\s+не\\s+діють)[^.!]{0,60}(екстрен${L}|аварійн${L})|(екстрен${L}|аварійн${L})\\s+(відключен${L}|знеструмлен${L})[^.!]{0,50}(скасован${L}|припинен${L}|завершен${L}|не\\s+діють\\s+більше)|повернул${L}\\s+до\\s+(графік|стабілізац)${L}|відновлен${L}\\s+(дію\\s+)?(графік|стабілізац)${L}|повертаємось\\s+до\\s+графік${L}`, 'i'),
@@ -45,8 +48,16 @@ export function citiesOf(t) {
   if (RE.dp.test(t)) c.push('dp');
   if (RE.kz.test(t)) c.push('kz');
   if (RE.kr.test(t)) c.push('kr');
-  if (RE.region.test(t)) c.push('dp', 'kz', 'kr');
+  // загальне «Дніпропетровщина/область» стосується всіх трьох міст, лише коли не названо конкретні міста чи райони
+  if (!c.length && RE.region.test(t) && !RE.dist.test(t)) c.push('dp', 'kz', 'kr');
   return [...new Set(c)];
+}
+// Черги, названі в тексті (1.1–6.2). Рахуємо лише якщо в тексті є слово «черг», щоб не плутати з датами й часом.
+export function queuesOf(t) {
+  if (!/черг/i.test(t)) return { queues: [], allQueues: RE.allq.test(t) };
+  const q = new Set();
+  for (const m of t.matchAll(/(?<![\d.,:])([1-6])\.([12])(?![\d])/g)) q.add(m[1] + '.' + m[2]);
+  return { queues: [...q].sort(), allQueues: RE.allq.test(t) };
 }
 const clip = (s, n) => (s.length > n ? s.slice(0, n - 1) + '…' : s);
 
@@ -65,7 +76,7 @@ export function analyze(posts, now = Date.now()) {
     const { p, cancelled } = last[c];
     const ex = items.find((i) => i.post === p.post && i.cancelled === cancelled);
     if (ex) { ex.cities.push(c); continue; }
-    items.push({ text: clip(p.text, 260), cities: [c], cancelled, source: label(p.channel) + ' (Telegram)', ts: p.ts, link: p.link, post: p.post });
+    items.push({ text: clip(p.text, 260), cities: [c], cancelled, ...queuesOf(p.text), source: label(p.channel) + ' (Telegram)', ts: p.ts, link: p.link, post: p.post });
   }
   return items.sort((a, b) => b.ts - a.ts);
 }
@@ -77,7 +88,7 @@ export function buildFeed(posts, now = Date.now()) {
     if (now - p.ts > FEED_AGE_H * 36e5 || p.ts > now + 5 * 6e4 || !RE.feed.test(p.text)) continue;
     const cities = citiesOf(p.text);
     if (!cities.length) continue;
-    out.push({ text: clip(p.text, 320), cities, source: label(p.channel), ts: p.ts, link: p.link, post: p.post });
+    out.push({ text: clip(p.text, 320), cities, ...queuesOf(p.text), source: label(p.channel), ts: p.ts, link: p.link, post: p.post });
     if (out.length >= 14) break;
   }
   return out;
