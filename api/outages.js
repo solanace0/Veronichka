@@ -4,6 +4,7 @@
 //   EmergencyShutdowns — діють екстрені відключення, планові графіки не застосовуються.
 // Адресних даних про аварійні роботи (вулиця, будинок, причина, час відновлення) відкриті джерела не дають:
 // їх показує лише сайт ДТЕК за захистом Incapsula, який ми не обходимо. Тому тут нічого не вигадується.
+import { fetchTelegram } from './_telegram.js';
 const YASNO = 'https://app.yasno.ua/api/blackout-service/public/shutdowns/regions/3/dsos/301/planned-outages';
 const UA = { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/130 Safari/537.36', 'accept-language': 'uk-UA,uk;q=0.9' };
 const GROUP_RE = /^[1-6]\.[12]$/;
@@ -24,7 +25,7 @@ export function parseAnnouncements(html) {
     if (seen.has(t)) continue;
     seen.add(t);
     const cities = [];
-    if (/Дніпро(?![а-яіїєґ])/i.test(t)) cities.push('dp');
+    if (/Дніпр(?:о|і|а|у|ом|ові)(?![а-яіїєґ])/i.test(t)) cities.push('dp');
     if (/Кам[’'ʼ`]?янськ/i.test(t)) cities.push('kz');
     if (/Крив(ий|ого|ому)\s+Р(іг|огу|озі)/i.test(t)) cities.push('kr');
     if (/Дніпропетровщин|області/i.test(t)) cities.push('kr', 'dp', 'kz');
@@ -69,13 +70,19 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   if (req.method === 'OPTIONS') return res.status(204).end();
   try {
-    const [r, ann] = await Promise.all([fetch(YASNO, { headers: UA, signal: AbortSignal.timeout(8000) }), fetchAnnouncements()]);
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    const { groups, updatedTs } = parse(await r.json());
-    if (!Object.keys(groups).length) throw new Error('у відповіді немає черг');
+    const [yr, ann, tg] = await Promise.allSettled([fetch(YASNO, { headers: UA, signal: AbortSignal.timeout(8000) }), fetchAnnouncements(), fetchTelegram()]);
+    const A = ann.status === 'fulfilled' ? ann.value : { ok: false, items: [] };
+    const T = tg.status === 'fulfilled' ? tg.value : { ok: false, items: [], channels: [] };
+    let groups = {}, updatedTs = null, yasnoOk = false;
+    try {
+      if (yr.status !== 'fulfilled' || !yr.value.ok) throw new Error('YASNO HTTP ' + (yr.value && yr.value.status));
+      ({ groups, updatedTs } = parse(await yr.value.json()));
+      yasnoOk = Object.keys(groups).length > 0;
+    } catch (e) { /* YASNO недоступний — спробуємо вижити на Telegram-оголошеннях */ }
+    if (!yasnoOk && !T.items.length && !A.items.length) throw new Error('жодне джерело не відповіло');
     const emergency = Object.values(groups).filter((g) => g.today && g.today.state === 'emergency').length;
     res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=30');
-    return res.status(200).json({ ok: true, fetchedAt: Date.now(), source: 'YASNO / ДТЕК', updatedTs, emergencyGroups: emergency, announcements: ann.items, announceOk: ann.ok, groups });
+    return res.status(200).json({ ok: true, fetchedAt: Date.now(), source: 'YASNO / ДТЕК / Telegram', updatedTs, emergencyGroups: emergency, announcements: [...T.items, ...A.items.map((a) => ({ ...a, source: 'YASNO' }))], announceOk: A.ok, telegramOk: T.ok, telegram: T.channels, yasnoOk, groups });
   } catch (e) {
     res.setHeader('Cache-Control', 'no-store');
     return res.status(502).json({ ok: false, error: 'Джерело статусів недоступне (' + (e && e.message || 'помилка') + ')' });
