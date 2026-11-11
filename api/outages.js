@@ -8,6 +8,8 @@ import { fetchTelegram } from './_telegram.js';
 const YASNO = 'https://app.yasno.ua/api/blackout-service/public/shutdowns/regions/3/dsos/301/planned-outages';
 const UA = { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/130 Safari/537.36', 'accept-language': 'uk-UA,uk;q=0.9' };
 const GROUP_RE = /^[1-6]\.[12]$/;
+// Дата дня за Києвом (на випадок, коли джерело віддає північ у UTC: 2026-11-08T22:00:00Z = 9 листопада)
+const kyivYmd = (s) => { const d = new Date(s); return isNaN(d) ? String(s).slice(0, 10) : new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Kyiv' }).format(d); };
 // Другий джерело: оголошення оператора на сайті YASNO (текст на кшталт «У м. Дніпро введені екстрені відключення. Графіки не діють.»).
 // Статус у API часто відстає від таких оголошень, тому читаємо й їх. Якщо сторінка недоступна чи змінилась — просто повертаємо порожній список.
 const ANNOUNCE = 'https://static.yasno.ua/dnipro/outages';
@@ -57,7 +59,7 @@ export function parse(j) {
   let newest = null;
   for (const k of Object.keys(src).filter((x) => GROUP_RE.test(x)).sort()) {
     const g = src[k] || {};
-    const day = (d) => (d && typeof d === 'object' ? { date: d.date ? String(d.date).slice(0, 10) : null, status: d.status || null, state: stateOf(d.status) } : null);
+    const day = (d) => (d && typeof d === 'object' ? { date: d.date ? kyivYmd(d.date) : null, status: d.status || null, state: stateOf(d.status) } : null);
     const ts = Date.parse(g.updatedOn || (j && j.updatedOn) || '');
     if (!isNaN(ts) && (newest === null || ts > newest)) newest = ts;
     groups[k] = { today: day(g.today), tomorrow: day(g.tomorrow), updatedOn: isNaN(ts) ? null : ts };
@@ -72,7 +74,7 @@ export default async function handler(req, res) {
   try {
     const [yr, ann, tg] = await Promise.allSettled([fetch(YASNO, { headers: UA, signal: AbortSignal.timeout(8000) }), fetchAnnouncements(), fetchTelegram()]);
     const A = ann.status === 'fulfilled' ? ann.value : { ok: false, items: [] };
-    const T = tg.status === 'fulfilled' ? tg.value : { ok: false, items: [], channels: [] };
+    const T = tg.status === 'fulfilled' ? tg.value : { ok: false, items: [], feed: [], channels: [] };
     let groups = {}, updatedTs = null, yasnoOk = false;
     try {
       if (yr.status !== 'fulfilled' || !yr.value.ok) throw new Error('YASNO HTTP ' + (yr.value && yr.value.status));
@@ -82,7 +84,7 @@ export default async function handler(req, res) {
     if (!yasnoOk && !T.items.length && !A.items.length) throw new Error('жодне джерело не відповіло');
     const emergency = Object.values(groups).filter((g) => g.today && g.today.state === 'emergency').length;
     res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=30');
-    return res.status(200).json({ ok: true, fetchedAt: Date.now(), source: 'YASNO / ДТЕК / Telegram', updatedTs, emergencyGroups: emergency, announcements: [...T.items, ...A.items.map((a) => ({ ...a, source: 'YASNO' }))], announceOk: A.ok, telegramOk: T.ok, telegram: T.channels, yasnoOk, groups });
+    return res.status(200).json({ ok: true, fetchedAt: Date.now(), source: 'YASNO / ДТЕК / Telegram', updatedTs, emergencyGroups: emergency, feed: T.feed || [], announcements: [...T.items, ...A.items.map((a) => ({ ...a, source: 'YASNO' }))], announceOk: A.ok, telegramOk: T.ok, telegram: T.channels, yasnoOk, groups });
   } catch (e) {
     res.setHeader('Cache-Control', 'no-store');
     return res.status(502).json({ ok: false, error: 'Джерело статусів недоступне (' + (e && e.message || 'помилка') + ')' });

@@ -6,6 +6,7 @@
 // Сайт ДТЕК закритий захистом Incapsula, його не обходимо.
 // Якщо жодне джерело не дало підтвердженого графіка на день, цей день не повертається
 // (інтерфейс не має малювати «24 години світла» без даних).
+const kyivYmd = (s) => { const d = new Date(s); return isNaN(d) ? String(s).slice(0, 10) : new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Kyiv' }).format(d); };
 const YASNO = 'https://app.yasno.ua/api/blackout-service/public/shutdowns/regions/3/dsos/301/planned-outages';
 const MIRROR_BASE = 'https://raw.githubusercontent.com/Baskerville42/outage-data-ua/main/data/';
 const MIRROR_FILES = ['dnipro.json', 'dnipro-oblast.json'];
@@ -70,7 +71,7 @@ async function fromYasno(GROUP) {
     const hasSlots = Array.isArray(d.slots) && d.slots.length > 0;
     if (/wait|not.?publ|unknown|emergency/i.test(st)) continue;      // графік не діє / ще не опублікований
     if (!hasSlots && !/no.?outage|not.?planned|nothing/i.test(st)) continue; // порожньо без явного «відключень немає»
-    const date = String(d.date).slice(0, 10);
+    const date = kyivYmd(d.date);
     days[date] = { date, slots: yasnoSlots(d), confirmed: true, ts: isoToTs(d.updatedOn) || groupTs };
   }
   return { source: 'YASNO / ДТЕК', ts: groupTs, days, statuses };
