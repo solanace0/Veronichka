@@ -150,3 +150,5 @@ const widget = await build();
 if (config.runsInWidget) Script.setWidget(widget);
 else await widget.presentMedium();
 Script.complete();
+else await widget.presentMedium();
+Script.complete();
