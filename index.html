@@ -255,6 +255,105 @@ html[data-theme=dark] .chip.a{box-shadow:0 0 14px #FFB43A44}
 @keyframes ig-flash{0%{opacity:0}45%{opacity:1}100%{opacity:1}}
 @keyframes ig-tw{0%,100%{opacity:.15;transform:scale(.55) rotate(0)}50%{opacity:1;transform:scale(1) rotate(45deg)}}
 @keyframes ig-up{from{opacity:0;transform:translate3d(0,12px,0)}to{opacity:1;transform:none}}
+
+/* ===== Головна: графік зверху, статус і статистика поруч/нижче ===== */
+html,body{transition:none}
+html[data-theme=dark] body:not(.nomood)[data-mood=on]::before,html[data-theme=dark] body:not(.nomood)[data-mood=off]::before,html[data-theme=dark] body:not(.nomood)[data-mood=emg]::before{background:#000}
+#mood .on{background:radial-gradient(ellipse 85vw 50vh at 50% -8%,#FFB43A38,#FFB43A00 72%)}
+#mood .off{background:radial-gradient(ellipse 85vw 50vh at 50% -8%,#7C86B83a,#7C86B800 72%)}
+.top{align-items:center;margin-bottom:14px}
+#clock{font-size:30px;font-weight:900;letter-spacing:-.5px;text-shadow:0 0 18px #ffffff40}
+#date{font-size:13px}
+.avb{border:0;background:none;padding:0;width:46px;height:46px;border-radius:50%;flex:none;transition:transform .25s cubic-bezier(.3,1.4,.5,1)}
+.avb:active{transform:scale(.92)}
+.avb img{display:block;width:100%;height:100%;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px #ffffff40,0 0 18px #ffffff30,0 0 28px #FFB43A40}
+.prof .hello{margin:0 0 12px}.prof .net{padding:0;font-size:13px}.prof .hint{margin-bottom:10px}
+.home{display:block}
+.lb{font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--mu);margin:18px 4px 8px}
+.hs .lb:first-child{margin-top:20px}
+.seg3{margin-bottom:12px;position:relative;padding:4px;background:#ffffff0d;border:1px solid #ffffff14}
+.seg3 button{position:relative;z-index:1;padding:11px 6px;transition:color .3s}
+.seg3 button.a{background:none!important;box-shadow:none!important;color:var(--acx)}
+.seg3 .thumb{position:absolute;left:0;top:4px;bottom:4px;width:0;border-radius:11px;background:linear-gradient(180deg,#FFE3A6,#FFB43A);box-shadow:0 0 20px #FFB43A55;transition:transform .4s cubic-bezier(.3,.9,.3,1),width .4s cubic-bezier(.3,.9,.3,1);will-change:transform}
+#sched{padding:18px 16px 14px;margin-bottom:12px}
+#sched .pill{display:inline-flex;align-items:center;gap:8px;margin-bottom:14px}
+#sched .pill::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;animation:dotp 2.2s ease-in-out infinite}
+@keyframes dotp{50%{opacity:.35;transform:scale(.7)}}
+.tlw{position:relative;margin:2px 0 16px}
+.tlb{position:relative;height:52px;border-radius:14px;overflow:hidden;background:#ffffff0a;box-shadow:inset 0 0 0 1px #ffffff14}
+.tlb::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(90deg,transparent 0 calc(12.5% - 1px),#0000007a calc(12.5% - 1px) 12.5%)}
+.sg{position:absolute;top:0;bottom:0;transform-origin:50% 100%}
+.sg.on{background:linear-gradient(180deg,#FFE3A6,#FFB43A);box-shadow:0 0 22px #FFB43A66}
+.sg.off{background:repeating-linear-gradient(135deg,#ffffff0d 0 5px,transparent 5px 10px),#17161b}
+.nowm{position:absolute;top:-6px;height:64px;left:calc(var(--p)*1%);width:2px;margin-left:-1px;border-radius:2px;background:#fff;box-shadow:0 0 10px #fff,0 0 22px #FFB43A;z-index:2;pointer-events:none}
+.nowm::before{content:"";position:absolute;left:50%;top:-4px;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:#fff;box-shadow:0 0 12px #fff}
+.nowm::after{content:"";position:absolute;left:50%;top:-4px;width:10px;height:10px;margin-left:-5px;border-radius:50%;border:2px solid #fff;animation:ring 2.4s ease-out infinite}
+@keyframes ring{from{opacity:.8;transform:scale(1)}to{opacity:0;transform:scale(3)}}
+.tlt{position:relative;height:18px;margin-top:8px;font-size:11px;font-weight:700;color:var(--mu);font-variant-numeric:tabular-nums}
+.tlt span{position:absolute;top:0;transform:translateX(-50%)}.tlt .t0{transform:none}.tlt .t24{transform:translateX(-100%)}
+#sched .row{padding:12px 14px;font-size:15px;margin-top:7px}
+.acts{margin:2px 0 10px}.acts .sub{margin-bottom:8px}
+.hs .hero{margin-bottom:0}
+.sbar{grid-column:1/-1;padding:0!important;height:8px;border-radius:99px!important;background:#ffffff14!important;overflow:hidden}
+.sbar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#FFE3A6,#FFB43A);box-shadow:0 0 12px #FFB43A88;transform-origin:left;animation:grow 1s .25s cubic-bezier(.2,.8,.2,1) both}
+@keyframes grow{from{transform:scaleX(0)}}
+/* анімації */
+.ent .sg{animation:segin .7s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(.05s + var(--r,0)*50ms)}
+@keyframes segin{from{opacity:0;transform:scaleY(.15)}}
+.ent .nowm{animation:fadein .5s .5s both}
+.ent .home>div>*{animation:pop .6s cubic-bezier(.2,.8,.2,1) both}
+.ent .hm>:nth-child(2){animation-delay:.07s}.ent .hm>:nth-child(3){animation-delay:.14s}
+.ent .hs>:nth-child(1){animation-delay:.12s}.ent .hs>:nth-child(2){animation-delay:.16s}.ent .hs>:nth-child(3){animation-delay:.22s}.ent .hs>:nth-child(4){animation-delay:.26s}
+.sw::after{transition:transform .32s cubic-bezier(.3,1.5,.5,1)}
+.acitem{transition:background .15s,transform .2s}.acitem:hover{transform:translateX(3px)}
+.ref,.chip,.mini{transition:transform .2s cubic-bezier(.3,1.4,.5,1),box-shadow .25s,background .25s}.ref:active,.chip:active{transform:scale(.96)}
+.nav button{transition:color .25s,background .25s,transform .25s cubic-bezier(.3,1.4,.5,1)}.nav button:active{transform:scale(.93)}
+.nav button svg{transition:transform .3s cubic-bezier(.3,1.5,.5,1)}.nav button.a svg{transform:translateY(-1px) scale(1.1)}
+.boot .tt{animation:up .7s .1s cubic-bezier(.2,.8,.2,1) both}.boot .avb{animation:up .7s .2s cubic-bezier(.2,.8,.2,1) both}
+/* мобільна компоновка: нижня плаваюча навігація */
+@media(max-width:899px){
+body{padding:calc(env(safe-area-inset-top) + 12px) 14px calc(env(safe-area-inset-bottom) + 104px)}
+.wrap{max-width:600px}
+.nav{left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom) + 10px);padding:6px;gap:4px;border-radius:24px;background:#0a0a0cf2;border:1px solid #ffffff1f;box-shadow:0 12px 40px #000,0 0 0 1px #ffffff08 inset;backdrop-filter:none;-webkit-backdrop-filter:none}
+.nav button{border-radius:18px;padding:9px 2px 7px}
+}
+@media(max-width:380px){#clock{font-size:26px}.tlb{height:46px}.nowm{height:58px}}
+/* ПК: бокова панель + двоколонкова головна */
+@media(min-width:900px){
+body{padding:34px 44px 44px 292px}
+.wrap{max-width:1200px}
+.nav{width:252px;padding:28px 16px 22px;background:linear-gradient(180deg,#0c0b0d,#000);border-right:1px solid #ffffff14}
+.nav .brand{margin:0 8px 26px;gap:12px;font-size:19px}.nav .brand img{width:48px;height:48px}
+.nav button{position:relative;overflow:hidden;padding:13px 16px}
+.nav button::before{content:"";position:absolute;left:0;top:22%;bottom:22%;width:3px;border-radius:3px;background:#FFC76A;box-shadow:0 0 12px #FFB43A;transform:scaleY(0);transition:transform .3s cubic-bezier(.3,1.3,.5,1)}
+.nav button.a::before{transform:scaleY(1)}
+.nav button:hover:not(.a){background:#ffffff0d;color:var(--tx)}
+.avb{display:none}
+.top{margin-bottom:22px}#clock{font-size:36px}#date{font-size:14px}
+.home{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(310px,1fr);gap:26px;align-items:start}
+.hs{position:sticky;top:34px}
+.hs .lb:first-child{margin-top:0}
+.seg3 button{font-size:16px;padding:13px 6px}
+#sched{padding:26px 28px 22px}
+.tlb{height:68px;border-radius:18px}.nowm{height:80px}
+.tlt{font-size:12.5px}
+#sched .row{font-size:19px;padding:16px 20px;margin-top:9px;border-radius:16px}
+}
+
+.rows{margin-top:4px}
+.rows summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-radius:14px;background:#ffffff0a;font-weight:800;font-size:14px;color:var(--tx);transition:background .2s}
+.rows summary::-webkit-details-marker{display:none}
+.rows summary:hover{background:#ffffff12}
+.rows summary small{color:var(--mu);font-weight:700;font-size:12px;margin-left:auto;margin-right:10px}
+.rows summary::after{content:"";width:8px;height:8px;border-right:2px solid var(--mu);border-bottom:2px solid var(--mu);transform:rotate(45deg) translate(-2px,-2px);transition:transform .3s cubic-bezier(.3,1.3,.5,1)}
+.rows[open] summary::after{transform:rotate(-135deg) translate(-2px,-2px)}
+.rows[open]>.row{animation:pop .45s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--r,0)*35ms)}
+@media(max-width:899px){
+.home{display:flex;flex-direction:column}.hm{display:contents}
+.hm>.tabs{order:1}.hm>#sched{order:2}.hs{order:3}.hm>.acts{order:4;margin-top:16px}
+.nav button{font-size:11px}
+}
+@media(min-width:900px){.hm{display:block}.rows summary{display:none}.rows[open]>.row:first-of-type{margin-top:0}}
 </style></head><body>
 <div id="mood" aria-hidden="true"><i class="m on"></i><i class="m off"></i><i class="m emg"></i></div>
 <div id="intro" class="hid" aria-hidden="true"><div class="stage"><canvas class="cv back"></canvas><img class="lyr girl" src="intro-girl.png" alt="" decoding="async"><img class="lyr dim" src="intro-bulb-dim.png" alt="" decoding="async"><div class="halo"></div><img class="lyr lit" src="intro-bulb.png" alt="" decoding="async"><canvas class="cv front"></canvas><span class="st" style="left:30.5%;top:30.3%;--d:.7s"><svg viewBox="-10 -10 20 20"><path d="M0-10C1-3 3-1 10 0 3 1 1 3 0 10-1 3-3 1-10 0-3-1-1-3 0-10Z" fill="#fff"/></svg></span><span class="st" style="left:83%;top:50.4%;--d:1.1s"><svg viewBox="-10 -10 20 20"><path d="M0-10C1-3 3-1 10 0 3 1 1 3 0 10-1 3-3 1-10 0-3-1-1-3 0-10Z" fill="#fff"/></svg></span><span class="st" style="left:15.3%;top:63%;width:3%;margin:-1.5% 0 0 -1.5%;--d:1.5s"><svg viewBox="-10 -10 20 20"><path d="M0-10C1-3 3-1 10 0 3 1 1 3 0 10-1 3-3 1-10 0-3-1-1-3 0-10Z" fill="#fff"/></svg></span><div class="flash"></div></div><div class="ttl">ТребаСвітло?</div><div class="tag">Знай, коли буде світло</div></div>
@@ -266,9 +365,7 @@ html[data-theme=dark] .chip.a{box-shadow:0 0 14px #FFB43A44}
 <button id="n3" onclick="setView(3)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>Налаштування</button></nav>
 
 <div class="wrap">
-<div class="top"><div><div id="clock">--:--:--</div><div id="date"></div></div><div class="net" id="net"></div></div>
-<div class="hello"><img src="icon-192.png" alt=""><div><h1 id="hi"></h1><p>Ось твоє світло!</p></div></div>
-<div id="hint" class="hint hid"><span>Додай ТребаСвітло? на головний екран 💜 <small>(Поділитися → Додати на початковий екран)</small></span><button onclick="hideHint()" aria-label="Закрити">✕</button></div>
+<div class="top"><div class="tt"><div id="clock">--:--:--</div><div id="date"></div></div><button class="avb" onclick="setView(3)" aria-label="Налаштування"><img src="icon-192.png" alt=""></button></div>
 
 <main id="v0" class="hid"><div class="card"><div class="cen" style="margin-bottom:6px"><img src="icon-192.png" alt="" style="width:84px;height:84px;border-radius:22px;box-shadow:var(--sh)"></div><h2 class="cen">Вітаємо в ТребаСвітло?</h2><div class="sub cen">Вкажи ім’я, місто та свою чергу — і ми покажемо графік відключень.</div>
 <div class="f"><label for="ob-n">Ім’я</label><input type="text" id="ob-n" maxlength="30" autocomplete="given-name"><label for="ob-c">Місто</label><select id="ob-c"></select><label for="ob-q">Черга</label><select id="ob-q"></select><label for="ob-a">Адреса або позначка (необов’язково)</label><div class="ac" id="ob-ac"><input type="text" id="ob-a" maxlength="60" placeholder="Почни вводити: проспект Металургів 12" autocomplete="off" autocapitalize="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="ob-al"><ul class="aclist" id="ob-al" role="listbox"></ul></div>
@@ -276,16 +373,18 @@ html[data-theme=dark] .chip.a{box-shadow:0 0 14px #FFB43A44}
 <button class="ref p w" id="ob-go" aria-disabled="true" onclick="saveP('ob')">Почати</button><div class="need" id="ob-need">Постав галочку згоди, щоб продовжити</div></div>
 <div class="meta">Дані зберігаються лише на твоєму пристрої. Не знаєш свою чергу? <a href="https://www.dtek-dnem.com.ua/ua/shutdowns" target="_blank" rel="noopener">Дізнатися за адресою на сайті ДТЕК</a>.</div></div></main>
 
-<main id="v1"><div id="offb"></div><div id="emg"></div><div class="cols"><div class="c1">
-<div id="hero" class="card hero"></div>
-<div class="card"><div class="sub">Статистика на сьогодні (за графіком)</div><div class="grid" id="stats"></div></div>
-<div class="card" id="wk"></div></div>
-<div class="c2"><div class="trow"><div class="tabs"><button id="t0" class="a" onclick="setTab(0)">Сьогодні</button><button id="t1" onclick="setTab(1)">Завтра</button></div><button id="t2" class="mini" onclick="setTab(2)">↩ Вчора</button></div>
+<main id="v1"><div id="offb"></div><div id="emg"></div>
+<div class="home"><div class="hm">
+<div class="tabs seg3" id="tabs" role="tablist"><i class="thumb"></i><button id="t2" onclick="setTab(2)">Вчора</button><button id="t0" class="a" onclick="setTab(0)">Сьогодні</button><button id="t1" onclick="setTab(1)">Завтра</button></div>
 <div id="sched" class="card"></div>
-<div class="cen"><div class="sub" id="upd"></div><button class="ref" onclick="load(true)">↻ Оновити</button> <button class="ref" onclick="shareSched()">Поділитися</button></div></div></div></main>
+<div class="cen acts"><div class="sub" id="upd"></div><button class="ref" onclick="load(true)">↻ Оновити</button> <button class="ref" onclick="shareSched()">Поділитися</button></div>
+</div><div class="hs">
+<div class="lb">Статус на сьогодні</div><div id="hero" class="card hero"></div>
+<div class="lb">Статистика на сьогодні</div><div class="card"><div class="grid" id="stats"></div></div>
+</div></div></main>
 
 <main id="v2" class="hid"><div class="cols"><div class="c1"><div class="card"><h2>Вибір черги</h2><div class="sub" style="margin-bottom:12px">Переглянь графік будь-якої черги. Твоя черга позначена зеленою крапкою.</div>
-<div class="seg" id="q-city"></div><div class="chips" id="q-chips"></div></div></div>
+<div class="seg" id="q-city"></div><div class="chips" id="q-chips"></div></div><div class="card" id="wk"></div></div>
 <div class="c2"><div id="q-detail"></div></div></div></main>
 
 <main id="v4" class="hid"><div class="cols"><div class="c1">
@@ -297,11 +396,11 @@ html[data-theme=dark] .chip.a{box-shadow:0 0 14px #FFB43A44}
 <div class="legend"><span><i style="background:var(--onx)"></i>за графіком</span><span><i style="background:var(--offx)"></i>екстрено</span><span><i style="background:var(--wx)"></i>статус ще не оновлено</span></div><div class="meta" id="av-meta"></div></div>
 <div class="cen"><button class="ref" onclick="avRetry()">↻ Оновити</button></div><div class="card"><h2>Про ці дані</h2><div class="sub" style="font-size:13.5px">Статуси беруться з YASNO (ДТЕК Дніпровські електромережі) — з тих самих відкритих даних, що й графіки, і стосуються черги загалом. Вибір міста змінює, для якого міста завантажується графік. Адресні аварійні роботи (вулиця, будинок, причина, час відновлення) публікує лише сайт ДТЕК за захистом від автоматичних запитів, тому застосунок їх не показує і нічого не вигадує.</div><a class="ref w" style="text-decoration:none" href="https://www.dtek-dnem.com.ua/ua/shutdowns" target="_blank" rel="noopener">Перевірити адресу на сайті ДТЕК</a><a class="ref w" style="text-decoration:none" href="https://t.me/DTEKDniprovskiElektromerezhiBot" target="_blank" rel="noopener">Telegram-бот ДТЕК: аварії за адресою</a><a class="ref w" style="text-decoration:none" href="viber://pa?chatURI=dtekdniprovskielektromerezhi">Viber ДТЕК Дніпровські електромережі</a></div></div></div></main>
 
-<main id="v3" class="hid"><div class="sgrid">
+<main id="v3" class="hid"><div class="sgrid"><div class="card prof"><div class="hello"><img src="icon-192.png" alt=""><div><h1 id="hi"></h1><p>Ось твоє світло!</p></div></div><div id="hint" class="hint hid"><span>Додай ТребаСвітло? на головний екран 💜 <small>(Поділитися → Додати на початковий екран)</small></span><button onclick="hideHint()" aria-label="Закрити">✕</button></div><div class="net" id="net"></div></div>
 <div class="card"><h2>Мій графік</h2><div class="f"><label for="st-n">Ім’я</label><input type="text" id="st-n" maxlength="30" autocomplete="given-name"><label for="st-c">Місто</label><select id="st-c"></select><label for="st-q">Черга</label><select id="st-q"></select><label for="st-a">Адреса або позначка (необов’язково)</label><div class="ac" id="st-ac"><input type="text" id="st-a" maxlength="60" placeholder="Почни вводити: проспект Металургів 12" autocomplete="off" autocapitalize="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="st-al"><ul class="aclist" id="st-al" role="listbox"></ul></div><button class="ref p" onclick="saveP('st')">Зберегти</button></div>
 <div class="meta">Не знаєш свою чергу? <a href="https://www.dtek-dnem.com.ua/ua/shutdowns" target="_blank" rel="noopener">Дізнатися за адресою на сайті ДТЕК</a>.</div></div>
 
-<div class="card"><h2>Оформлення</h2><div class="sub" style="margin-bottom:12px">Тема</div>
+<div class="card"><h2>Оформлення</h2>
 <div class="seg" style="display:none"><button data-t="auto" onclick="setTheme('auto')">Авто</button><button data-t="light" onclick="setTheme('light')">☀️ Світла</button><button data-t="dark" onclick="setTheme('dark')">🌙 Темна</button></div>
 <div class="opt"><div><b>Вступна анімація</b><small>Показувати заставку під час запуску</small></div><button class="sw" role="switch" data-nosound="1" data-k="intro" aria-label="Вступна анімація"></button></div></div>
 
@@ -613,7 +712,7 @@ const fmtDate=s=>{const[y,m,d]=s.split('-').map(Number);return`${d} ${MON[m-1]}`
 /* ---------- стан ---------- */
 let P=jget('profile',null),CON=!!jget('consent',null),data=jget('last',null);const ready=()=>!!(P&&CON);if(data&&(!P||data.group!==P.q||(data.city&&data.city!==P.c)))data=null;
 let loadSeq=0;
-let tab=0,err=null,nextCheck=0,loading=!data,lastTry=0,view=1,NEXT=null,QV={c:(P&&P.c)||'kr',q:null,j:null,loading:false,err:null,tab:0};
+let ROWS_OPEN=matchMedia('(min-width:900px)').matches;let tab=0,err=null,nextCheck=0,loading=!data,lastTry=0,view=1,NEXT=null,QV={c:(P&&P.c)||'kr',q:null,j:null,loading:false,err:null,tab:0};
 function dayFrom(d,date){const x=d&&d.days&&d.days[date];if(x&&x.slots.every(v=>v!==null)){x.slots.confirmed=!!x.confirmed;return x.slots}return null}
 function fbFrom(date){const ds=Object.keys((data&&data.days)||{}).filter(d=>d<date).sort().reverse();for(const d of ds){const x=data.days[d];if(x&&x.confirmed&&x.slots&&x.slots.length===48&&x.slots.every(v=>v!==null)){const sl=x.slots.slice();sl.confirmed=true;sl.approx=d;return sl}}return null}
 const day=date=>dayFrom(data,date)||(OFFL()&&date===kv().date?fbFrom(date):null);
@@ -707,9 +806,9 @@ if(!s){const c=Math.max(0,Math.round((nextCheck-Date.now())/1000)),msg=tab==1?'�
 setH(sd,`<div class="empty"><div class="ico">💡</div><p>${msg}</p>${tab==2?'':BTN}${tab==1?`<div class="sub" style="margin-top:10px">Наступна перевірка через <span id="ncd"></span></div>`:''}</div>`);const nc=$('ncd');if(nc)nc.textContent=nextCheck?p2(Math.floor(c/60))+':'+p2(c%60):'скоро'}
 else{const pr=periods(s),isT=tab===0,nm=k.sec/60,cp=pr.find(p=>nm>=p.from&&nm<p.to);
 setH(sd,(isT&&cp?`<div class="pill ${cp.on?'on':'off'}">${cp.on?'Світло є':'Світла немає'} · ще ${dh(Math.floor((cp.to*60-k.sec)/60))}</div>`:'')+
-pr.map((p,ri)=>`<div style="--r:${ri}" class="row ${p.on?'on':'off'} ${isT&&nm>=p.from&&nm<p.to?'cur':''}"><span>${hm(p.from)} – ${hmE(p.to)}</span><span>${p.on?'Світло є':'Світла немає'}</span></div>`).join('')+
+tlHtml(pr,isT?k.sec:-1)+`<details class="rows"${ROWS_OPEN?' open':''} ontoggle="ROWS_OPEN=this.open"><summary>Детально за годинами<small>${pr.length} періодів</small></summary>`+pr.map((p,ri)=>`<div style="--r:${ri}" class="row ${p.on?'on':'off'} ${isT&&nm>=p.from&&nm<p.to?'cur':''}"><span>${hm(p.from)} – ${hmE(p.to)}</span><span>${p.on?'Світло є':'Світла немає'}</span></div>`).join('')+'</details>'+
 `<div class="meta">${s.approx?'Графік за '+fmtDate(s.approx)+' (на сьогодні даних немає). ':''}Останнє оновлення: ${esc(data&&data.updated||'—')}</div>`)}
-if(today&&!isEmpty(today)){const on=today.filter(Boolean).length*30;setH($('stats'),`<div><span class="sub">Зі світлом</span><b>${dh(on)}</b></div><div><span class="sub">Без світла</span><b>${dh(1440-on)}</b></div>`)}else setH($('stats'),'<div class="sub">—</div>');
+if(today&&!isEmpty(today)){const on=today.filter(Boolean).length*30;setH($('stats'),`<div><span class="sub">Зі світлом</span><b>${dh(on)}</b></div><div><span class="sub">Без світла</span><b>${dh(1440-on)}</b></div><div class="sbar"><i style="width:${(on/14.4).toFixed(1)}%"></i></div>`)}else setH($('stats'),'<div class="sub">—</div>');
 const age=data?(Date.now()-data.fetchedAt)/6e4:0;
 setH($('upd'),(data?`Джерело: ${esc(data.source||'ДТЕК')} · перевірено ${new Date(data.fetchedAt).toLocaleTimeString('uk-UA',{timeZone:TZ,hour:'2-digit',minute:'2-digit'})}`:'')+(err&&!OFFL()?`<div class="warn">Не вдалося оновити${data?' — показуємо останній збережений графік':''}: ${esc(err)}</div>`:'')+(ST.stale&&age>20?'<div class="warn">Дані давно не оновлювалися. Перевіряємо…</div>':''));applyMood(mood);renderWk()}
 /* ---------- картка для поширення (PNG 1080×1350) ---------- */
@@ -839,11 +938,14 @@ function syncOb(){const o=$('ob-ok').checked,b=$('ob-go');b.setAttribute('aria-d
 $('ob-ok').addEventListener('change',()=>{syncOb();play($('ob-ok').checked?'on':'off','sSwitch')});
 function wipe(){if(confirm('Видалити всі дані з цього пристрою?')){loadSeq++;LS.clear();$('ob-n').value='';$('ob-a').value='';$('ob-ok').checked=false;CON=false;syncOb();try{sessionStorage.clear()}catch(e){}P=null;data=null;AV.j=null;AV.t=0;AV.c=null;AV.q=null;AV.S={};AV.tab=0;loading=false;ST={...DEF};setView(0);tick();applyTheme()}}
 /* ---------- навігація ---------- */
-function setView(i){if(!ready())i=0;view=i;[0,1,2,3,4].forEach(n=>{$('v'+n).className=n==i?'':'hid';if(n)$('n'+n).className=n==i?'a':''});document.body.classList.toggle('nonav',!ready());document.querySelector('.hello').style.display=ready()?'':'none';if(i==0){if(P)fillP('ob');syncOb()}
+function setView(i){requestAnimationFrame(moveThumb);if(!ready())i=0;view=i;[0,1,2,3,4].forEach(n=>{$('v'+n).className=n==i?'':'hid';if(n)$('n'+n).className=n==i?'a':''});document.body.classList.toggle('nonav',!ready());document.querySelector('.hello').style.display=ready()?'':'none';if(i==0){if(P)fillP('ob');syncOb()}
 if(i==3){fillP('st');syncSwitches();renderInfo();$('h-c').value=P.c;$('h-q').value=P.q;fillHist()}if(i==2){if(!QV.q){QV.c=P.c}renderQueues()}if(i==4){loadAv();loadAvS();renderAv()}if(i==1)render();scrollTo({top:0});enter($('v'+i))}
-function setTab(i){tab=i;enter($('sched'));$('t0').className=i==0?'a':'';$('t1').className=i==1?'a':'';$('t2').className='mini'+(i==2?' a':'');render()}
+function moveThumb(){const a=document.querySelector('#tabs .a'),t=document.querySelector('#tabs .thumb');if(!a||!t||!a.offsetWidth)return;t.style.width=a.offsetWidth+'px';t.style.transform='translateX('+a.offsetLeft+'px)'}
+addEventListener('resize',()=>requestAnimationFrame(moveThumb));if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>requestAnimationFrame(moveThumb));
+function setTab(i){tab=i;enter($('sched'));[0,1,2].forEach(n=>$('t'+n).className=n==i?'a':'');moveThumb();render()}
+function tlHtml(pr,sec){const sg=pr.map((p,i)=>`<i class="sg ${p.on?'on':'off'}" style="left:${(p.from/14.4).toFixed(3)}%;width:${((Math.min(p.to,1440)-p.from)/14.4).toFixed(3)}%;--r:${i}"></i>`).join(''),tk=[0,6,12,18,24].map(x=>`<span class="t${x}" style="left:${x/.24}%">${x}:00</span>`).join('');return `<div class="tlw"><div class="tlb">${sg}</div>${sec>=0?`<b id="nowm" class="nowm" style="--p:${(sec/864).toFixed(2)}"></b>`:''}<div class="tlt">${tk}</div></div>`}
 function setHi(g){$('hi').innerHTML=g.split(' ').map((w,i)=>`<span class="w" style="--w:${i}">${esc(w)}</span>`).join(' ')}
-function tick(){const k=kv();$('clock').textContent=k.t;$('date').textContent=`${DOW[new Date(Date.UTC(k.y,k.mo-1,k.d)).getUTCDay()]}, ${k.d} ${MON[k.mo-1]} ${k.y}`;
+function tick(){const k=kv();$('clock').textContent=k.t;$('date').textContent=`${DOW[new Date(Date.UTC(k.y,k.mo-1,k.d)).getUTCDay()]}, ${k.d} ${MON[k.mo-1]} ${k.y}`;const NM=$('nowm');if(NM&&tab===0)NM.style.setProperty('--p',(k.sec/864).toFixed(2));
 const nm=P?P.name:'',g=k.h<6?'Доброї ночі, '+nm+' 🌙':k.h<12?'Доброго ранку, '+nm+' ☀️':k.h<18?'Доброго дня, '+nm+' 💜':'Доброго вечора, '+nm+' ✨';if($('hi').textContent!==g)setHi(g);
 if(!tick.d)tick.d=k.date;if(tick.d!==k.date){tick.d=k.date;load()}
 if(nextCheck&&Date.now()>=nextCheck){nextCheck=0;load()}render();checkAlert();if(view===2&&k.sec%30===0&&QV.j)renderQueues();if(view===4){if(Date.now()-AV.t>120e3){loadAv();loadAvS()}else if(k.sec%30===0)renderAv()}}
