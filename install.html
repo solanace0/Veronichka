@@ -1,0 +1,58 @@
+<!doctype html><html lang="uk"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Встановити ТребаСвітло?</title>
+<meta name="theme-color" content="#000000"><link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+:root{--bg:#08070C;--card:#15131F;--tx:#F5F3FA;--mu:#A9A6B8;--bd:#ffffff14}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--tx);font:500 16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;display:flex;justify-content:center;padding:max(24px,env(safe-area-inset-top)) 18px 40px}
+main{width:100%;max-width:440px;text-align:center}
+img.logo{width:96px;height:96px;border-radius:22px;margin-top:24px}
+h1{font-size:26px;margin:14px 0 4px}p.sub{color:var(--mu);margin:0 0 22px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:18px;margin:12px 0;text-align:left}
+.card h2{font-size:17px;margin:0 0 6px}.card p{margin:0 0 10px;color:var(--mu);font-size:15px}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:14px;background:#fff;color:#000;font:800 16px system-ui,sans-serif;text-align:center;text-decoration:none;cursor:pointer}
+.btn.alt{background:transparent;color:var(--tx);border:1px solid var(--bd);margin-top:8px}
+ol{margin:0;padding-left:20px;color:var(--mu);font-size:15px}ol li{margin:4px 0}ol b{color:var(--tx)}
+[hidden]{display:none!important}.ok{color:#3FD79A;font-weight:800}
+</style></head><body><main>
+<img class="logo" src="icon-192.png" alt="">
+<h1>ТребаСвітло?</h1><p class="sub">Графік відключень світла завжди під рукою</p>
+
+<div id="done" class="card" hidden><p class="ok" style="margin:0">Застосунок уже встановлено ✨</p></div>
+
+<div id="android" class="card" hidden>
+ <h2>Android</h2><p>Встановлення в один дотик, без магазину.</p>
+ <button id="inst" class="btn" type="button">Встановити застосунок</button>
+ <a id="apk" class="btn alt" href="#" hidden>Завантажити APK</a>
+ <ol id="a-how" hidden><li>Відкрий меню браузера <b>⋮</b></li><li>Обери <b>«Встановити застосунок»</b> або <b>«Додати на головний екран»</b></li></ol>
+</div>
+
+<div id="ios" class="card" hidden>
+ <h2>iPhone / iPad</h2><p>Відкрий цю сторінку в <b>Safari</b> і зроби три кроки:</p>
+ <ol><li>Натисни <b>«Поділитися»</b> (квадрат зі стрілкою вгору)</li><li>Прокрути і обери <b>«На початковий екран»</b></li><li>Натисни <b>«Додати»</b></li></ol>
+</div>
+
+<div id="desktop" class="card" hidden>
+ <h2>Комп’ютер</h2><p>У Chrome або Edge натисни кнопку нижче (або значок встановлення в адресному рядку).</p>
+ <button id="inst2" class="btn" type="button">Встановити на ПК</button>
+</div>
+
+<a class="btn alt" href="/">Відкрити без встановлення</a>
+</main>
+<script>
+/* Якщо хочеш пряме завантаження APK: впиши "користувач/репозиторій" з GitHub (де збирається APK) */
+const GH_REPO='';
+const ua=navigator.userAgent,ios=/iphone|ipad|ipod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),and=/android/i.test(ua);
+const $=id=>document.getElementById(id);let dp=null;
+const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+if(standalone){$('done').hidden=false}
+else if(ios){$('ios').hidden=false}
+else if(and){$('android').hidden=false;if(GH_REPO){const a=$('apk');a.href='https://github.com/'+GH_REPO+'/releases/latest/download/TrebaSvitlo.apk';a.hidden=false}}
+else{$('desktop').hidden=false}
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e});
+async function go(){if(dp){dp.prompt();try{await dp.userChoice}catch(_){}dp=null}else{$('a-how').hidden=false;if(!and)alert('Натисни значок встановлення в адресному рядку браузера або відкрий меню ⋮ → «Встановити застосунок».')}}
+$('inst').onclick=go;$('inst2').onclick=go;
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
+</script></body></html>
