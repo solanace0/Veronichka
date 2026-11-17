@@ -1,10 +1,10 @@
-<!doctype html><html lang="uk" data-theme="light"><head><meta charset="utf-8">
+<!doctype html><html lang="uk" data-theme="dark"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>ТребаСвітло?</title>
 <meta name="description" content="Графік відключень світла для Кривого Рогу, Дніпра та Кам’янського: вибери свою чергу й завжди знай, коли буде світло.">
 <script>/* тема до першого малювання: без спалаху світлої версії */
-(function(){try{var t=localStorage.getItem('theme')||'auto',d=t==='dark'||(t==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.dataset.theme=d?'dark':'light';document.documentElement.dataset.boot='1'}catch(e){}})()</script>
-<meta name="theme-color" content="#F7F4FF"><link rel="manifest" href="manifest.webmanifest">
+(function(){try{document.documentElement.dataset.theme='dark';document.documentElement.dataset.boot='1'}catch(e){}})()</script>
+<meta name="theme-color" content="#000000"><link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="ТребаСвітло?">
@@ -28,13 +28,6 @@ html[data-theme=dark] .chip.a.mine::after{background:#16120A}
 html[data-theme=dark] .aclist{box-shadow:0 14px 34px #000000b0}
 html[data-theme=dark] .acitem svg{stroke:var(--ac)}
 html[data-theme=dark] .nav{background:#0d0b12d9}
-html[data-theme=dark] #intro{background:radial-gradient(ellipse min(60vw,520px) min(46vh,420px) at 0% 8%,#7A5AE62A,#7A5AE600),radial-gradient(ellipse min(70vw,640px) min(30vh,260px) at 86% 0%,#FFBE4630,#FFBE4600),#08070C}
-html[data-theme=dark] #intro .ttl{color:#F5F3FA}
-html[data-theme=dark] #intro .tag{color:#A9A6B8}
-html[data-theme=dark] #intro .bar{background:#ffffff1c}
-html[data-theme=dark] #intro .bar i{background:linear-gradient(90deg,#FFD23F,#FF9F1C)}
-html[data-theme=dark] #intro .aur::before{background:#7A5AE633}
-html[data-theme=dark] #intro .aur::after{background:#FFBE4633}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{-webkit-text-size-adjust:100%}
 html,body{margin:0;background:var(--bg);color:var(--tx);font:500 16px/1.45 var(--font);transition:background .35s,color .35s}
@@ -106,23 +99,11 @@ body.nonav .nav{display:none}
 .toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 92px);transform:translate(-50%,20px);background:var(--tx);color:var(--bg);padding:11px 18px;border-radius:14px;font-size:14px;font-weight:700;opacity:0;pointer-events:none;transition:.3s;z-index:90;max-width:90vw;text-align:center}
 .toast.s{opacity:1;transform:translate(-50%,0)}
 /* ---- вступна анімація ---- */
-#intro{position:fixed;inset:0;z-index:100;background:radial-gradient(120% 90% at 50% 38%,#EEE8FF,#CBBCFA 60%,#AD99F2);overflow:hidden;display:flex;align-items:center;justify-content:center;transition:opacity .6s}
-#intro.out{opacity:0;pointer-events:none}
-#intro .fig{width:min(76vw,380px,60vh);aspect-ratio:1;animation:rise 1.3s cubic-bezier(.2,.9,.25,1.08) both}
-#intro svg{width:100%;height:100%;overflow:visible}
-#intro .ttl{position:absolute;left:0;right:0;bottom:calc(11vh + env(safe-area-inset-bottom));text-align:center;font-size:26px;font-weight:800;color:#3B2F73;opacity:0;animation:fadeup .7s 1.9s both}
-.lit{opacity:0;animation:fadein .5s 1.45s both}
-.ray{transform-box:fill-box;transform-origin:50% 100%;opacity:0;animation:ray .45s both}
-.dim{animation:fadeout .4s 1.45s both}
-.spk{opacity:0;animation:fadein .6s 1.8s both}
 @keyframes rise{from{transform:translateY(105vh)}to{transform:none}}
 @keyframes fadein{to{opacity:1}}@keyframes fadeout{to{opacity:0}}
 @keyframes fadeup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes ray{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:scale(1)}}
 /* ---- вступна анімація: ПК-версія (заставка на всю ширину, «штора» при виході) ---- */
-#intro .stage,#intro .txt{display:contents}
-#intro .ttl i{font-style:normal}
-#intro .tag,#intro .bar,#intro .aur{display:none}
 @keyframes letter{to{opacity:1;filter:none;transform:none}}
 @keyframes riseD{from{opacity:0;transform:translate(-5vw,16vh) scale(.78)}to{opacity:1;transform:none}}
 @keyframes fill{to{transform:scaleX(1)}}
@@ -195,20 +176,6 @@ html[data-theme=light] body::before{display:none}
 #sched .meta{font-size:15px;margin-top:16px}
 .tabs button,.trow .mini{font-size:17px;padding-top:12px;padding-bottom:12px}
 /* заставка на ПК: логотип зліва, назва літерами справа, «штора» вгору при виході */
-#intro{background:radial-gradient(80% 120% at 28% 50%,#F5F1FF,#CDBFFB 52%,#A790F1);transition:transform 1s cubic-bezier(.76,0,.24,1),border-radius 1s cubic-bezier(.76,0,.24,1),opacity .35s .75s;will-change:transform}
-#intro.out{transform:translateY(-102%);border-radius:0 0 50% 50%/0 0 9vh 9vh}
-#intro .aur{display:block;position:absolute;inset:0;pointer-events:none}
-#intro .aur::before,#intro .aur::after{content:"";position:absolute;border-radius:50%;filter:blur(70px);animation:drift 10s ease-in-out infinite alternate}
-#intro .aur::before{width:44vw;height:44vw;left:-10vw;top:-16vw;background:#ffffffb0}
-#intro .aur::after{width:38vw;height:38vw;right:-8vw;bottom:-14vw;background:#FFE7A0a0;animation-delay:-5s}
-#intro .stage{display:flex;align-items:center;gap:clamp(28px,5vw,88px);position:relative;z-index:1}
-#intro .fig{width:min(32vw,400px,62vh);flex:none;animation:riseD 1.4s cubic-bezier(.2,.85,.25,1.05) both}
-#intro .txt{display:block;max-width:36vw}
-#intro .ttl{position:static;text-align:left;font-size:clamp(42px,4.6vw,72px);line-height:1.05;letter-spacing:-.02em;font-weight:900;opacity:1;animation:none}
-#intro .ttl i{display:inline-block;opacity:0;filter:blur(10px);transform:translateY(.35em);animation:letter .75s cubic-bezier(.2,.8,.2,1) calc(1.35s + var(--i)*55ms) both}
-#intro .tag{display:block;font-size:clamp(16px,1.5vw,22px);font-weight:700;color:#5B4BA3;margin-top:14px;opacity:0;animation:fadeup .8s 2.2s both}
-#intro .bar{display:block;margin-top:30px;width:min(240px,100%);height:5px;border-radius:9px;background:#ffffff70;overflow:hidden;opacity:0;animation:fadein .4s 2.2s both}
-#intro .bar i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#8C75EE,#FFC933);transform:scaleX(0);transform-origin:left;animation:fill 1.8s 2.3s cubic-bezier(.5,0,.2,1) forwards}
 .boot .nav{--bd:.45s}.boot .top{--bd:.55s}.boot .hello{--bd:.62s}
 }
 .avwhy{display:flex;gap:12px;align-items:flex-start;padding:15px 16px}.avwhy .ic{flex:none;width:38px;height:38px;border-radius:12px;background:var(--acs);display:grid;place-items:center;font-size:19px}.avwhy b{display:block;font-weight:800;margin-bottom:2px}.avwhy p{margin:0;font-size:13.5px;color:var(--mu);line-height:1.45}
@@ -242,34 +209,55 @@ html[data-theme=light] #mood{opacity:.55}
 .shm{position:fixed;inset:0;background:#000000bd;z-index:200;display:flex;align-items:center;justify-content:center;padding:14px;overflow:auto}
 .shb{background:var(--card);border-radius:20px;padding:14px;width:min(100%,420px);max-height:100%;overflow:auto;border:1px solid var(--bd)}
 #shi{width:100%;display:block;border-radius:14px;background:var(--bg2);aspect-ratio:1080/1350}.shr{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.shr .ref{margin-top:0;flex:1 1 auto;text-align:center}
+
+/* ===== Нова айдентика: чорний фон, біле сяйво, тепла «лампочка» ===== */
+:root,html[data-theme=dark]{--bg:#000;--bg2:#0E0D10;--card:#0A0A0C;--bd:#ffffff1a;--ac:#FFC76A;--acs:#FFB43A1f;--acx:#120C02;--tx:#FFFFFF;--mu:#9B97A3;--sh:0 0 0 1px #ffffff08,0 10px 40px #00000099;--sw:#2a2830;--onb:#0F1A14;--onx:#FFE2A3;--offb:#14141A;--offx:#C9CBD6;--wb:#1A1408;--wx:#FFC76A;color-scheme:dark}
+html[data-theme=dark] body::before{background:radial-gradient(ellipse min(70vw,560px) min(34vh,320px) at 78% 0%,#FFB43A2e 0%,#FFB43A12 50%,#FFB43A00 100%),radial-gradient(ellipse min(60vw,480px) min(40vh,380px) at 0% 100%,#ffffff12 0%,#ffffff00 100%),#000}
+html[data-theme=dark] .nav{background:#000000d9;border-color:#ffffff14}
+html[data-theme=dark] .card{background:linear-gradient(160deg,#121114,#0A0A0C);border:1px solid #ffffff1a;box-shadow:0 0 0 1px #ffffff06 inset,0 12px 40px #000000b0}
+html[data-theme=dark] .card:hover{box-shadow:0 0 28px #FFB43A22,0 10px 30px #000000b0;border-color:#FFC76A44}
+html[data-theme=dark] h1,html[data-theme=dark] h2{text-shadow:0 0 22px #ffffff30}
+html[data-theme=dark] .hello img,.nav .brand img{border-radius:50%!important;box-shadow:0 0 0 1px #ffffff40,0 0 22px #ffffff40,0 0 34px #FFB43A40;object-fit:cover}
+html[data-theme=dark] .hello img{width:64px;height:64px}
+html[data-theme=dark] .hello p{color:var(--ac);text-shadow:0 0 14px #FFB43A66}
+html[data-theme=dark] .nav button.a{color:#FFD98F;background:#FFB43A1a;box-shadow:0 0 18px #FFB43A26 inset}
+html[data-theme=dark] .nav button.a svg{filter:drop-shadow(0 0 5px #FFB43A99)}
+html[data-theme=dark] .ref.p,html[data-theme=dark] button.p{background:linear-gradient(180deg,#FFE3A6,#FFB43A);color:#120C02;box-shadow:0 0 24px #FFB43A55;border-color:transparent}
+html[data-theme=dark] .chip.a{box-shadow:0 0 14px #FFB43A44}
+/* ===== Заставка: дівчина, орбіти, лампочка (лише transform/opacity — без blur і важких фільтрів) ===== */
+#intro{position:fixed;inset:0;z-index:100;background:radial-gradient(ellipse 90% 60% at 62% 28%,#1b1306 0%,#000 72%),#000;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .75s ease .18s;contain:layout paint;-webkit-user-select:none;user-select:none;cursor:pointer}
+#intro.out{opacity:0;pointer-events:none}
+#intro .stage{position:relative;width:min(90vw,60vh,620px);aspect-ratio:1;transform-origin:64.2% 31%;transition:transform 1s cubic-bezier(.55,0,.25,1);will-change:transform}
+#intro.out .stage{transform:scale(1.7)}
+#intro .lyr,#intro .cv{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+#intro .girl{opacity:0}
+#intro.go .girl{animation:ig-girl 1.1s .1s cubic-bezier(.2,.8,.2,1) both}
+#intro .dim{opacity:0}
+#intro.go .dim{animation:ig-fade .8s 1s ease both}
+#intro .lit{opacity:0;transform-origin:64.2% 31%}
+#intro.go .lit{animation:ig-ignite .8s 2.1s ease-out both}
+#intro .halo,#intro .flash{position:absolute;left:64.2%;top:31%;border-radius:50%;opacity:0;pointer-events:none}
+#intro .halo{width:84%;aspect-ratio:1;margin:-42% 0 0 -42%;background:radial-gradient(circle,#FFC24A70 0%,#FFB43A2a 34%,#FFB43A00 68%)}
+#intro.go .halo{animation:ig-halo 1.8s 2.1s cubic-bezier(.2,.7,.2,1) both}
+#intro .flash{width:320%;aspect-ratio:1;margin:-160% 0 0 -160%;background:radial-gradient(circle,#FFF6DC 0%,#FFD98F 9%,#FFB43A66 22%,#FFB43A00 48%)}
+#intro.out .flash{animation:ig-flash .8s ease both}
+#intro .st{position:absolute;width:5.5%;aspect-ratio:1;margin:-2.75% 0 0 -2.75%;opacity:0;pointer-events:none}
+#intro .st svg{display:block;width:100%;height:100%}
+#intro.go .st{animation:ig-tw 2.8s var(--d) ease-in-out infinite both}
+#intro .ttl{margin-top:2vh;font:900 clamp(26px,5.4vw,46px)/1.1 var(--font,system-ui,sans-serif);letter-spacing:.01em;color:#fff;text-shadow:0 0 26px #ffffff50;text-align:center;opacity:0}
+#intro .tag{margin-top:8px;font:700 clamp(14px,2.4vw,19px)/1.2 var(--font,system-ui,sans-serif);color:#FFC76A;text-align:center;opacity:0}
+#intro.go .ttl{animation:ig-up .9s 1.25s cubic-bezier(.2,.8,.2,1) both}
+#intro.go .tag{animation:ig-up .9s 1.6s cubic-bezier(.2,.8,.2,1) both}
+@keyframes ig-girl{from{opacity:0;transform:translate3d(0,3%,0) scale(.97)}to{opacity:1;transform:none}}
+@keyframes ig-fade{to{opacity:1}}
+@keyframes ig-ignite{0%{opacity:0;transform:scale(.9)}12%{opacity:1}24%{opacity:.3}40%{opacity:1;transform:scale(1.08)}56%{opacity:.75}100%{opacity:1;transform:none}}
+@keyframes ig-halo{0%{opacity:0;transform:scale(.4)}30%{opacity:1;transform:scale(1.15)}100%{opacity:.8;transform:scale(1)}}
+@keyframes ig-flash{0%{opacity:0}45%{opacity:1}100%{opacity:1}}
+@keyframes ig-tw{0%,100%{opacity:.15;transform:scale(.55) rotate(0)}50%{opacity:1;transform:scale(1) rotate(45deg)}}
+@keyframes ig-up{from{opacity:0;transform:translate3d(0,12px,0)}to{opacity:1;transform:none}}
 </style></head><body>
 <div id="mood" aria-hidden="true"><i class="m on"></i><i class="m off"></i><i class="m emg"></i></div>
-<div id="intro" class="hid" aria-hidden="true">
-<div class="aur"></div><div class="stage"><div class="fig"><svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ТребаСвітло?"><defs>
-<radialGradient id="ihalo" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff" stop-opacity=".6"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
-<radialGradient id="iglow" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFE27A" stop-opacity=".9"/><stop offset=".5" stop-color="#FFC94A" stop-opacity=".3"/><stop offset="1" stop-color="#FFC94A" stop-opacity="0"/></radialGradient>
-<linearGradient id="ibulb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF8C8"/><stop offset=".55" stop-color="#FFDE5C"/><stop offset="1" stop-color="#FFBF33"/></linearGradient>
-<linearGradient id="ioff" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F4F0FF"/><stop offset="1" stop-color="#D3C8F5"/></linearGradient>
-<linearGradient id="iface" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#EDE5FF"/></linearGradient>
-<linearGradient id="ibody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7F3FF"/><stop offset="1" stop-color="#CDBDFB"/></linearGradient>
-<linearGradient id="ihair" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9D84F4"/><stop offset="1" stop-color="#7C5FE6"/></linearGradient>
-<linearGradient id="ineck" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E4D9FF"/><stop offset="1" stop-color="#F1EAFF"/></linearGradient></defs>
-<circle cx="236" cy="330" r="200" fill="url(#ihalo)"/>
-<g class="lit"><circle cx="312" cy="134" r="125" fill="url(#iglow)"/></g>
-<g stroke="#FFC933" stroke-width="9" stroke-linecap="round">
-<line class="ray" style="animation-delay:1.55s" x1="248" y1="134" x2="232" y2="134"/><line class="ray" style="animation-delay:1.6s" x1="256.6" y1="102" x2="242.7" y2="94"/><line class="ray" style="animation-delay:1.65s" x1="280" y1="78.6" x2="272" y2="64.7"/><line class="ray" style="animation-delay:1.7s" x1="312" y1="70" x2="312" y2="48"/><line class="ray" style="animation-delay:1.75s" x1="344" y1="78.6" x2="352" y2="64.7"/><line class="ray" style="animation-delay:1.8s" x1="367.4" y1="102" x2="381.3" y2="94"/><line class="ray" style="animation-delay:1.85s" x1="376" y1="134" x2="392" y2="134"/></g>
-<path d="M104 452C104 386 160 352 236 352S368 386 368 452Z" fill="url(#ibody)"/>
-<rect x="212" y="306" width="48" height="58" rx="22" fill="url(#ineck)"/>
-<ellipse cx="236" cy="326" rx="30" ry="12" fill="#8B6FE0" opacity=".28"/>
-<ellipse cx="236" cy="262" rx="56" ry="66" fill="url(#iface)"/>
-<path d="M180 262A56 66 0 0 1 292 262C272 232 236 228 208 247C196 255 187 260 180 262Z" fill="url(#ihair)"/>
-<circle cx="208" cy="188" r="31" fill="url(#ihair)"/>
-<path d="M192 178Q204 166 222 170" stroke="#D9CCFF" stroke-width="5" stroke-linecap="round" fill="none" opacity=".8"/>
-<g class="dim"><circle cx="312" cy="134" r="42" fill="url(#ioff)"/><rect x="293" y="164" width="38" height="26" rx="9" fill="url(#ioff)"/></g>
-<g class="lit"><circle cx="312" cy="134" r="42" fill="url(#ibulb)"/><rect x="293" y="164" width="38" height="26" rx="9" fill="url(#ibulb)"/><ellipse cx="298" cy="118" rx="9" ry="14" fill="#fff" opacity=".6" transform="rotate(25 298 118)"/></g>
-<rect x="294" y="188" width="36" height="9" rx="4.5" fill="#fff"/><rect x="298" y="199" width="28" height="9" rx="4.5" fill="#EFE8FF"/><rect x="304" y="210" width="16" height="8" rx="4" fill="#DCD0FB"/>
-<g class="spk" fill="#fff"><path d="M128 157Q128 170 141 170Q128 170 128 183Q128 170 115 170Q128 170 128 157Z"/><path d="M392 252Q392 262 402 262Q392 262 392 272Q392 262 382 262Q392 262 392 252Z"/><path d="M96 293Q96 300 103 300Q96 300 96 307Q96 300 89 300Q96 300 96 293Z"/><path d="M404 169Q404 176 411 176Q404 176 404 183Q404 176 397 176Q404 176 404 169Z"/></g></svg></div>
-<div class="txt"><div class="ttl" id="ittl">ТребаСвітло?</div><div class="tag">Знай, коли буде світло</div><div class="bar"><i></i></div></div></div></div>
+<div id="intro" class="hid" aria-hidden="true"><div class="stage"><canvas class="cv back"></canvas><img class="lyr girl" src="intro-girl.png" alt="" decoding="async"><img class="lyr dim" src="intro-bulb-dim.png" alt="" decoding="async"><div class="halo"></div><img class="lyr lit" src="intro-bulb.png" alt="" decoding="async"><canvas class="cv front"></canvas><span class="st" style="left:30.5%;top:30.3%;--d:.7s"><svg viewBox="-10 -10 20 20"><path d="M0-10C1-3 3-1 10 0 3 1 1 3 0 10-1 3-3 1-10 0-3-1-1-3 0-10Z" fill="#fff"/></svg></span><span class="st" style="left:83%;top:50.4%;--d:1.1s"><svg viewBox="-10 -10 20 20"><path d="M0-10C1-3 3-1 10 0 3 1 1 3 0 10-1 3-3 1-10 0-3-1-1-3 0-10Z" fill="#fff"/></svg></span><span class="st" style="left:15.3%;top:63%;width:3%;margin:-1.5% 0 0 -1.5%;--d:1.5s"><svg viewBox="-10 -10 20 20"><path d="M0-10C1-3 3-1 10 0 3 1 1 3 0 10-1 3-3 1-10 0-3-1-1-3 0-10Z" fill="#fff"/></svg></span><div class="flash"></div></div><div class="ttl">ТребаСвітло?</div><div class="tag">Знай, коли буде світло</div></div>
 
 <nav class="nav" aria-label="Основна навігація"><div class="brand"><img src="icon-192.png" alt=""><span>ТребаСвітло?</span></div>
 <button id="n1" class="a" onclick="setView(1)"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3Z"/></svg>Світло</button>
@@ -314,7 +302,7 @@ html[data-theme=light] #mood{opacity:.55}
 <div class="meta">Не знаєш свою чергу? <a href="https://www.dtek-dnem.com.ua/ua/shutdowns" target="_blank" rel="noopener">Дізнатися за адресою на сайті ДТЕК</a>.</div></div>
 
 <div class="card"><h2>Оформлення</h2><div class="sub" style="margin-bottom:12px">Тема</div>
-<div class="seg" style="margin-bottom:6px"><button data-t="auto" onclick="setTheme('auto')">Авто</button><button data-t="light" onclick="setTheme('light')">☀️ Світла</button><button data-t="dark" onclick="setTheme('dark')">🌙 Темна</button></div>
+<div class="seg" style="display:none"><button data-t="auto" onclick="setTheme('auto')">Авто</button><button data-t="light" onclick="setTheme('light')">☀️ Світла</button><button data-t="dark" onclick="setTheme('dark')">🌙 Темна</button></div>
 <div class="opt"><div><b>Вступна анімація</b><small>Показувати заставку під час запуску</small></div><button class="sw" role="switch" data-nosound="1" data-k="intro" aria-label="Вступна анімація"></button></div></div>
 
 <div class="card"><h2>Звук</h2>
@@ -611,7 +599,7 @@ document.addEventListener('pointerdown',e=>{const t=e.target.closest&&e.target.c
 function testSound(){const was=ST.sound;ST.sound=true;SND.tap();setTimeout(SND.on,260);setTimeout(SND.ok,800);ST.sound=was;if(!was)toast('Звуки зараз вимкнено — це лише перевірка')}
 function toast(m){const t=$('toast');t.textContent=m;t.classList.add('s');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('s'),3600)}
 /* ---------- тема ---------- */
-function applyTheme(){const t=LS.getItem('theme')||'auto',e=t==='auto'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):t;document.documentElement.dataset.theme=e;document.querySelector('meta[name=theme-color]').content=e==='light'?'#F7F4FF':'#08070C';document.querySelectorAll('.seg button[data-t]').forEach(b=>b.classList.toggle('a',b.dataset.t===t))}
+function applyTheme(){document.documentElement.dataset.theme='dark';document.querySelector('meta[name=theme-color]').content='#000000'}
 function setTheme(t){LS.setItem('theme',t);applyTheme()}
 /* ---------- час ---------- */
 function kv(){const p={};new Intl.DateTimeFormat('en-GB',{timeZone:TZ,hour12:false,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'}).formatToParts(new Date()).forEach(x=>p[x.type]=x.value);
@@ -864,18 +852,46 @@ let introT=null;const wide=()=>matchMedia('(min-width:900px)').matches;
 /* плавна поява елементів: вішаємо клас на секцію на ~1.4 с */
 function enter(el){if(!el||matchMedia('(prefers-reduced-motion: reduce)').matches)return;el.classList.remove('ent');void el.offsetWidth;el.classList.add('ent');clearTimeout(el._et);el._et=setTimeout(()=>el.classList.remove('ent'),1500)}
 function boot(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;document.body.classList.add('boot');enter($('v'+view));setTimeout(()=>document.body.classList.remove('boot'),2200)}
+let introStop=null;
 function runIntro(){const el=$('intro');if(!ST.intro||matchMedia('(prefers-reduced-motion: reduce)').matches){boot();return}try{if(sessionStorage.getItem('intro')){boot();return}sessionStorage.setItem('intro','1')}catch(e){}
-$('ittl').innerHTML=[...'ТребаСвітло?'].map((c,i)=>`<i style="--i:${i}">${c}</i>`).join('');
-el.classList.remove('hid');el.setAttribute('aria-hidden','false');el.onclick=endIntro;introSound();introT=setTimeout(endIntro,wide()?4400:3600)}
+el.classList.remove('hid');el.setAttribute('aria-hidden','false');el.onclick=endIntro;
+/* спершу декодуємо картинки (щоб не було ривків), потім стартуємо анімацію */
+introReady(el).then(()=>{if(el.classList.contains('out'))return;void el.offsetWidth;el.classList.add('go');introStop=introAnim(el);introSound();introT=setTimeout(endIntro,3500)})}
+/* Заставка: орбіти малюються на двох canvas (позаду та поперед дівчини), решта — CSS. */
+function introReady(el){const im=[...el.querySelectorAll('img')];return Promise.race([Promise.all(im.map(i=>i.decode?i.decode().catch(()=>{}):0)),new Promise(r=>setTimeout(r,1800))])}
+function introAnim(el){
+const st=el.querySelector('.stage'),cb=el.querySelector('.cv.back'),cf=el.querySelector('.cv.front');
+const dpr=Math.min(devicePixelRatio||1,2),S=Math.max(200,Math.round(st.clientWidth*dpr));
+cb.width=cb.height=cf.width=cf.height=S;
+const b=cb.getContext('2d'),f=cf.getContext('2d'),k=S/1254,PI=Math.PI;
+const sp=document.createElement('canvas');sp.width=sp.height=64;const sg=sp.getContext('2d'),g=sg.createRadialGradient(32,32,0,32,32,32);
+g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.25,'rgba(255,238,196,.85)');g.addColorStop(1,'rgba(255,200,110,0)');sg.fillStyle=g;sg.fillRect(0,0,64,64);
+const O=[{cx:600,cy:640,a:560,b:185,t:-24*PI/180,d:1,n:3,ph:0,w:1},{cx:620,cy:710,a:390,b:115,t:15*PI/180,d:-1,n:2,ph:1.3,w:1.35}];
+const pt=(o,r,th)=>{const x=o.a*r*Math.cos(th),y=o.b*r*Math.sin(th),c=Math.cos(o.t),s=Math.sin(o.t);return[(o.cx+x*c-y*s)*k,(o.cy+x*s+y*c)*k]};
+const ring=(c,o,r,a0,a1,al)=>{c.strokeStyle='rgba(255,244,225,'+al+')';c.lineWidth=1.6*k;c.beginPath();c.ellipse(o.cx*k,o.cy*k,o.a*r*k,o.b*r*k,o.t,a0,a1);c.stroke()};
+let raf=0,run=true;const t0=performance.now(),N=36,L=1.5;
+function fr(now){if(!run)return;const t=(now-t0)/1000;b.clearRect(0,0,S,S);f.clearRect(0,0,S,S);b.globalCompositeOperation=f.globalCompositeOperation='lighter';
+const boost=t>2.1?1+.7*Math.exp(-(t-2.1)*3.5):1,fade=Math.min(1,t/.45);
+for(const o of O){const p=Math.min(1,Math.max(0,(t-.15)/1.9)),e=1-Math.pow(1-p,3),r=1+1.2*Math.pow(1-e,2);
+ring(b,o,r,PI,2*PI,.16*e);ring(f,o,r,0,PI,.34*e);
+for(let i=0;i<o.n;i++){const th=o.ph+i*2*PI/o.n+o.d*(o.w*t+6.5*e);
+for(let j=0;j<N;j++){const ta=th-o.d*L*j/N,tb=th-o.d*L*(j+1)/N,q=1-j/N,c=Math.sin((ta+tb)/2)>0?f:b,A=Math.min(1,Math.pow(q,1.8)*.9*fade*boost),pa=pt(o,r,ta),pb=pt(o,r,tb);
+c.lineCap='round';c.beginPath();c.moveTo(pa[0],pa[1]);c.lineTo(pb[0],pb[1]);
+c.strokeStyle='rgba(255,190,90,'+A*.22+')';c.lineWidth=(9*q+2)*k;c.stroke();
+c.strokeStyle='rgba(255,246,228,'+A+')';c.lineWidth=(3.2*q+.8)*k;c.stroke()}
+const h=pt(o,r,th),c=Math.sin(th)>0?f:b,z=54*k*(1+.3*Math.sin(th));c.globalAlpha=Math.min(1,fade*boost);c.drawImage(sp,h[0]-z/2,h[1]-z/2,z,z);c.globalAlpha=1}}
+raf=requestAnimationFrame(fr)}
+raf=requestAnimationFrame(fr);return()=>{run=false;cancelAnimationFrame(raf)}}
+
 /* Звук входу. Ставимо ноти на годинник аудіо (точно в момент, коли загорається лампочка, ~1.45 с),
    а не через setTimeout. Якщо браузер ще не дозволив звук (потрібен перший дотик) — граємо одразу після дотику,
    поки заставка ще на екрані; запізнілий звук через 10–15 с більше не вмикається. */
 function introSound(){if(!ST.sound)return;const t0=performance.now();let done=false;
-const go=()=>{if(done)return;const a=ac();if(!a||a.state!=='running')return;const el=(performance.now()-t0)/1000;if(el>7){off();return}done=true;off();try{bus(a);SND.light(Math.max(0,1.45-el))}catch(e){}};
+const go=()=>{if(done)return;const a=ac();if(!a||a.state!=='running')return;const el=(performance.now()-t0)/1000;if(el>7){off();return}done=true;off();try{bus(a);SND.light(Math.max(0,2.1-el))}catch(e){}};
 const arm=()=>{const a=ac();if(!a)return;if(a.state==='running')go();else a.resume().then(go).catch(()=>{})};
 const evs=['pointerdown','touchstart','mousedown','keydown'],off=()=>evs.forEach(e=>removeEventListener(e,arm,true));
 evs.forEach(e=>addEventListener(e,arm,true));arm();setTimeout(off,7500)}
-function endIntro(){if($('intro').classList.contains('out'))return;clearTimeout(introT);const el=$('intro');el.classList.add('out');boot();setTimeout(()=>el.classList.add('hid'),wide()?1200:650)}
+function endIntro(){const el=$('intro');if(el.classList.contains('out'))return;clearTimeout(introT);el.classList.add('out');boot();setTimeout(()=>{el.classList.add('hid');if(introStop)introStop()},1000)}
 /* ---------- підказки адрес: вулиця + номер будинку ---------- */
 const PIN='<svg viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z"/><circle cx="12" cy="10" r="2.3"/></svg>',acMem=new Map();
 function acAttach(p){const inp=$(p+'-a'),wrap=$(p+'-ac'),box=$(p+'-al'),city=$(p+'-c');let items=[],sel=-1,seq=0,timer=0,ctl=null;
