@@ -239,7 +239,9 @@ html[data-theme=dark] .chip.a{box-shadow:0 0 14px #FFFFFF44}
 #intro .halo,#intro .flash{position:absolute;left:64.2%;top:31%;border-radius:50%;opacity:0;pointer-events:none}
 #intro .halo{width:84%;aspect-ratio:1;margin:-42% 0 0 -42%;background:radial-gradient(circle,#FFFFFF70 0%,#FFFFFF2a 34%,#FFFFFF00 68%)}
 #intro.go .halo{animation:ig-halo 1.8s 2.1s cubic-bezier(.2,.7,.2,1) both}
-#intro .flash{width:320%;aspect-ratio:1;margin:-160% 0 0 -160%;background:radial-gradient(circle,#FFFFFF 0%,#FFFFFF 9%,#FFFFFF66 22%,#FFFFFF00 48%)}
+#intro .flash{width:240%;aspect-ratio:1;margin:-120% 0 0 -120%;background:radial-gradient(circle,#FFFFFF 0%,#FFFFFF 12%,#FFFFFF66 29%,#FFFFFF00 64%)}
+#intro .girl,#intro .dim,#intro .lit,#intro .halo,#intro .flash{will-change:opacity,transform;backface-visibility:hidden}
+#intro .cv{will-change:contents}
 #intro.out .flash{animation:ig-flash .8s ease both}
 #intro .st{position:absolute;width:5.5%;aspect-ratio:1;margin:-2.75% 0 0 -2.75%;opacity:0;pointer-events:none}
 #intro .st svg{display:block;width:100%;height:100%}
@@ -473,9 +475,9 @@ html[data-theme=dark] .nav button.a{background:#EFEBE41a;color:#F6F3EE}
 .nav{background:linear-gradient(180deg,#0b0b0c,#050506)}
 }
 /* заставка — янтарне сяйво */
-#intro{background:radial-gradient(ellipse 90% 60% at 62% 28%,#181716 0%,#000 72%),#000}
-#intro .halo{background:radial-gradient(circle,#EFEBE470 0%,#E6E2DA2a 34%,#E6E2DA00 68%)}
-#intro .flash{background:radial-gradient(circle,#F8F6F2 0%,#F3F0EA 9%,#E6E2DA66 22%,#E6E2DA00 48%)}
+#intro{background:radial-gradient(ellipse 90% 60% at 62% 28%,#16151f 0%,#000 72%),#000}
+#intro .halo{background:radial-gradient(circle,#D8D2FF70 0%,#A79CFF2a 34%,#A79CFF00 68%)}
+#intro .flash{background:radial-gradient(circle,#F8F6F2 0%,#F3F0EA 12%,#E4DFFF66 29%,#E4DFFF00 64%)}
 #intro .tag{color:#E4E0D8}
 /* статус усередині картки графіка */
 #hslot{margin:2px 0 16px}
@@ -502,8 +504,10 @@ html[data-theme=dark] .chip.a,.sw[aria-checked=true],.seg3 .thumb,#sched .pill.o
 @keyframes bgf{0%{transform:translate3d(0,0,0) scale(1)}33%{transform:translate3d(6vmax,-4vmax,0) scale(1.08)}66%{transform:translate3d(-5vmax,5vmax,0) scale(.94)}100%{transform:translate3d(4vmax,7vmax,0) scale(1.05)}}
 @media (prefers-reduced-motion:reduce){#bgfx i{animation:none}}
 #mood .on,#mood .off{background:none}
-html[data-theme=dark] .card{background:linear-gradient(180deg,#131315cc,#0a0a0bd1);-webkit-backdrop-filter:blur(14px) saturate(1.15);backdrop-filter:blur(14px) saturate(1.15)}
-html[data-theme=dark] .nav{-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+html[data-theme=dark] .card{background:linear-gradient(180deg,#131315d6,#0a0a0bdb)}
+/* під час заставки фон стоїть на паузі — уся потужність іде на анімацію входу */
+.intro-on #bgfx i{animation-play-state:paused}
+.intro-on #bgfx .c{filter:none}
 </style></head><body><div id="bgfx" aria-hidden="true"><i class="b1"></i><i class="b2"></i><i class="b3"></i><i class="b4"></i><i class="c c1"></i><i class="c c2"></i><i class="c c3"></i><i class="c c4"></i></div>
 <div id="mood" aria-hidden="true"><i class="m on"></i><i class="m off"></i><i class="m emg"></i></div>
 <div id="intro" class="hid" aria-hidden="true"><div class="stage"><canvas class="cv back"></canvas><img class="lyr girl" src="intro-girl.png" alt="" decoding="async"><img class="lyr dim" src="intro-bulb-dim.png" alt="" decoding="async"><div class="halo"></div><img class="lyr lit" src="intro-bulb.png" alt="" decoding="async"><canvas class="cv front"></canvas><span class="st" style="left:30.5%;top:30.3%;--d:.7s"><svg viewBox="-10 -10 20 20"><path d="M0-10C1-3 3-1 10 0 3 1 1 3 0 10-1 3-3 1-10 0-3-1-1-3 0-10Z" fill="#fff"/></svg></span><span class="st" style="left:83%;top:50.4%;--d:1.1s"><svg viewBox="-10 -10 20 20"><path d="M0-10C1-3 3-1 10 0 3 1 1 3 0 10-1 3-3 1-10 0-3-1-1-3 0-10Z" fill="#fff"/></svg></span><span class="st" style="left:15.3%;top:63%;width:3%;margin:-1.5% 0 0 -1.5%;--d:1.5s"><svg viewBox="-10 -10 20 20"><path d="M0-10C1-3 3-1 10 0 3 1 1 3 0 10-1 3-3 1-10 0-3-1-1-3 0-10Z" fill="#fff"/></svg></span><div class="flash"></div></div><div class="ttl">ТребаСвітло?</div><div class="tag">Знай, коли буде світло</div></div>
@@ -563,16 +567,17 @@ html[data-theme=dark] .nav{-webkit-backdrop-filter:blur(18px);backdrop-filter:bl
 <button class="ref" data-nosound="1" onclick="testSound()">Перевірити звук</button></div>
 
 <div class="card"><h2>Важливе</h2>
-<div class="opt"><div><b>Нагадувати про зміну світла</b><small>Повідомлення перед вимкненням і ввімкненням. Працює, поки застосунок відкрито; у фоні залежить від пристрою.</small></div><button class="sw" role="switch" data-nosound="1" data-k="notify" aria-label="Нагадування"></button></div>
-<div class="opt"><div><b>Екстрені відключення</b><small>Повідомлення, щойно для твого міста з’являється оголошення чи ДТЕК підтверджує екстрені відключення. Працює, поки застосунок відкрито або живе в пам’яті пристрою.</small></div><button class="sw" role="switch" data-nosound="1" data-k="emgN" aria-label="Екстрені відключення"></button></div>
+<div class="opt"><div><b>Попередження про вимкнення</b><small>Push за кілька хвилин до вимкнення чи ввімкнення світла. Приходить навіть коли застосунок закрито.</small></div><button class="sw" role="switch" data-nosound="1" data-k="notify" aria-label="Попередження про вимкнення"></button></div>
+<div class="opt"><div><b>Графік змінився</b><small>Коли ДТЕК оновив графік на сьогодні чи завтра</small></div><button class="sw" role="switch" data-nosound="1" data-k="pChg" aria-label="Графік змінився"></button></div>
+<div class="opt"><div><b>З’явився графік на завтра</b><small>Одразу, як тільки графік опубліковано</small></div><button class="sw" role="switch" data-nosound="1" data-k="pNew" aria-label="З’явився графік на завтра"></button></div>
+<div class="opt"><div><b>Екстрені відключення</b><small>Коли для твого міста починають діяти екстрені відключення</small></div><button class="sw" role="switch" data-nosound="1" data-k="emgN" aria-label="Екстрені відключення"></button></div>
 <div class="opt"><div><b>Вібрація</b><small>Коротка вібрація, коли світло вмикається чи вимикається за графіком, і при екстрених відключеннях. Є на Android; iPhone вібрацію в застосунках не підтримує.</small></div><button class="sw" role="switch" data-nosound="1" data-k="vib" aria-label="Вібрація"></button></div>
-<div class="opt"><div><b>Живий фон</b><small>Фон плавно змінює колір: світло є, світла немає, екстрені відключення</small></div><button class="sw" role="switch" data-nosound="1" data-k="mood" aria-label="Живий фон"></button></div>
 <label class="lbl" for="lead">За скільки часу нагадувати</label><select id="lead" class="sel"><option value="5">за 5 хвилин</option><option value="10">за 10 хвилин</option><option value="15">за 15 хвилин</option><option value="30">за 30 хвилин</option><option value="60">за 1 годину</option></select>
-<div id="notif-note" class="meta"></div>
+<div id="notif-note" class="meta"></div><button class="ref" data-nosound="1" onclick="pushTest()">Надіслати тестове сповіщення</button>
 <div class="opt"><div><b>Автооновлення графіка</b><small>Перевіряти джерела, поки застосунок відкрито</small></div><button class="sw" role="switch" data-nosound="1" data-k="auto" aria-label="Автооновлення"></button></div>
 <div class="opt"><div><b>Попередження про застарілі дані</b><small>Показувати, якщо графік давно не оновлювався</small></div><button class="sw" role="switch" data-nosound="1" data-k="stale" aria-label="Застарілі дані"></button></div></div>
 
-<div class="card" id="wgt"><h2>Віджет на iPhone</h2><div class="sub" style="margin-bottom:10px">Віджет показує графік на сьогодні для твоєї черги: статус зараз, час наступної зміни та всі відключення дня. Застосунок у браузері не може створити системний віджет, тому використовується безкоштовна програма Scriptable.</div>
+<div class="card" id="wgt"><h2>Віджет на iPhone</h2><div class="sub" style="margin-bottom:10px">Віджет у стилі застосунку: темний фон із м’яким сяйвом, великий статус, час наступної зміни, смужка доби та відключення дня. Є версії для головного екрана і для екрана блокування. Застосунок у браузері не може створити системний віджет, тому використовується безкоштовна програма Scriptable.</div>
 <ol class="anl"><li>Встанови безкоштовну програму <a href="https://apps.apple.com/app/scriptable/id1405459188" target="_blank" rel="noopener">Scriptable</a>.</li><li>Натисни кнопку «Скопіювати скрипт віджета» нижче.</li><li><a href="scriptable:///">Відкрий Scriptable</a>, натисни «+» угорі, довго торкнись порожнього поля й обери «Вставити». Назви скрипт «ТребаСвітло» і натисни «Готово».</li><li>Натисни ▶ у Scriptable: з’явиться перегляд віджета. Якщо бачиш графік, усе працює.</li><li>На головному екрані утримуй порожнє місце → «+» → Scriptable → «Додати віджет». Торкнись віджета й у полі Script обери «ТребаСвітло».</li></ol>
 <button class="ref p w" data-nosound="1" onclick="copyWidget()">Скопіювати скрипт віджета</button><textarea id="wgt-out" class="hid" readonly rows="6" style="width:100%;margin-top:10px;border-radius:12px;border:1px solid var(--bd);background:var(--bg2);color:var(--tx);padding:10px;font:12px/1.35 ui-monospace,Menlo,monospace"></textarea><div class="meta" id="wgt-note"></div></div>
 
@@ -595,6 +600,7 @@ html[data-theme=dark] .nav{-webkit-backdrop-filter:blur(18px);backdrop-filter:bl
 </div>
 <script type="text/plain" id="wgt-src">// ТребаСвітло? — віджет для iPhone (програма Scriptable).
 // Показує графік на СЬОГОДНІ для вибраної черги: статус зараз, час наступної зміни, смужку доби та відключення дня.
+// Працює на головному екрані (малий, середній, великий) і на екрані блокування.
 // Налаштування підставляються автоматично, коли скрипт копіюється зі застосунку (Налаштування → Віджет на iPhone).
 // Інша черга без редагування: у налаштуваннях віджета в полі Parameter напиши, наприклад: kr 3.1  (kr — Кривий Ріг, dp — Дніпро, kz — Кам’янське)
 
@@ -607,6 +613,15 @@ const prm = (args.widgetParameter || "").trim().split(/\s+/);
 if (prm.length === 2 && CITY_NAMES[prm[0]] && /^[1-6]\.[12]$/.test(prm[1])) { city = prm[0]; group = prm[1]; }
 const cityName = CITY_NAMES[city] || CFG.name;
 
+// ---------- палітра застосунку: чорний, перлинний, м’які фіолетовий / бірюзовий / рожевий відблиски ----------
+const C = {
+  base: "#07070A",
+  pearl: new Color("#F4F1EA"), pearl2: new Color("#C9C5BD"),
+  tx: new Color("#F4F1EA"), soft: new Color("#D6D2DC"), mu: new Color("#9C98A8"),
+  segOn: new Color("#EFEBE4"), segOff: new Color("#2A2930"), tick: new Color("#5A5763"),
+  chip: new Color("#FFFFFF", 0.09), chipOn: new Color("#FFFFFF", 0.16)
+};
+
 // ---------- час за Києвом ----------
 function kyivNow() {
   const p = {};
@@ -615,19 +630,21 @@ function kyivNow() {
   const h = +p.hour % 24;
   return { date: `${p.year}-${p.month}-${p.day}`, min: h * 60 + +p.minute, sec: h * 3600 + +p.minute * 60 + +p.second };
 }
+const addDay = (d, n) => { const [y, m, dd] = d.split("-").map(Number); return new Date(Date.UTC(y, m - 1, dd + n)).toISOString().slice(0, 10); };
 const p2 = n => String(n).padStart(2, "0");
 const hm = m => `${p2(Math.floor(m / 60) % 24)}:${p2(m % 60)}`;
 const hmE = m => (m >= 1440 ? "24:00" : hm(m));
 const dh = m => { const h = Math.floor(m / 60), mm = m % 60; return h ? (mm ? `${h} год ${mm} хв` : `${h} год`) : `${mm} хв`; };
-function periods(slots) {
+function periods(slots, base = 0) {
   const o = [];
   slots.forEach((v, i) => {
-    const on = !!v, a = i * 30;
+    const on = !!v, a = base + i * 30;
     if (o.length && o[o.length - 1].on === on) o[o.length - 1].to = a + 30;
     else o.push({ from: a, to: a + 30, on });
   });
   return o;
 }
+const okDay = (d) => d && d.slots && d.slots.length === 48 && !(d.slots.every(v => v === 1) && !d.confirmed);
 
 // ---------- дані (з кешем на випадок, коли немає мережі) ----------
 async function load() {
@@ -646,105 +663,171 @@ async function load() {
   }
 }
 
-const COL = {
-  bg1: new Color("#14111F"), bg2: new Color("#08070C"),
-  tx: new Color("#F5F3FA"), mu: new Color("#A9A6B8"),
-  on: new Color("#3FD79A"), off: new Color("#FF6B7D"), warn: new Color("#E4E4E8"),
-  barOn: new Color("#2FA676"), barOff: new Color("#FF5D6C"), yellow: new Color("#FFFFFF")
-};
-
-function bar(slots, nowMin, w, h) {
+// ---------- фон: чорний із м’якими відблисками (як живий фон у застосунку) ----------
+function glow(ctx, x, y, r, hex, a) {
+  const N = 26;
+  for (let i = 0; i < N; i++) {
+    const k = i / N, rr = r * (1 - k);
+    ctx.setFillColor(new Color(hex, (a / N) * (0.55 + k)));
+    ctx.fillEllipse(new Rect(x - rr, y - rr, rr * 2, rr * 2));
+  }
+}
+function backdrop(w, h) {
   const ctx = new DrawContext();
-  ctx.size = new Size(w, h + 6); ctx.opaque = false; ctx.respectScreenScale = true;
-  const sw = w / 48;
-  slots.forEach((v, i) => {
-    ctx.setFillColor(v ? COL.barOn : COL.barOff);
-    ctx.fillRect(new Rect(i * sw, 4, sw + 0.6, h));
+  ctx.size = new Size(w, h); ctx.opaque = true; ctx.respectScreenScale = false;
+  ctx.setFillColor(new Color(C.base)); ctx.fillRect(new Rect(0, 0, w, h));
+  const m = Math.max(w, h);
+  glow(ctx, w * 0.08, h * -0.05, m * 0.62, "#6F63D8", 0.42);
+  glow(ctx, w * 1.0, h * 0.45, m * 0.5, "#2F9DB0", 0.30);
+  glow(ctx, w * 0.55, h * 1.12, m * 0.55, "#B8628F", 0.30);
+  return ctx.getImage();
+}
+
+// ---------- смужка доби ----------
+function bar(slots, nowMin, w, h, ticks) {
+  const th = ticks ? 14 : 0, pad = 5;
+  const ctx = new DrawContext();
+  ctx.size = new Size(w, h + pad * 2 + th); ctx.opaque = false; ctx.respectScreenScale = true;
+  const px = w / 1440, r = Math.min(4, h / 2);
+  // основа (немає світла)
+  let path = new Path(); path.addRoundedRect(new Rect(0, pad, w, h), r, r); ctx.addPath(path); ctx.setFillColor(C.segOff); ctx.fillPath();
+  // світло є
+  periods(slots).filter(p => p.on).forEach(p => {
+    const x = p.from * px, ww = (p.to - p.from) * px - 1.2;
+    path = new Path(); path.addRoundedRect(new Rect(x + 0.6, pad, Math.max(2, ww), h), r, r); ctx.addPath(path); ctx.setFillColor(C.segOn); ctx.fillPath();
   });
-  ctx.setFillColor(Color.white());
-  ctx.fillRect(new Rect(Math.min(w - 2, (nowMin / 1440) * w - 1), 0, 2.4, h + 6));
+  // «зараз»
+  const nx = Math.min(w - 2, Math.max(2, nowMin * px));
+  ctx.setFillColor(new Color("#000000", 0.75)); ctx.fillRect(new Rect(nx - 2.6, 1, 5.2, h + pad * 2 - 2));
+  ctx.setFillColor(Color.white()); ctx.fillRect(new Rect(nx - 1.3, 2, 2.6, h + pad * 2 - 4));
+  if (ticks) {
+    ctx.setTextColor(C.mu); ctx.setFont(Font.mediumSystemFont(9.5)); ctx.setTextAlignedCenter();
+    [0, 6, 12, 18, 24].forEach(t => {
+      const tx = t * 60 * px, bw = 26, x0 = t === 0 ? 0 : t === 24 ? w - bw : tx - bw / 2;
+      ctx.setTextAlignedCenter();
+      ctx.drawTextInRect(String(t), new Rect(x0, h + pad * 2 + 1, bw, 12));
+    });
+  }
   return ctx.getImage();
 }
 
 function text(stack, s, size, color, weight) {
   const t = stack.addText(s);
-  t.textColor = color; t.font = weight ? Font.heavySystemFont(size) : Font.systemFont(size);
-  t.minimumScaleFactor = 0.7; t.lineLimit = 1;
+  t.textColor = color; t.font = weight === "r" ? Font.boldRoundedSystemFont(size) : weight ? Font.heavySystemFont(size) : Font.mediumSystemFont(size);
+  t.minimumScaleFactor = 0.6; t.lineLimit = 1;
   return t;
+}
+
+// наступна зміна з урахуванням завтрашнього графіка
+function nextChange(j, k) {
+  const today = j.days[k.date], tom = j.days[addDay(k.date, 1)];
+  let tl = periods(today.slots);
+  if (okDay(tom)) {
+    const t2 = periods(tom.slots, 1440);
+    if (tl[tl.length - 1].on === t2[0].on) { tl[tl.length - 1].to = t2[0].to; t2.shift(); }
+    tl = tl.concat(t2);
+  }
+  const cur = tl.find(p => k.min >= p.from && k.min < p.to) || tl[0];
+  const known = cur.to < 1440 || (okDay(tom) && cur.to < 2880);
+  const after = tl.find(p => p.from === cur.to);
+  return { cur, known, left: cur.to - k.min, after };
 }
 
 async function build() {
   const { j, stale } = await load();
-  const w = new ListWidget();
-  const g = new LinearGradient(); g.colors = [COL.bg1, COL.bg2]; g.locations = [0, 0.7];
-  w.backgroundGradient = g;
-  w.setPadding(14, 14, 12, 14);
-  w.url = CFG.origin;
-  w.refreshAfterDate = new Date(Date.now() + 15 * 60 * 1000);
-
   const fam = config.widgetFamily || "medium";
-  const small = fam === "small";
+  const w = new ListWidget();
+  w.url = CFG.origin;
+  w.refreshAfterDate = new Date(Date.now() + 10 * 60 * 1000);
   const k = kyivNow();
-
-  const head = w.addStack(); head.centerAlignContent();
-  text(head, `💡 ${group} · ${cityName}`, small ? 11 : 12, COL.mu, false);
-
   const day = j && j.days && j.days[k.date];
-  const slots = day && day.slots && day.slots.length === 48 ? day.slots : null;
-  const noInfo = !slots || slots.every(v => v === 1) && !day.confirmed;
+  const known = okDay(day);
 
-  if (!j || noInfo) {
-    w.addSpacer(6);
-    const emg = j && j.emergency;
-    text(w, emg ? "Екстрені відключення" : j ? "Графік уточнюється" : "Немає даних", small ? 16 : 20, emg ? COL.off : COL.warn, true);
-    w.addSpacer(4);
-    text(w, emg ? "Планові графіки зараз не діють" : "Відкрий застосунок або сайт ДТЕК", 11, COL.mu, false);
+  // ---- екран блокування ----
+  if (fam.startsWith("accessory")) {
+    w.setPadding(0, 0, 0, 0);
+    if (!known) { text(w, j && j.emergency ? "Екстрені відключення" : "Графік уточнюється", 12, Color.white(), true); return w; }
+    const n = nextChange(j, k), on = n.cur.on;
+    const nt = n.known ? `${on ? "Вимкнення" : "Ввімкнення"} о ${hm(n.cur.to % 1440)}` : "Змін поки немає";
+    if (fam === "accessoryInline") { text(w, `${on ? "💡" : "🌙"} ${nt}`, 12, Color.white(), true); return w; }
+    if (fam === "accessoryCircular") { w.addSpacer(); text(w, on ? "💡" : "🌙", 16, Color.white(), true); text(w, n.known ? hm(n.cur.to % 1440) : "—", 11, Color.white(), true); w.addSpacer(); return w; }
+    text(w, `${on ? "💡 Світло є" : "🌙 Світла немає"}`, 15, Color.white(), "r");
+    text(w, nt, 12, Color.white(), false);
+    if (n.known) text(w, `через ${dh(n.left)}`, 11, Color.lightGray(), false);
     return w;
   }
 
-  const pr = periods(slots), cur = pr.find(p => k.min >= p.from && k.min < p.to) || pr[0];
-  const on = cur.on, minsLeft = cur.to - k.min;
-  const offs = pr.filter(p => !p.on);
+  const small = fam === "small", large = fam === "large";
+  const dim = small ? [320, 320] : large ? [640, 680] : [640, 300];
+  w.backgroundImage = backdrop(dim[0], dim[1]);
+  w.setPadding(small ? 14 : 16, small ? 14 : 18, small ? 12 : 14, small ? 14 : 18);
 
-  w.addSpacer(small ? 4 : 5);
-  text(w, on ? "Світло є" : "Світла немає", small ? 22 : 26, on ? COL.on : COL.off, true);
-  const nextTxt = cur.to >= 1440
-    ? (on ? "Сьогодні більше відключень немає" : "Світло буде після 24:00")
-    : `${on ? "Вимкнення" : "Ввімкнення"} о ${hm(cur.to)} · через ${dh(minsLeft)}`;
-  text(w, nextTxt, small ? 10.5 : 12, COL.mu, false);
+  const head = w.addStack(); head.centerAlignContent();
+  text(head, "ТребаСвітло?", small ? 11 : 12, C.pearl2, true);
+  head.addSpacer();
+  text(head, `${small ? "" : cityName + " · "}черга ${group}`, small ? 11 : 12, C.mu, false);
+
+  if (!j || !known) {
+    w.addSpacer();
+    const emg = j && j.emergency;
+    text(w, emg ? "🚨 Екстрені відключення" : j ? "Графік уточнюється" : "Немає даних", small ? 17 : 22, C.tx, "r");
+    w.addSpacer(4);
+    text(w, emg ? "Планові графіки зараз не діють" : "Відкрий застосунок або сайт ДТЕК", small ? 11 : 13, C.soft, false);
+    w.addSpacer();
+    return w;
+  }
+
+  const slots = day.slots, n = nextChange(j, k), on = n.cur.on;
+  const offs = periods(slots).filter(p => !p.on);
 
   w.addSpacer(small ? 6 : 8);
-  w.addImage(bar(slots, k.min, small ? 140 : 300, 8)).imageSize = new Size(small ? 140 : 300, 14);
-
-  const maxRows = fam === "large" ? 9 : small ? 2 : 3;
-  w.addSpacer(6);
-  if (!offs.length) {
-    text(w, "Сьогодні без відключень", 12, COL.on, false);
+  text(w, on ? "💡 Світло є" : "🌙 Світла немає", small ? 23 : large ? 32 : 30, C.tx, "r");
+  w.addSpacer(2);
+  if (n.known) {
+    text(w, `${on ? "Вимкнення" : "Ввімкнення"} о ${hm(n.cur.to % 1440)}`, small ? 14 : 16, C.tx, true);
+    const sub = `через ${dh(n.left)}` + (!small && n.after ? ` · потім ${on ? "без світла" : "світло"} ${dh(Math.min(n.after.to, 2880) - n.after.from)}` : "");
+    text(w, sub, small ? 12 : 13.5, C.soft, false);
   } else {
-    const shown = offs.slice(0, maxRows);
-    shown.forEach(p => {
-      const row = w.addStack(); row.centerAlignContent(); row.spacing = 6;
-      const past = p.to <= k.min, now = k.min >= p.from && k.min < p.to;
-      const dot = row.addText("●"); dot.font = Font.systemFont(7); dot.textColor = past ? COL.mu : COL.off;
-      const t = text(row, `${hm(p.from)}–${hmE(p.to)}`, small ? 11.5 : 13, past ? COL.mu : COL.tx, true);
-      if (!small) { row.addSpacer(); text(row, dh(p.to - p.from), 11, now ? COL.off : COL.mu, false); }
-    });
-    if (offs.length > shown.length) text(w, `+ ще ${offs.length - shown.length}`, 10.5, COL.mu, false);
+    text(w, on ? "Більше відключень немає" : "Світло буде після 24:00", small ? 13 : 15, C.soft, false);
   }
-  if (fam === "large") {
-    w.addSpacer();
-    const on_m = slots.filter(Boolean).length * 30;
-    text(w, `Зі світлом: ${dh(on_m)} · без світла: ${dh(1440 - on_m)}`, 11, COL.mu, false);
+
+  w.addSpacer(small ? 8 : 10);
+  const bw = small ? 140 : large ? 296 : 296;
+  const img = w.addImage(bar(slots, k.min, bw, small ? 9 : 11, !small));
+  img.imageSize = new Size(bw, (small ? 9 : 11) + 10 + (small ? 0 : 14)); img.resizable = true;
+
+  if (!small) {
+    const maxRows = large ? 6 : 2;
+    w.addSpacer(large ? 8 : 4);
+    if (!offs.length) {
+      text(w, "Сьогодні без відключень 🎉", 13, C.soft, false);
+    } else {
+      const shown = offs.slice(0, maxRows);
+      const row = large ? null : w.addStack();
+      shown.forEach(p => {
+        const past = p.to <= k.min, nowOff = k.min >= p.from && k.min < p.to;
+        const host = large ? w.addStack() : row;
+        if (!large) host.spacing = 6; else { host.centerAlignContent(); host.setPadding(5, 10, 5, 10); host.cornerRadius = 10; host.backgroundColor = nowOff ? C.chipOn : C.chip; }
+        const t = text(host, `${hm(p.from)}–${hmE(p.to)}`, 13.5, past ? C.mu : C.tx, true);
+        if (large) { host.addSpacer(); text(host, dh(p.to - p.from), 12, nowOff ? C.tx : C.mu, false); w.addSpacer(4); }
+        else { const t2 = text(host, dh(p.to - p.from), 11.5, C.mu, false); host.addSpacer(4); }
+      });
+      if (offs.length > shown.length) text(w, `+ ще ${offs.length - shown.length}`, 11, C.mu, false);
+    }
+    if (large) {
+      w.addSpacer();
+      const onM = slots.filter(Boolean).length * 30;
+      text(w, `Зі світлом ${dh(onM)} · без світла ${dh(1440 - onM)}`, 12, C.soft, false);
+    }
   }
-  if (stale) { w.addSpacer(2); text(w, "офлайн: показано збережене", 9.5, COL.warn, false); }
-  else if (j.updated) { w.addSpacer(); text(w, `оновлено ${j.updated}`, 9.5, COL.mu, false); }
+  w.addSpacer(small ? 4 : 6);
+  if (stale) text(w, "офлайн: показано збережене", 10, C.mu, false);
+  else if (j.updated) text(w, `оновлено ${j.updated}`, 10, C.mu, false);
   return w;
 }
 
 const widget = await build();
 if (config.runsInWidget) Script.setWidget(widget);
-else await widget.presentMedium();
-Script.complete();
 else await widget.presentMedium();
 Script.complete();
 </script>
@@ -821,7 +904,7 @@ setH($('av-grid'),QS.map(x=>{let st='unknown';
  const t=AVT[st]||AVT.unknown;return`<button class="chip aq ${t[0]} ${c===P.c&&x===P.q?'mine':''} ${x===q?'sel':''}" onclick="avPick('${x}')">${x}<small>${t[1]}</small></button>`}).join(''));
 setH($('av-meta'),lv==='emergency'?(cs.allQueues?'Екстрені відключення стосуються всіх черг міста '+CITIES[c]+'.':'Екстрені відключення діють для черг: <b>'+cs.queues.join(', ')+'</b>.'):lv==='announced'?'Є оголошення про екстрені відключення'+(cs.allQueues?' для всіх черг':cs.queues&&cs.queues.length?' для черг: <b>'+cs.queues.join(', ')+'</b>':'. Черги в тексті не названо')+'. Статус ще не підтверджено сайтом ДТЕК.':lv==='none'?'Екстрених відключень для міста '+CITIES[c]+' не заявлено; діє графік.':'Статус невідомий.')}
 /* ---------- налаштування ---------- */
-const DEF={sound:true,vol:45,sClick:true,sSwitch:true,sAlert:true,intro:true,notify:false,lead:15,stale:true,auto:true,vib:true,mood:true,emgN:true};
+const DEF={sound:true,vol:45,sClick:true,sSwitch:true,sAlert:true,intro:true,notify:false,lead:15,stale:true,auto:true,vib:true,mood:true,emgN:true,pChg:true,pNew:true};
 let ST={...DEF,...jget('settings',{})};const saveST=()=>LS.setItem('settings',JSON.stringify(ST));
 /* ---------- звук (м’які синтезовані тони, без файлів) ---------- */
 let AC=null;
@@ -917,7 +1000,7 @@ function offBanner(today){if(!OFFL())return '';const t=data&&data.fetchedAt,ttl=
 
 /* ---------- живий фон, вібро й звук при зміні стану ---------- */
 let MOODC='unk';
-function applyMood(m){MOODC=m;document.body.dataset.mood=m;document.body.classList.toggle('nomood',!ST.mood)}
+function applyMood(m){MOODC=m;document.body.dataset.mood=m;document.body.classList.remove('nomood')}
 function buzz(p){if(ST.vib&&navigator.vibrate){try{navigator.vibrate(p)}catch(e){}}}
 let SW={prev:null,t:0};
 function stateSwitch(on,cur,k){const now=Date.now(),since=k.sec-cur.from*60;
@@ -1033,17 +1116,17 @@ else{const nm=QV.tab?null:k.sec/60,pr=periods(sl),cp=nm!=null?pr.find(p=>nm>=p.f
 body=(cp?`<div class="pill ${cp.on?'on':'off'}">${cp.on?'Зараз світло є':'Зараз світла немає'} · ще ${dh(Math.floor((cp.to*60-k.sec)/60))}</div>`:'')+pr.map((p,ri)=>`<div style="--r:${ri}" class="row ${p.on?'on':'off'}"><span>${hm(p.from)} – ${hmE(p.to)}</span><span>${p.on?'Світло є':'Світла немає'}</span></div>`).join('')}
 d.innerHTML=`<div class="card">${hd}<div class="sub" style="margin-bottom:12px">${mine?'Це твоя черга':'Перегляд — твоя черга не змінюється'}</div><div class="seg"><button class="${QV.tab?'':'a'}" onclick="QV.tab=0;renderQueues()">Сьогодні</button><button class="${QV.tab?'a':''}" onclick="QV.tab=1;renderQueues()">Завтра</button></div>${body}${QV.j.cached?`<div class="warn">Немає з’єднання: показано збережений графік${QV.j.fetchedAt?' від '+esc(new Date(QV.j.fetchedAt).toLocaleString('uk-UA',{timeZone:TZ,day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})):''}.</div>`:''}<div class="meta">Оновлено: ${esc(QV.j.updated||'—')} · ${esc(QV.j.source||'')}</div>${mine?'':`<button class="ref p w" onclick="adopt()">Зробити моєю чергою</button>`}</div>`}
 function pickQ(q){QV.q=q;QV.j=null;QV.err=null;QV.loading=true;renderQueues();const c=QV.c;fetchSchedC(q,c).then(j=>{if(QV.q===q&&QV.c===c){QV.j=j}recDays(c,q,j);recHist(c,q,j)}).catch(e=>{if(QV.q===q)QV.err=e.message}).finally(()=>{if(QV.q===q&&QV.c===c)QV.loading=false;if(view===2){renderQueues();enter($('q-detail'))}})}
-function adopt(){P={...P,c:QV.c,q:QV.q};resetData();LS.setItem('profile',JSON.stringify(P));toast('Тепер твоя черга — '+P.q);play('ok');setView(1);tick();load(true)}
+function adopt(){P={...P,c:QV.c,q:QV.q};resetData();LS.setItem('profile',JSON.stringify(P));pushSync();toast('Тепер твоя черга — '+P.q);play('ok');setView(1);tick();load(true)}
 function resetData(){loadSeq++;AV.c=null;AV.q=null;AV.S={};AV.tab=0;data=null;LS.removeItem('last');loading=true;err=null}
 /* ---------- налаштування ---------- */
 function syncSwitches(){document.querySelectorAll('.sw').forEach(b=>b.setAttribute('aria-checked',String(!!ST[b.dataset.k])));$('vol').value=ST.vol;$('vol-v').textContent=ST.vol+'%';$('lead').value=String(ST.lead);
-const n=$('notif-note');n.textContent=ST.notify?('Notification'in window?(Notification.permission==='granted'?'Системні сповіщення дозволено.':Notification.permission==='denied'?'Системні сповіщення заблоковано в налаштуваннях пристрою — показуватимемо повідомлення в застосунку.':'Системні сповіщення ще не дозволено.'):'Цей пристрій не підтримує системні сповіщення — показуватимемо повідомлення в застосунку.'):''}
+const n=$('notif-note');if(n)n.textContent=noteText()}
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('.sw');if(!b)return;const k=b.dataset.k,v=!ST[k];
 if(k==='sound'){if(v){ST.sound=true;play('on')}else{play('off');ST.sound=false}}else{ST[k]=v;if(k!=='intro')play(v?'on':'off','sSwitch')}
-if(k==='vib'&&v)buzz(40);if(k==='mood')applyMood(MOODC);if((k==='notify'||k==='emgN')&&v&&'Notification'in window&&Notification.permission==='default')Notification.requestPermission().then(syncSwitches);
+if(k==='vib'&&v)buzz(40);if(PUSHK.includes(k)){if(v&&'Notification'in window&&Notification.permission==='default')Notification.requestPermission().then(()=>{syncSwitches();pushSync()});else pushSync()}
 if(k==='auto')lastTry=Date.now();saveST();syncSwitches()});
 $('vol').addEventListener('input',e=>{ST.vol=+e.target.value;$('vol-v').textContent=ST.vol+'%'});$('vol').addEventListener('change',()=>{saveST();play('tap')});
-$('lead').addEventListener('change',e=>{ST.lead=+e.target.value;saveST()});
+$('lead').addEventListener('change',e=>{ST.lead=+e.target.value;saveST();pushSync()});
 /* Нагадування: РІВНО одне на кожну зміну світла.
    Ключ береться зі стабільної межі графіка (дата + хвилина зміни), а не з часу «зараз», тому не змінюється щосекунди.
    Показані ключі запам’ятовуються в сховищі, тож повторів немає ні після перезапуску, ні в іншій вкладці. */
@@ -1052,7 +1135,34 @@ function checkAlert(){if(!ST.notify||!NEXT||!NEXT.key)return;const left=(NEXT.ts
 const key=NEXT.key;if(alertBusy===key)return;let seen=jget('alerted2',[]);if(!Array.isArray(seen))seen=[];if(seen.includes(key)){alertBusy=key;return}
 alertBusy=key;seen.push(key);LS.setItem('alerted2',JSON.stringify(seen.slice(-40)));LS.removeItem('alerted');
 const m=NEXT.on?`Через ${Math.ceil(left)} хв за графіком з’явиться світло 💡`:`Через ${Math.ceil(left)} хв за графіком вимкнення світла`;toast(m);play('alert','sAlert');
-if('Notification'in window&&Notification.permission==='granted'&&navigator.serviceWorker){navigator.serviceWorker.ready.then(r=>r.showNotification('ТребаСвітло?',{body:m,icon:'icon-192.png',tag:'next-change-'+key,renotify:false,silent:false})).catch(()=>{})}}
+if(!PUSH.on&&'Notification'in window&&Notification.permission==='granted'&&navigator.serviceWorker){navigator.serviceWorker.ready.then(r=>r.showNotification('ТребаСвітло?',{body:m,icon:'icon-192.png',tag:'next-change-'+key,renotify:false,silent:false})).catch(()=>{})}}
+/* ---------- Web Push: сповіщення при закритому застосунку ---------- */
+const PUSH={on:false,err:''},PUSHK=['notify','pChg','pNew','emgN'];
+const pushOK=()=>'serviceWorker'in navigator&&'PushManager'in window&&'Notification'in window;
+const wantPush=()=>PUSHK.some(k=>ST[k]);
+const b64u=t=>{const r=atob((t+'='.repeat((4-t.length%4)%4)).replace(/-/g,'+').replace(/_/g,'/'));return Uint8Array.from(r,c=>c.charCodeAt(0))};
+const pushApi=(a,body)=>fetch(API+'/api/push',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({a,...body})}).then(r=>r.json().catch(()=>({ok:false})));
+function pushSync(){if(!ready()||!pushOK())return syncSwitches();clearTimeout(pushSync.t);pushSync.t=setTimeout(pushRun,500)}
+async function pushRun(){PUSH.err='';
+try{const reg=await navigator.serviceWorker.ready;let sub=await reg.pushManager.getSubscription();
+if(!wantPush()){if(sub){await pushApi('unsubscribe',{endpoint:sub.endpoint}).catch(()=>{});await sub.unsubscribe()}PUSH.on=false}
+else if(Notification.permission!=='granted'){PUSH.on=false}
+else{if(!sub){const k=await fetch(API+'/api/push?a=key',{cache:'no-store'}).then(r=>r.json()).catch(()=>null);if(!k||!k.ok||!k.key)throw new Error('server');sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64u(k.key)})}
+const r=await pushApi('subscribe',{sub:sub.toJSON(),city:P.c,group:P.q,lead:ST.lead,ev:{pre:!!ST.notify,chg:!!ST.pChg,nw:!!ST.pNew,emg:!!ST.emgN}});if(!r.ok)throw new Error('server');PUSH.on=true}
+}catch(e){PUSH.on=false;PUSH.err=e&&e.message==='server'?'server':'fail'}
+syncSwitches()}
+async function pushTest(){if(!pushOK()){toast('Цей пристрій не підтримує push');return}
+if(Notification.permission!=='granted'){const r=await Notification.requestPermission();if(r!=='granted'){syncSwitches();toast('Дозволь сповіщення в налаштуваннях пристрою');return}}
+if(!wantPush()){toast('Увімкни хоча б один тип сповіщень');return}
+await pushRun();if(!PUSH.on){toast(PUSH.err==='server'?'Сервер сповіщень ще не налаштований':'Не вдалося підписатися на push');return}
+const sub=await (await navigator.serviceWorker.ready).pushManager.getSubscription();const r=sub&&await pushApi('test',{endpoint:sub.endpoint}).catch(()=>null);toast(r&&r.ok?'Тестове сповіщення надіслано ✨':'Не вдалося надіслати сповіщення')}
+function noteText(){if(!wantPush())return '';if(!pushOK()){return /iP(hone|ad|od)/.test(navigator.userAgent)&&!navigator.standalone?'На iPhone push працює, коли застосунок додано на екран «Додому»: Поділитися → На екран «Додому».':'Цей пристрій не підтримує push — сповіщення показуватимемо в застосунку.'}
+if(Notification.permission==='denied')return 'Сповіщення заблоковано в налаштуваннях пристрою. Дозволь їх для цього сайту.';
+if(Notification.permission!=='granted')return 'Сповіщення ще не дозволено.';
+if(PUSH.on)return 'Push увімкнено: сповіщення приходитимуть, навіть коли застосунок закрито.';
+if(PUSH.err==='server')return 'Сервер push ще не налаштований — повідомлення показуватимемо, поки застосунок відкрито.';
+return 'Підключаємо push…'}
+if('serviceWorker'in navigator)navigator.serviceWorker.addEventListener('message',e=>{if(e.data&&e.data.type==='resub')pushSync()});
 /* ---------- віджет для iPhone (Scriptable) ---------- */
 function copyWidget(){const note=$('wgt-note'),out=$('wgt-out');if(!P){toast('Спочатку вкажи свою чергу');return}
 const t=$('wgt-src').textContent.replace('__ORIGIN__',(/^https?:\/\//.test(API)?API:/^https?:\/\//.test(location.origin)?location.origin:'https://veronichka.vercel.app')).replace('__CITY__',P.c).replace('__GROUP__',P.q).replace('__NAME__',CITIES[P.c]);
@@ -1084,7 +1194,7 @@ if(p==='ob'&&!$('ob-ok').checked){const c=$('ob-chk');c.classList.remove('shake'
 if(p==='ob'){CON=true;LS.setItem('consent',JSON.stringify({v:'2026-11',t:Date.now()}))}
 const np={name:n,c:$(p+'-c').value,q:$(p+'-q').value,a:$(p+'-a').value.trim()};
 if(!P||P.c!==np.c||P.q!==np.q)resetData();
-const first=!ready();P=np;LS.setItem('profile',JSON.stringify(P));QV.c=P.c;play('ok');if(!first)toast('Збережено');setView(1);tick();load(true)}
+const first=!ready();P=np;LS.setItem('profile',JSON.stringify(P));pushSync();QV.c=P.c;play('ok');if(!first)toast('Збережено');setView(1);tick();load(true)}
 function syncOb(){const o=$('ob-ok').checked,b=$('ob-go');b.setAttribute('aria-disabled',String(!o));$('ob-need').classList.toggle('ok',o)}
 $('ob-ok').addEventListener('change',()=>{syncOb();play($('ob-ok').checked?'on':'off','sSwitch')});
 function wipe(){if(confirm('Видалити всі дані з цього пристрою?')){loadSeq++;LS.clear();$('ob-n').value='';$('ob-a').value='';$('ob-ok').checked=false;CON=false;syncOb();try{sessionStorage.clear()}catch(e){}P=null;data=null;AV.j=null;AV.t=0;AV.c=null;AV.q=null;AV.S={};AV.tab=0;loading=false;ST={...DEF};setView(0);tick();applyTheme()}}
@@ -1110,22 +1220,22 @@ function enter(el){if(!el||matchMedia('(prefers-reduced-motion: reduce)').matche
 function boot(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;document.body.classList.add('boot');enter($('v'+view));setTimeout(()=>document.body.classList.remove('boot'),2200)}
 let introStop=null;
 function runIntro(){const el=$('intro');if(matchMedia('(prefers-reduced-motion: reduce)').matches){boot();return}try{if(sessionStorage.getItem('intro')){boot();return}sessionStorage.setItem('intro','1')}catch(e){}
-el.classList.remove('hid');el.setAttribute('aria-hidden','false');el.onclick=endIntro;
+el.classList.remove('hid');el.setAttribute('aria-hidden','false');el.onclick=endIntro;document.documentElement.classList.add('intro-on');
 /* спершу декодуємо картинки (щоб не було ривків), потім стартуємо анімацію */
 introReady(el).then(()=>{if(el.classList.contains('out'))return;void el.offsetWidth;el.classList.add('go');introStop=introAnim(el);introSound();introT=setTimeout(endIntro,3500)})}
 /* Заставка: орбіти малюються на двох canvas (позаду та поперед дівчини), решта — CSS. */
 function introReady(el){const im=[...el.querySelectorAll('img')];return Promise.race([Promise.all(im.map(i=>i.decode?i.decode().catch(()=>{}):0)),new Promise(r=>setTimeout(r,1800))])}
 function introAnim(el){
 const st=el.querySelector('.stage'),cb=el.querySelector('.cv.back'),cf=el.querySelector('.cv.front');
-const dpr=Math.min(devicePixelRatio||1,2),S=Math.max(200,Math.round(st.clientWidth*dpr));
+const dpr=Math.min(devicePixelRatio||1,1.5),S=Math.max(200,Math.round(st.clientWidth*dpr));
 cb.width=cb.height=cf.width=cf.height=S;
 const b=cb.getContext('2d'),f=cf.getContext('2d'),k=S/1254,PI=Math.PI;
 const sp=document.createElement('canvas');sp.width=sp.height=64;const sg=sp.getContext('2d'),g=sg.createRadialGradient(32,32,0,32,32,32);
-g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.25,'rgba(255,238,196,.85)');g.addColorStop(1,'rgba(255,200,110,0)');sg.fillStyle=g;sg.fillRect(0,0,64,64);
+g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.25,'rgba(238,234,255,.85)');g.addColorStop(1,'rgba(168,158,255,0)');sg.fillStyle=g;sg.fillRect(0,0,64,64);
 const O=[{cx:600,cy:640,a:560,b:185,t:-24*PI/180,d:1,n:3,ph:0,w:1},{cx:620,cy:710,a:390,b:115,t:15*PI/180,d:-1,n:2,ph:1.3,w:1.35}];
 const pt=(o,r,th)=>{const x=o.a*r*Math.cos(th),y=o.b*r*Math.sin(th),c=Math.cos(o.t),s=Math.sin(o.t);return[(o.cx+x*c-y*s)*k,(o.cy+x*s+y*c)*k]};
-const ring=(c,o,r,a0,a1,al)=>{c.strokeStyle='rgba(255,244,225,'+al+')';c.lineWidth=1.6*k;c.beginPath();c.ellipse(o.cx*k,o.cy*k,o.a*r*k,o.b*r*k,o.t,a0,a1);c.stroke()};
-let raf=0,run=true;const t0=performance.now(),N=36,L=1.5;
+const ring=(c,o,r,a0,a1,al)=>{c.strokeStyle='rgba(244,242,252,'+al+')';c.lineWidth=1.6*k;c.beginPath();c.ellipse(o.cx*k,o.cy*k,o.a*r*k,o.b*r*k,o.t,a0,a1);c.stroke()};
+let raf=0,run=true;const t0=performance.now(),N=20,L=1.5;
 function fr(now){if(!run)return;const t=(now-t0)/1000;b.clearRect(0,0,S,S);f.clearRect(0,0,S,S);b.globalCompositeOperation=f.globalCompositeOperation='lighter';
 const boost=t>2.1?1+.7*Math.exp(-(t-2.1)*3.5):1,fade=Math.min(1,t/.45);
 for(const o of O){const p=Math.min(1,Math.max(0,(t-.15)/1.9)),e=1-Math.pow(1-p,3),r=1+1.2*Math.pow(1-e,2);
@@ -1133,8 +1243,8 @@ ring(b,o,r,PI,2*PI,.16*e);ring(f,o,r,0,PI,.34*e);
 for(let i=0;i<o.n;i++){const th=o.ph+i*2*PI/o.n+o.d*(o.w*t+6.5*e);
 for(let j=0;j<N;j++){const ta=th-o.d*L*j/N,tb=th-o.d*L*(j+1)/N,q=1-j/N,c=Math.sin((ta+tb)/2)>0?f:b,A=Math.min(1,Math.pow(q,1.8)*.9*fade*boost),pa=pt(o,r,ta),pb=pt(o,r,tb);
 c.lineCap='round';c.beginPath();c.moveTo(pa[0],pa[1]);c.lineTo(pb[0],pb[1]);
-c.strokeStyle='rgba(255,190,90,'+A*.22+')';c.lineWidth=(9*q+2)*k;c.stroke();
-c.strokeStyle='rgba(255,246,228,'+A+')';c.lineWidth=(3.2*q+.8)*k;c.stroke()}
+c.strokeStyle='rgba(176,166,255,'+A*.22+')';c.lineWidth=(9*q+2)*k;c.stroke();
+c.strokeStyle='rgba(248,246,255,'+A+')';c.lineWidth=(3.2*q+.8)*k;c.stroke()}
 const h=pt(o,r,th),c=Math.sin(th)>0?f:b,z=54*k*(1+.3*Math.sin(th));c.globalAlpha=Math.min(1,fade*boost);c.drawImage(sp,h[0]-z/2,h[1]-z/2,z,z);c.globalAlpha=1}}
 raf=requestAnimationFrame(fr)}
 raf=requestAnimationFrame(fr);return()=>{run=false;cancelAnimationFrame(raf)}}
@@ -1147,7 +1257,7 @@ const go=()=>{if(done)return;const a=ac();if(!a||a.state!=='running')return;cons
 const arm=()=>{const a=ac();if(!a)return;if(a.state==='running')go();else a.resume().then(go).catch(()=>{})};
 const evs=['pointerdown','touchstart','mousedown','keydown'],off=()=>evs.forEach(e=>removeEventListener(e,arm,true));
 evs.forEach(e=>addEventListener(e,arm,true));arm();setTimeout(off,7500)}
-function endIntro(){const el=$('intro');if(el.classList.contains('out'))return;clearTimeout(introT);el.classList.add('out');boot();setTimeout(()=>{el.classList.add('hid');if(introStop)introStop()},1000)}
+function endIntro(){const el=$('intro');if(el.classList.contains('out'))return;clearTimeout(introT);el.classList.add('out');boot();setTimeout(()=>{el.classList.add('hid');if(introStop)introStop();setTimeout(()=>document.documentElement.classList.remove('intro-on'),700)},1000)}
 /* ---------- підказки адрес: вулиця + номер будинку ---------- */
 const PIN='<svg viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z"/><circle cx="12" cy="10" r="2.3"/></svg>',acMem=new Map();
 function acAttach(p){const inp=$(p+'-a'),wrap=$(p+'-ac'),box=$(p+'-al'),city=$(p+'-c');let items=[],sel=-1,seq=0,timer=0,ctl=null;
@@ -1183,5 +1293,5 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)return;tick
 if(P&&data)recDays(P.c,P.q,data);applyMood('unk');
 applyTheme();syncSwitches();['ob','st'].forEach(acAttach);setView(ready()?1:0);runIntro();
 setInterval(()=>{if(!ST.auto)return;const h=kv().h,need=(h>=21||h<3)?120e3:300e3;if(Date.now()-lastTry>=need-5e3)load()},30e3);setInterval(tick,1000);tick();load();loadOut();setInterval(loadOut,12e4);
-if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').then(()=>{if(ready())pushSync()});
 </script></body></html>
