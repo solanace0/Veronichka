@@ -420,7 +420,91 @@ html[data-theme=dark] .nav button.a svg{filter:none}
 #sched .row{padding:15px 20px;font-size:17px;margin-top:8px}
 .seg3 button{font-size:16px}
 }
-</style></head><body>
+
+/* ===== Янтарна палітра + сучасний вигляд ===== */
+:root,html[data-theme=dark]{--ac:#EFEBE4;--acx:#141414;--acs:#EFEBE420;--onb:#EFEBE41a;--onx:#F6F3EE;--offb:#0d0d0f;--offx:#9b9ba4;--wb:#1a1918;--wx:#F6F3EE;--r:28px;--amb:linear-gradient(180deg,#F8F6F2,#D2CEC6 55%,#BDB9B1)}
+html[data-theme=dark] body::before{background:radial-gradient(ellipse min(90vw,780px) 320px at 50% -70px,#EFEBE426,#EFEBE400 70%),radial-gradient(ellipse 50vw 40vh at 100% 100%,#ffffff0a,#ffffff00 70%),#000}
+html[data-theme=dark] .card{background:linear-gradient(180deg,#131315,#0a0a0b);border:1px solid #ffffff12;border-radius:28px;box-shadow:inset 0 1px 0 #ffffff0d,0 18px 40px -24px #000}
+html[data-theme=dark] .card:hover{border-color:#EFEBE438;box-shadow:inset 0 1px 0 #ffffff10,0 18px 44px -22px #EFEBE426}
+.avb img,html[data-theme=dark] .hello img,.nav .brand img{box-shadow:0 0 0 1px #ffffff30,0 0 26px #EFEBE43a!important}
+#clock .sec{color:var(--mu);font-weight:700;font-size:.62em;letter-spacing:0;margin-left:2px}
+#clock{font-weight:800;letter-spacing:-.04em}
+html[data-theme=dark] .ref.p,html[data-theme=dark] button.p{background:var(--amb);color:#141414;box-shadow:0 8px 24px -8px #EFEBE488}
+.ref{border-radius:16px}
+html[data-theme=dark] .chip.a{background:var(--amb);color:#141414;box-shadow:0 6px 18px -8px #EFEBE4aa}
+.sw[aria-checked=true]{background:var(--amb)}.sw[aria-checked=true]::after{background:#141414}
+a{color:var(--ac)}
+/* вкладки */
+.seg3{background:#0c0c0e;border-radius:20px}
+.seg3 button.a{color:#141414}
+.seg3 .thumb{background:var(--amb);border-radius:16px;box-shadow:0 6px 22px -6px #EFEBE4aa,inset 0 1px 0 #ffffff66}
+/* графік */
+#sched{border-radius:30px}
+#sched .pill.on{background:var(--amb);color:#141414;box-shadow:0 6px 20px -8px #EFEBE4aa}
+#sched .pill.off{background:#ffffff12;color:#d6d6dc}
+.sg.on{background:var(--amb);box-shadow:inset 0 1px 0 #ffffff66}
+.sg.off{background:#18181c}
+.sg{border-radius:11px}
+/* маркер: рівна паличка без кружечка */
+.nowm::after{display:none}
+.nowm{width:3px;margin-left:-1.5px;border-radius:3px;background:#fff;box-shadow:0 0 0 1.5px #000,0 0 16px #ffffff66}
+.nowm::before{background:#fff;color:#000;box-shadow:0 4px 14px -4px #000}
+/* рядки */
+#sched .row{border-radius:18px}
+#sched .row.on{background:linear-gradient(90deg,#EFEBE422,#EFEBE40d);border-color:#EFEBE42e}
+#sched .row.on span:first-child{color:#fff}#sched .row.on span:last-child{color:var(--onx)}
+#sched .row.cur{box-shadow:inset 0 0 0 1.5px var(--ac)}
+/* статус */
+.hero.on{background:linear-gradient(155deg,#1b1a19,#0b0b0d 62%)!important;border-color:#EFEBE42e!important}
+.hero.on .status{color:#F6F3EE}.hero.off .status{color:#d0d0d6}
+.hero .status{font-size:28px;letter-spacing:-.025em}
+.sbar i{background:var(--amb);box-shadow:0 0 14px #EFEBE488}
+.grid>div{background:#0e0e10;border:1px solid #ffffff0f;border-radius:18px}
+.lb{color:#7d7d86}
+#mood .on{background:radial-gradient(ellipse 85vw 44vh at 50% -10%,#EFEBE430,#EFEBE400 72%)}
+/* навігація */
+@media(max-width:899px){
+.nav{border-radius:26px;background:#0a0a0cf5}
+html[data-theme=dark] .nav button.a{background:var(--amb);color:#141414}
+}
+@media(min-width:900px){
+html[data-theme=dark] .nav button.a{background:#EFEBE41a;color:#F6F3EE}
+.nav button::before{background:var(--ac);box-shadow:0 0 12px #EFEBE4}
+.nav{background:linear-gradient(180deg,#0b0b0c,#050506)}
+}
+/* заставка — янтарне сяйво */
+#intro{background:radial-gradient(ellipse 90% 60% at 62% 28%,#181716 0%,#000 72%),#000}
+#intro .halo{background:radial-gradient(circle,#EFEBE470 0%,#E6E2DA2a 34%,#E6E2DA00 68%)}
+#intro .flash{background:radial-gradient(circle,#F8F6F2 0%,#F3F0EA 9%,#E6E2DA66 22%,#E6E2DA00 48%)}
+#intro .tag{color:#E4E0D8}
+/* статус усередині картки графіка */
+#hslot{margin:2px 0 16px}
+#sched #hero{margin:0;border-radius:22px;box-shadow:none;animation:none}
+#sched #hero:hover{box-shadow:none}
+/* перламутрова палітра: кольорові лише крапки статусу */
+.hero.on{background:linear-gradient(155deg,#1d1d1f,#0b0b0d 62%)!important}
+html[data-theme=dark] .chip.a,.sw[aria-checked=true],.seg3 .thumb,#sched .pill.on,html[data-theme=dark] .ref.p,html[data-theme=dark] button.p,html[data-theme=dark] .nav button.a{box-shadow:inset 0 1px 0 #ffffffcc,inset 0 -1px 0 #0000001f,0 6px 20px -8px #E6E2DA77}
+/* без крапок статусу */
+#sched .row span:first-child::before{display:none!important}
+#sched .row span:first-child{padding-left:2px}
+/* живий фон: повільні м'які плями та кола, приглушені кольори */
+#bgfx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;contain:strict}
+#bgfx i{position:absolute;border-radius:50%;will-change:transform;animation:bgf 40s ease-in-out infinite alternate}
+#bgfx .b1{width:78vmax;height:78vmax;left:-26vmax;top:-30vmax;background:radial-gradient(circle,#6F63D8 0%,#6F63D800 66%);opacity:.34;animation-duration:46s}
+#bgfx .b2{width:70vmax;height:70vmax;right:-28vmax;top:8vmax;background:radial-gradient(circle,#2F9DB0 0%,#2F9DB000 66%);opacity:.26;animation-duration:54s;animation-delay:-12s}
+#bgfx .b3{width:74vmax;height:74vmax;left:-10vmax;bottom:-36vmax;background:radial-gradient(circle,#B8628F 0%,#B8628F00 66%);opacity:.26;animation-duration:60s;animation-delay:-20s}
+#bgfx .b4{width:56vmax;height:56vmax;right:-14vmax;bottom:-22vmax;background:radial-gradient(circle,#D9CDB4 0%,#D9CDB400 66%);opacity:.14;animation-duration:50s;animation-delay:-30s}
+#bgfx .c{filter:blur(16px);opacity:.28;animation-duration:34s}
+#bgfx .c1{width:min(34vmax,300px);height:min(34vmax,300px);left:58%;top:12%;background:radial-gradient(circle at 35% 30%,#BFB5FF,#6F63D800 70%)}
+#bgfx .c2{width:min(24vmax,210px);height:min(24vmax,210px);left:8%;top:44%;background:radial-gradient(circle at 35% 30%,#9BE3EE,#2F9DB000 70%);animation-duration:42s;animation-delay:-9s}
+#bgfx .c3{width:min(40vmax,360px);height:min(40vmax,360px);left:40%;top:70%;background:radial-gradient(circle at 35% 30%,#F0B5D4,#B8628F00 70%);animation-duration:48s;animation-delay:-18s}
+#bgfx .c4{width:min(16vmax,140px);height:min(16vmax,140px);left:82%;top:58%;background:radial-gradient(circle at 35% 30%,#F4EEE0,#D9CDB400 70%);animation-duration:30s;animation-delay:-5s;opacity:.12}
+@keyframes bgf{0%{transform:translate3d(0,0,0) scale(1)}33%{transform:translate3d(6vmax,-4vmax,0) scale(1.08)}66%{transform:translate3d(-5vmax,5vmax,0) scale(.94)}100%{transform:translate3d(4vmax,7vmax,0) scale(1.05)}}
+@media (prefers-reduced-motion:reduce){#bgfx i{animation:none}}
+#mood .on,#mood .off{background:none}
+html[data-theme=dark] .card{background:linear-gradient(180deg,#131315cc,#0a0a0bd1);-webkit-backdrop-filter:blur(14px) saturate(1.15);backdrop-filter:blur(14px) saturate(1.15)}
+html[data-theme=dark] .nav{-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+</style></head><body><div id="bgfx" aria-hidden="true"><i class="b1"></i><i class="b2"></i><i class="b3"></i><i class="b4"></i><i class="c c1"></i><i class="c c2"></i><i class="c c3"></i><i class="c c4"></i></div>
 <div id="mood" aria-hidden="true"><i class="m on"></i><i class="m off"></i><i class="m emg"></i></div>
 <div id="intro" class="hid" aria-hidden="true"><div class="stage"><canvas class="cv back"></canvas><img class="lyr girl" src="intro-girl.png" alt="" decoding="async"><img class="lyr dim" src="intro-bulb-dim.png" alt="" decoding="async"><div class="halo"></div><img class="lyr lit" src="intro-bulb.png" alt="" decoding="async"><canvas class="cv front"></canvas><span class="st" style="left:30.5%;top:30.3%;--d:.7s"><svg viewBox="-10 -10 20 20"><path d="M0-10C1-3 3-1 10 0 3 1 1 3 0 10-1 3-3 1-10 0-3-1-1-3 0-10Z" fill="#fff"/></svg></span><span class="st" style="left:83%;top:50.4%;--d:1.1s"><svg viewBox="-10 -10 20 20"><path d="M0-10C1-3 3-1 10 0 3 1 1 3 0 10-1 3-3 1-10 0-3-1-1-3 0-10Z" fill="#fff"/></svg></span><span class="st" style="left:15.3%;top:63%;width:3%;margin:-1.5% 0 0 -1.5%;--d:1.5s"><svg viewBox="-10 -10 20 20"><path d="M0-10C1-3 3-1 10 0 3 1 1 3 0 10-1 3-3 1-10 0-3-1-1-3 0-10Z" fill="#fff"/></svg></span><div class="flash"></div></div><div class="ttl">ТребаСвітло?</div><div class="tag">Знай, коли буде світло</div></div>
 
@@ -445,7 +529,7 @@ html[data-theme=dark] .nav button.a svg{filter:none}
 <div id="sched" class="card"></div>
 <div class="cen acts"><div class="sub" id="upd"></div><button class="ref" onclick="load(true)">↻ Оновити</button> <button class="ref" onclick="shareSched()">Поділитися</button></div>
 </div><div class="hs">
-<div class="lb">Статус на сьогодні</div><div id="hero" class="card hero"></div>
+<div class="lb" id="hlb">Статус на сьогодні</div><div id="hero" class="card hero"></div>
 <div class="lb">Статистика на сьогодні</div><div class="card"><div class="grid" id="stats"></div></div>
 </div></div></main>
 
@@ -843,6 +927,8 @@ function stateSwitch(on,cur,k){const now=Date.now(),since=k.sec-cur.from*60;
 /* ---------- головний екран ---------- */
 const DTEK='https://www.dtek-dnem.com.ua/ua/shutdowns',BTN='<a class="ref" style="text-decoration:none" href="'+DTEK+'" target="_blank" rel="noopener">Відкрити сайт ДТЕК</a>';
 function setH(el,html,cls){if(cls!=null&&el.className!==cls)el.className=cls;if(el._h!==html){el._h=html;el.innerHTML=html}}
+/* «Статус на сьогодні» переїжджає в картку графіка замість смужки; під час перезапису картки ховаємо його в безпечне місце */
+function setS(sd,html,useHero){const hero=$('hero'),lb=$('hlb'),slotNow=hero.parentNode&&hero.parentNode.id==='hslot';if(sd._h!==html&&slotNow)lb.after(hero);setH(sd,html);const slot=$('hslot');if(useHero&&slot){if(hero.parentNode!==slot)slot.appendChild(hero);lb.style.display='none'}else{if(hero.previousElementSibling!==lb)lb.after(hero);lb.style.display=''}}
 function render(){if(!ready())return;renderHome();$('net').textContent=navigator.onLine?'● онлайн':'○ офлайн'}
 /* Екстрені відключення для моєї черги: статус YASNO або свіже оголошення ДТЕК/Укренерго (Telegram) */
 const CSTAT=()=>{const j=AV.j;return j&&j.cities&&P?j.cities[P.c]||null:null};
@@ -869,11 +955,10 @@ ${known?`<div class="sub" style="margin-top:8px">${on?'До вимкнення �
 <div class="grid"><div><span class="sub">${on?'Зі світлом уже':'Без світла вже'}</span><b>${dur(Math.max(0,k.sec-since*60))}</b></div><div><span class="sub">Оновлено</span><b>${data.updated?data.updated.split(' ').pop():'—'}</b></div></div>`,'card hero '+(on?'on':'off'))}
 const s0=tab==1?tom:tab==2?yest:today,s=s0&&!isEmpty(s0)?s0:null,sd=$('sched');
 if(!s){const c=Math.max(0,Math.round((nextCheck-Date.now())/1000)),msg=tab==1?'Графіка на завтра ще немає. Зазвичай він з’являється ввечері — ми перевіримо знову.':tab==2?'Графік за вчора не збережено. Застосунок запам’ятовує лише ті дні, які встиг побачити.':'Дані на сьогодні ще не підтверджено джерелом. Перевір на офіційному сайті ДТЕК.';
-setH(sd,`<div class="empty"><div class="ico">💡</div><p>${msg}</p>${tab==2?'':BTN}${tab==1?`<div class="sub" style="margin-top:10px">Наступна перевірка через <span id="ncd"></span></div>`:''}</div>`);const nc=$('ncd');if(nc)nc.textContent=nextCheck?p2(Math.floor(c/60))+':'+p2(c%60):'скоро'}
+setS(sd,`<div class="empty"><div class="ico">💡</div><p>${msg}</p>${tab==2?'':BTN}${tab==1?`<div class="sub" style="margin-top:10px">Наступна перевірка через <span id="ncd"></span></div>`:''}</div>`);const nc=$('ncd');if(nc)nc.textContent=nextCheck?p2(Math.floor(c/60))+':'+p2(c%60):'скоро'}
 else{const pr=periods(s),isT=tab===0,nm=k.sec/60,cp=pr.find(p=>nm>=p.from&&nm<p.to);
-setH(sd,(isT&&cp?`<div class="pill ${cp.on?'on':'off'}">${cp.on?'Світло є':'Світла немає'} · ще ${dh(Math.floor((cp.to*60-k.sec)/60))}</div>`:`<div class="pill n">${tab==1?'Завтра':tab==2?'Вчора':'Сьогодні'} · ${fmtDate(addDay(k.date,tab==1?1:tab==2?-1:0))}</div>`)+
-tlHtml(pr,isT?k.sec:-1)+`<details class="rows"${ROWS_OPEN?' open':''} ontoggle="ROWS_OPEN=this.open"><summary>Детально за годинами<small>${pr.length} періодів</small></summary>`+pr.map((p,ri)=>`<div style="--r:${ri}" class="row ${p.on?'on':'off'} ${isT&&nm>=p.from&&nm<p.to?'cur':''}"><span>${hm(p.from)} – ${hmE(p.to)}</span><span>${p.on?'Світло є':'Світла немає'}</span></div>`).join('')+'</details>'+
-`<div class="meta">${s.approx?'Графік за '+fmtDate(s.approx)+' (на сьогодні даних немає). ':''}Останнє оновлення: ${esc(data&&data.updated||'—')}</div>`)}
+setS(sd,(isT?'<div id="hslot"></div>':`<div class="pill n">${tab==1?'Завтра':'Вчора'} · ${fmtDate(addDay(k.date,tab==1?1:-1))}</div>`+tlHtml(pr,-1))+`<details class="rows"${ROWS_OPEN?' open':''} ontoggle="ROWS_OPEN=this.open"><summary>Детально за годинами<small>${pr.length} періодів</small></summary>`+pr.map((p,ri)=>`<div style="--r:${ri}" class="row ${p.on?'on':'off'} ${isT&&nm>=p.from&&nm<p.to?'cur':''}"><span>${hm(p.from)} – ${hmE(p.to)}</span><span>${p.on?'Світло є':'Світла немає'}</span></div>`).join('')+'</details>'+
+`<div class="meta">${s.approx?'Графік за '+fmtDate(s.approx)+' (на сьогодні даних немає). ':''}Останнє оновлення: ${esc(data&&data.updated||'—')}</div>`,isT)}
 if(today&&!isEmpty(today)){const on=today.filter(Boolean).length*30;setH($('stats'),`<div><span class="sub">Зі світлом</span><b>${dh(on)}</b></div><div><span class="sub">Без світла</span><b>${dh(1440-on)}</b></div><div class="sbar"><i style="width:${(on/14.4).toFixed(1)}%"></i></div>`)}else setH($('stats'),'<div class="sub">—</div>');
 const age=data?(Date.now()-data.fetchedAt)/6e4:0;
 setH($('upd'),(data?`Джерело: ${esc(data.source||'ДТЕК')} · перевірено ${new Date(data.fetchedAt).toLocaleTimeString('uk-UA',{timeZone:TZ,hour:'2-digit',minute:'2-digit'})}`:'')+(err&&!OFFL()?`<div class="warn">Не вдалося оновити${data?' — показуємо останній збережений графік':''}: ${esc(err)}</div>`:'')+(ST.stale&&age>20?'<div class="warn">Дані давно не оновлювалися. Перевіряємо…</div>':''));applyMood(mood);renderWk()}
@@ -1014,7 +1099,7 @@ function nowFmt(s){return p2(Math.floor(s/3600))+':'+p2(Math.floor(s/60)%60)}
 function setNow(el,s){const p=s/864;el.style.setProperty('--p',p.toFixed(2));const t=nowFmt(s);if(el.dataset.t!==t)el.dataset.t=t;const c=nowCls(p);if(el.className!==c)el.className=c}
 function tlHtml(pr,sec){const sg=pr.map((p,i)=>`<i class="sg ${p.on?'on':'off'}" style="left:${(p.from/14.4).toFixed(3)}%;width:${((Math.min(p.to,1440)-p.from)/14.4).toFixed(3)}%;--r:${i}"></i>`).join(''),tk=[0,6,12,18,24].map(x=>`<span class="t${x}" style="left:${x/.24}%">${x}</span>`).join('');return `<div class="tlw"><div class="tlb">${sg}</div>${sec>=0?`<b id="nowm" class="${nowCls(sec/864)}" data-t="${nowFmt(sec)}" style="--p:${(sec/864).toFixed(2)}"></b>`:''}<div class="tlt">${tk}</div></div>`}
 function setHi(g){$('hi').innerHTML=g.split(' ').map((w,i)=>`<span class="w" style="--w:${i}">${esc(w)}</span>`).join(' ')}
-function tick(){const k=kv();$('clock').textContent=k.t;$('date').textContent=`${DOW[new Date(Date.UTC(k.y,k.mo-1,k.d)).getUTCDay()]}, ${k.d} ${MON[k.mo-1]} ${k.y}`;const NM=$('nowm');if(NM&&tab===0)setNow(NM,k.sec);
+function tick(){const k=kv();$('clock').innerHTML=k.t.slice(0,5)+'<span class="sec">'+k.t.slice(5)+'</span>';$('date').textContent=`${DOW[new Date(Date.UTC(k.y,k.mo-1,k.d)).getUTCDay()]}, ${k.d} ${MON[k.mo-1]} ${k.y}`;const NM=$('nowm');if(NM&&tab===0)setNow(NM,k.sec);
 const nm=P?P.name:'',g=k.h<6?'Доброї ночі, '+nm+' 🌙':k.h<12?'Доброго ранку, '+nm+' ☀️':k.h<18?'Доброго дня, '+nm+' 💜':'Доброго вечора, '+nm+' ✨';if($('hi').textContent!==g)setHi(g);
 if(!tick.d)tick.d=k.date;if(tick.d!==k.date){tick.d=k.date;load()}
 if(nextCheck&&Date.now()>=nextCheck){nextCheck=0;load()}render();checkAlert();if(view===2&&k.sec%30===0&&QV.j)renderQueues();if(view===4){if(Date.now()-AV.t>120e3){loadAv();loadAvS()}else if(k.sec%30===0)renderAv()}}
@@ -1036,10 +1121,10 @@ const dpr=Math.min(devicePixelRatio||1,2),S=Math.max(200,Math.round(st.clientWid
 cb.width=cb.height=cf.width=cf.height=S;
 const b=cb.getContext('2d'),f=cf.getContext('2d'),k=S/1254,PI=Math.PI;
 const sp=document.createElement('canvas');sp.width=sp.height=64;const sg=sp.getContext('2d'),g=sg.createRadialGradient(32,32,0,32,32,32);
-g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.25,'rgba(255,255,255,.85)');g.addColorStop(1,'rgba(255,255,255,0)');sg.fillStyle=g;sg.fillRect(0,0,64,64);
+g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.25,'rgba(255,238,196,.85)');g.addColorStop(1,'rgba(255,200,110,0)');sg.fillStyle=g;sg.fillRect(0,0,64,64);
 const O=[{cx:600,cy:640,a:560,b:185,t:-24*PI/180,d:1,n:3,ph:0,w:1},{cx:620,cy:710,a:390,b:115,t:15*PI/180,d:-1,n:2,ph:1.3,w:1.35}];
 const pt=(o,r,th)=>{const x=o.a*r*Math.cos(th),y=o.b*r*Math.sin(th),c=Math.cos(o.t),s=Math.sin(o.t);return[(o.cx+x*c-y*s)*k,(o.cy+x*s+y*c)*k]};
-const ring=(c,o,r,a0,a1,al)=>{c.strokeStyle='rgba(255,255,255,'+al+')';c.lineWidth=1.6*k;c.beginPath();c.ellipse(o.cx*k,o.cy*k,o.a*r*k,o.b*r*k,o.t,a0,a1);c.stroke()};
+const ring=(c,o,r,a0,a1,al)=>{c.strokeStyle='rgba(255,244,225,'+al+')';c.lineWidth=1.6*k;c.beginPath();c.ellipse(o.cx*k,o.cy*k,o.a*r*k,o.b*r*k,o.t,a0,a1);c.stroke()};
 let raf=0,run=true;const t0=performance.now(),N=36,L=1.5;
 function fr(now){if(!run)return;const t=(now-t0)/1000;b.clearRect(0,0,S,S);f.clearRect(0,0,S,S);b.globalCompositeOperation=f.globalCompositeOperation='lighter';
 const boost=t>2.1?1+.7*Math.exp(-(t-2.1)*3.5):1,fade=Math.min(1,t/.45);
@@ -1048,8 +1133,8 @@ ring(b,o,r,PI,2*PI,.16*e);ring(f,o,r,0,PI,.34*e);
 for(let i=0;i<o.n;i++){const th=o.ph+i*2*PI/o.n+o.d*(o.w*t+6.5*e);
 for(let j=0;j<N;j++){const ta=th-o.d*L*j/N,tb=th-o.d*L*(j+1)/N,q=1-j/N,c=Math.sin((ta+tb)/2)>0?f:b,A=Math.min(1,Math.pow(q,1.8)*.9*fade*boost),pa=pt(o,r,ta),pb=pt(o,r,tb);
 c.lineCap='round';c.beginPath();c.moveTo(pa[0],pa[1]);c.lineTo(pb[0],pb[1]);
-c.strokeStyle='rgba(255,255,255,'+A*.18+')';c.lineWidth=(9*q+2)*k;c.stroke();
-c.strokeStyle='rgba(255,255,255,'+A+')';c.lineWidth=(3.2*q+.8)*k;c.stroke()}
+c.strokeStyle='rgba(255,190,90,'+A*.22+')';c.lineWidth=(9*q+2)*k;c.stroke();
+c.strokeStyle='rgba(255,246,228,'+A+')';c.lineWidth=(3.2*q+.8)*k;c.stroke()}
 const h=pt(o,r,th),c=Math.sin(th)>0?f:b,z=54*k*(1+.3*Math.sin(th));c.globalAlpha=Math.min(1,fade*boost);c.drawImage(sp,h[0]-z/2,h[1]-z/2,z,z);c.globalAlpha=1}}
 raf=requestAnimationFrame(fr)}
 raf=requestAnimationFrame(fr);return()=>{run=false;cancelAnimationFrame(raf)}}
