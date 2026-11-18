@@ -1,0 +1,16 @@
+{
+  "name": "trebasvitlo-desktop",
+  "productName": "ТребаСвітло",
+  "version": "1.0.0",
+  "main": "main.js",
+  "description": "ТребаСвітло? — графік відключень світла",
+  "author": "saeii9",
+  "devDependencies": { "electron": "^31.0.0", "electron-builder": "^24.13.3" },
+  "build": {
+    "appId": "ua.trebasvitlo.desktop",
+    "productName": "ТребаСвітло",
+    "files": ["main.js", "app-config.json"],
+    "win": { "target": "portable", "icon": "build/icon.png" },
+    "portable": { "artifactName": "TrebaSvitlo.exe" }
+  }
+}
