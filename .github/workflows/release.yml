@@ -1,1 +1,70 @@
+name: Release (APK + Windows)
+on:
+  push:
+    branches: [main]
+    paths: ["mobile/**", "desktop/**", ".github/workflows/release.yml"]
+  workflow_dispatch:
+    inputs:
+      site_url:
+        description: "Адреса застосунку (https://...), якщо не задано змінну SITE_URL"
+        required: false
+permissions:
+  contents: write
+env:
+  URL_IN: ${{ inputs.site_url || vars.SITE_URL }}
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Перевірка адреси
+        run: test -n "$URL_IN" || { echo "Задай SITE_URL (Settings → Secrets and variables → Actions → Variables)"; exit 1; }
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 17 }
+      - name: Capacitor
+        working-directory: mobile
+        run: |
+          sed -i "s#https://REPLACE-WITH-YOUR-SITE.vercel.app#$URL_IN#" capacitor.config.json
+          npm install
+          npx cap add android
+          npx cap sync android
+      - name: Збірка APK
+        working-directory: mobile/android
+        run: ./gradlew assembleDebug
+      - run: cp mobile/android/app/build/outputs/apk/debug/app-debug.apk TrebaSvitlo.apk
+      - uses: actions/upload-artifact@v4
+        with: { name: apk, path: TrebaSvitlo.apk }
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Збірка Windows
+        working-directory: desktop
+        shell: bash
+        run: |
+          test -n "$URL_IN" || { echo "Задай SITE_URL"; exit 1; }
+          echo "{ \"url\": \"$URL_IN\" }" > app-config.json
+          npm install
+          npx electron-builder --win portable --publish never
+          cp dist/TrebaSvitlo.exe ../TrebaSvitlo.exe
+      - uses: actions/upload-artifact@v4
+        with: { name: exe, path: TrebaSvitlo.exe }
+  release:
+    needs: [android, windows]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { path: out, merge-multiple: true }
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: ТребаСвітло? v1.0.${{ github.run_number }}
+          generate_release_notes: true
+          files: |
+            out/TrebaSvitlo.apk
+            out/TrebaSvitlo.exe
 
