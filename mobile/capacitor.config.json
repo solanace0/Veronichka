@@ -1,0 +1,11 @@
+{
+  "appId": "ua.trebasvitlo.app",
+  "appName": "ТребаСвітло?",
+  "webDir": "www",
+  "server": {
+    "url": "https://REPLACE-WITH-YOUR-SITE.vercel.app",
+    "cleartext": false
+  },
+  "android": { "backgroundColor": "#000000" },
+  "ios": { "backgroundColor": "#000000", "contentInset": "always" }
+}
