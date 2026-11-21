@@ -8,11 +8,15 @@
 // Адресних даних (вулиця, причина, час відновлення) відкриті джерела не дають, тому нічого не вигадуємо.
 import { fetchTelegram, isStart, isCancel, queuesOf } from './_telegram.js';
 import { fetchFlags, cityStatus } from './_dtek.js';
+import { fetchLoe, emergencyOf } from './_loe.js';
 
 const YASNO = 'https://app.yasno.ua/api/blackout-service/public/shutdowns/regions/3/dsos/301/planned-outages';
+// Київ (ДТЕК КЕМ): регіон 25, оператор 902; у YASNO черги Києва мають вигляд 1.1 … 60.1
+const YASNO_KY = 'https://app.yasno.ua/api/blackout-service/public/shutdowns/regions/25/dsos/902/planned-outages';
+const YASNO_CITIES = ['dp', 'ky']; // зони, для яких статус екстрених береться з YASNO
 const ANNOUNCE = 'https://static.yasno.ua/dnipro/outages';
 const UA = { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/130 Safari/537.36', 'accept-language': 'uk-UA,uk;q=0.9' };
-const GROUP_RE = /^[1-6]\.[12]$/;
+const GROUP_RE = /^\d{1,2}\.[12]$/;
 import { AREA_CODES, AREAS } from './_regions.js';
 const CITIES = AREA_CODES;
 const kyivYmd = (s) => { const d = new Date(s); return isNaN(d) ? String(s).slice(0, 10) : new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Kyiv' }).format(d); };
@@ -70,8 +74,8 @@ export function parse(j) {
   }
   return { groups, updatedTs: newest };
 }
-async function fetchYasno() {
-  const r = await fetch(YASNO, { headers: UA, signal: AbortSignal.timeout(8000) });
+async function fetchYasno(url = YASNO) {
+  const r = await fetch(url, { headers: UA, signal: AbortSignal.timeout(8000) });
   if (!r.ok) throw new Error('YASNO HTTP ' + r.status);
   const out = parse(await r.json());
   if (!Object.keys(out.groups).length) throw new Error('YASNO: порожня відповідь');
@@ -80,22 +84,22 @@ async function fetchYasno() {
 
 // ---------- Підсумок по місту ----------
 // level: emergency (підтверджено) | announced (оголошено, не підтверджено) | none | unknown
-export function buildCity(city, { dtek, yasno, annYasno, tgItems }) {
+export function buildCity(city, { dtek, yasno, annYasno, tgItems, tgOk }) {
   const reasons = [];
   let level = 'none', queues = [], allQueues = false;
   const checked = [];
 
   // 1. Сайт ДТЕК
   if (dtek && dtek.known) {
-    checked.push({ name: 'Сайт ДТЕК (дзеркало)', ok: true, ts: dtek.updatedTs || null, stale: !!dtek.stale });
+    checked.push({ name: dtek.srcName || 'Сайт ДТЕК (дзеркало)', ok: true, ts: dtek.updatedTs || null, stale: !!dtek.stale });
     if (dtek.emergency) {
       level = 'emergency'; allQueues = true;
-      reasons.push({ src: 'Сайт ДТЕК', ts: dtek.updatedTs || null, text: dtek.districts ? 'ДТЕК оголосив екстрені відключення: ' + dtek.districts + '.' : 'ДТЕК оголосив екстрені відключення на своєму сайті.' });
+      reasons.push({ src: dtek.srcName || 'Сайт ДТЕК', ts: dtek.updatedTs || null, text: dtek.msg ? dtek.msg : dtek.districts ? 'ДТЕК оголосив екстрені відключення: ' + dtek.districts + '.' : 'ДТЕК оголосив екстрені відключення на своєму сайті.' });
     }
-  } else checked.push({ name: 'Сайт ДТЕК (дзеркало)', ok: false });
+  } else checked.push({ name: dtek && dtek.srcName || 'Сайт ДТЕК (дзеркало)', ok: false });
 
-  // 2. YASNO (лише Дніпро)
-  if (city === 'dp') {
+  // 2. YASNO (Дніпро, Київ)
+  if (YASNO_CITIES.includes(city)) {
     if (yasno) {
       checked.push({ name: 'YASNO (статус черг)', ok: true, ts: yasno.updatedTs || null });
       const total = Object.keys(yasno.groups).length;
@@ -111,19 +115,24 @@ export function buildCity(city, { dtek, yasno, annYasno, tgItems }) {
   // 3. Оголошення операторів (лише рівень «оголошено»)
   if (level !== 'emergency') {
     // Якщо свіжий знімок сайту ДТЕК каже «немає», то оголошення, старіші за цей знімок, у банер не беремо (вони лишаються в стрічці)
-    const freshDtekTs = dtek && dtek.known && !dtek.stale && !dtek.emergency ? dtek.updatedTs || 0 : 0;
+    const freshDtekTs = dtek && dtek.known && !dtek.weak && !dtek.stale && !dtek.emergency ? dtek.updatedTs || 0 : 0;
     const anns = [...tgItems.filter((a) => a.cities.includes(city)), ...annYasno.filter((a) => a.cities.includes(city))].sort((a, b) => (b.ts || 0) - (a.ts || 0));
     const active = anns.filter((a) => !a.cancelled && (a.ts == null || a.ts > freshDtekTs - 10 * 6e4));
     if (active.length) {
-      level = 'announced';
+      // Офіційний канал оператора (ДТЕК, Укренерго) прямо повідомив про введення екстрених відключень, і свіжі дані не кажуть протилежного:
+      // показуємо як діючі (червоним). Оголошення зі сторінки YASNO без підтвердження лишаються «оголошено».
+      const official = active.some((a) => /Telegram/.test(a.source || ''));
+      const denied = dtek && dtek.known && !dtek.weak && !dtek.stale && !dtek.emergency;
+      level = official && !denied ? 'emergency' : 'announced';
       for (const a of active.slice(0, 3)) {
         reasons.push({ src: a.source, ts: a.ts, link: a.link || null, text: a.text });
-        if (a.allQueues) allQueues = true; else queues = [...new Set([...queues, ...(a.queues || [])])];
+        if (a.allQueues || (level === 'emergency' && !(a.queues || []).length)) allQueues = true; else queues = [...new Set([...queues, ...(a.queues || [])])];
       }
     }
   }
   // «Не заявлено» можна казати лише за свіжими даними ДТЕК (або YASNO для Дніпра); інакше чесно «невідомо»
-  const solid = (dtek && dtek.known && !dtek.stale) || (city === 'dp' && !!yasno);
+  // Офіційні канали ДТЕК/Укренерго успішно прочитані й свіжого оголошення для зони немає → «не заявлено» (для зон, де є графік).
+  const solid = (dtek && dtek.known && !dtek.stale) || (YASNO_CITIES.includes(city) && !!yasno) || (!!tgOk && !!AREAS[city] && !!AREAS[city].mirror);
   if (level === 'none' && !solid) level = 'unknown';
   return { level, queues: queues.sort(), allQueues, reasons, checked, stabilizing: !!(dtek && dtek.stabilizing), otherDistricts: (dtek && dtek.otherDistricts) || null };
 }
@@ -134,27 +143,35 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(204).end();
   try {
     const debug = !!(req.query && req.query.debug);
-    const [ys, ann, tg, fl] = await Promise.allSettled([fetchYasno(), fetchAnnouncements(), fetchTelegram(), fetchFlags()]);
+    const [ys, ann, tg, fl, yk, lo] = await Promise.allSettled([fetchYasno(), fetchAnnouncements(), fetchTelegram(), fetchFlags(), fetchYasno(YASNO_KY), fetchLoe()]);
+    const LOE = lo.status === 'fulfilled' ? lo.value : null;
     const yasno = ys.status === 'fulfilled' ? ys.value : null;
+    const yasnoKy = yk.status === 'fulfilled' ? yk.value : null;
     const A = ann.status === 'fulfilled' ? ann.value : { ok: false, items: [] };
     const T = tg.status === 'fulfilled' ? tg.value : { ok: false, items: [], feed: [], channels: [] };
     const F = fl.status === 'fulfilled' ? fl.value : { flags: [], errors: [String(fl.reason && fl.reason.message || fl.reason)] };
 
     const cities = {};
     for (const c of CITIES) {
-      cities[c] = buildCity(c, { dtek: cityStatus(F.flags, c), yasno, annYasno: A.items, tgItems: T.items });
+      let dt = cityStatus(F.flags, c);
+      if (c === 'lv') {
+        // Львівобленерго: власне API сайту оператора (аварійні/екстрені відключення позначаються в тексті графіка)
+        if (LOE) { const e = emergencyOf(LOE); dt = { known: true, stale: false, emergency: e.emergency, updatedTs: e.updatedTs, srcName: 'Сайт Львівобленерго', weak: true, msg: 'Львівобленерго оголосило аварійні (екстрені) відключення на своєму сайті.' }; }
+        else dt = { known: false, stale: true, emergency: false, srcName: 'Сайт Львівобленерго' };
+      }
+      cities[c] = buildCity(c, { dtek: dt, yasno: c === 'ky' ? yasnoKy : yasno, annYasno: A.items, tgItems: T.items, tgOk: T.ok });
       cities[c].feed = (T.feed || []).filter((a) => a.cities.includes(c)).slice(0, 8);
       cities[c].operator = AREAS[c].operator;
       if (!AREAS[c].mirror) cities[c].soon = true;
     }
-    if (!(F.flags.length || yasno || T.ok || A.ok)) throw new Error('жодне джерело не відповіло');
+    if (!(F.flags.length || yasno || yasnoKy || T.ok || A.ok || LOE)) throw new Error('жодне джерело не відповіло');
     const groups = yasno ? yasno.groups : {};
     const emergencyGroups = Object.values(groups).filter((g) => g.today && g.today.state === 'emergency').length;
     res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=30');
     return res.status(200).json({
       ok: true, fetchedAt: Date.now(), cities, groups, emergencyGroups, updatedTs: yasno ? yasno.updatedTs : null,
       yasnoOk: !!yasno, dtekOk: F.flags.length > 0, telegramOk: T.ok, announceOk: A.ok, telegram: T.channels || [],
-      ...(debug ? { dtekFlags: F.flags, dtekErrors: F.errors, yasnoError: ys.status === 'rejected' ? String(ys.reason && ys.reason.message || ys.reason) : null } : {})
+      ...(debug ? { dtekFlags: F.flags, dtekErrors: F.errors, loeOk: !!LOE, loeError: lo.status === 'rejected' ? String(lo.reason && lo.reason.message || lo.reason) : null, yasnoKyError: yk.status === 'rejected' ? String(yk.reason && yk.reason.message || yk.reason) : null, yasnoError: ys.status === 'rejected' ? String(ys.reason && ys.reason.message || ys.reason) : null } : {})
     });
   } catch (e) {
     res.setHeader('Cache-Control', 'no-store');
