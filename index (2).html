@@ -891,7 +891,7 @@ const AINFO={kr:{op:'ДТЕК Дніпровські електромережі'
  ky:{op:'ДТЕК Київські електромережі'},
  kv:{op:'ДТЕК Київські регіональні електромережі',note:'Графік береться з сайту ДТЕК для Київської області. Для частини міст області оператор інший, тоді графік може відрізнятися: звір із сайтом оператора.'},
  od:{op:'ДТЕК Одеські електромережі',note:'Графік береться з сайту ДТЕК для Одещини. Якщо у твоєму селищі інший оператор, графік може відрізнятися.'},
- lv:{op:'Львівобленерго',soon:true}};
+ lv:{op:'Львівобленерго',note:'Графік береться з сайту Львівобленерго (poweron.loe.lviv.ua): черги ті самі, 1.1–6.2. Аварійні та екстрені відключення позначаються червоним.'}};
 const PL=('Дніпро|dp|dnp|Днепр;Кривий Ріг|kr|dnp|Кривой Рог;Кам’янське|kz|dnp|Каменское;Нікополь|dn|dnp|Никополь;Павлоград|dn|dnp|;Новомосковськ|dn|dnp|Новомосковск;Марганець|dn|dnp|Марганец;Покров|dn|dnp|;Тернівка|dn|dnp|Терновка;Підгородне|dn|dnp|Подгородное;Синельникове|dn|dnp|Синельниково;Жовті Води|dn|dnp|Желтые Воды;Вільногірськ|dn|dnp|Вольногорск;'
 +'Київ|ky|kyv|Киев;Біла Церква|kv|kyv|Белая Церковь;Бровари|kv|kyv|Бровары;Бориспіль|kv|kyv|Борисполь;Ірпінь|kv|kyv|Ирпень;Буча|kv|kyv|;Вишневе|kv|kyv|Вишневое;Вишгород|kv|kyv|Вышгород;Фастів|kv|kyv|Фастов;Обухів|kv|kyv|Обухов;Васильків|kv|kyv|Васильков;Українка|kv|kyv|Украинка;Славутич|kv|kyv|;Бородянка|kv|kyv|;Боярка|kv|kyv|;Переяслав|kv|kyv|;Березань|kv|kyv|;Яготин|kv|kyv|;Богуслав|kv|kyv|;Сквира|kv|kyv|;'
 +'Одеса|od|ode|Одесса;Чорноморськ|od|ode|Черноморск;Южне|od|ode|Южное;Подільськ|od|ode|Подольск;Білгород-Дністровський|od|ode|Белгород-Днестровский;Ізмаїл|od|ode|Измаил;Роздільна|od|ode|Раздельная;Овідіополь|od|ode|Овидиополь;Біляївка|od|ode|Беляевка;Арциз|od|ode|;Рені|od|ode|Рени;Татарбунари|od|ode|;'
@@ -914,7 +914,7 @@ function cpInit(p){const box=$(p+'-cp');if(!box)return;
   if(b.dataset.o){CP[p].list=CP[p].list===b.dataset.o?null:b.dataset.o;cpRender(p);play('on','sSwitch');return}
   if(b.dataset.a){$(p+'-cps').value='';$(p+'-cpr').innerHTML='';cpSet(p,b.dataset.a,b.dataset.t);play('on','sSwitch')}});
  cpSet(p,$(p+'-c').value||CP[p].a,CP[p].t)}
-const SRC_NAME={mirror:'Сайт ДТЕК (дзеркало)',yasno:'YASNO / ДТЕК',kolybude:'kolybude.com'};
+const SRC_NAME={mirror:'Сайт ДТЕК (дзеркало)',yasno:'YASNO / ДТЕК',kolybude:'kolybude.com',loe:'Сайт Львівобленерго'};
 /* ---------- вкладка «Аварії»: статус екстрених відключень + графік вибраного міста й черги ---------- */
 let AV={j:jget('lastOut',null),err:null,loading:false,t:0,c:null,q:null,tab:0,S:{}};
 const AVT={emergency:['em','екстрено'],announced:['am','оголошено'],waiting:['wt','не оновлено'],normal:['ok','за графіком'],unknown:['na','—']};
@@ -1092,7 +1092,7 @@ const E=emgInfo();if(E&&ST.emgN){const key='emg2|'+E.lvl+'|'+P.c+'|'+kv().date+'
 function renderHome(){const k=kv(),today=day(k.date),tom=day(addDay(k.date,1)),yest=day(addDay(k.date,-1));NEXT=null;let mood='unk';
 const hero=$('hero'),loc='<div class="loc">'+PN()+' · Черга '+P.q+'</div>'+(P.a?'<div class="addr">'+esc(P.a)+'</div>':'');
 {const E=emgInfo(),at=E&&E.a&&E.a.ts?', '+new Date(E.a.ts).toLocaleTimeString('uk-UA',{timeZone:TZ,hour:'2-digit',minute:'2-digit'}):'';
-setH($('emg'),E?(E.lvl==='emergency'?'<div class="emg">Діють екстрені відключення<small>Планові графіки не застосовуються, світло може зникати без попередження.'+(E.a?'<br>'+esc(E.a.src||'')+at+(E.a.text?': '+esc(E.a.text.length>150?E.a.text.slice(0,147)+'…':E.a.text):''):'')+'</small></div>':'<div class="emg w">Є оголошення про екстрені відключення<small>Сайт ДТЕК ще не підтвердив. Зазирни у вкладку «Аварії».'+(E.a?'<br>'+esc(E.a.src||'')+at+': '+esc(E.a.text.length>130?E.a.text.slice(0,127)+'…':E.a.text):'')+'</small></div>'):(data&&data.emergency?'<div class="emg">Діють екстрені відключення<small>Планові графіки можуть не застосовуватися. Орієнтуйся на повідомлення оператора.</small></div>':''))}
+setH($('emg'),E?(E.lvl==='emergency'?'<div class="emg">Діють аварійні (екстрені) відключення<small>'+(P&&P.c==='lv'?'Діє графік аварійних відключень за чергами (нижче). Час може змінюватися, а світло — зникати без попередження.':'Планові графіки не застосовуються, світло може зникати без попередження.')+(E.a?'<br>'+esc(E.a.src||'')+at+(E.a.text?': '+esc(E.a.text.length>150?E.a.text.slice(0,147)+'…':E.a.text):''):'')+'</small></div>':'<div class="emg w">Є оголошення про екстрені відключення<small>Сайт ДТЕК ще не підтвердив. Зазирни у вкладку «Аварії».'+(E.a?'<br>'+esc(E.a.src||'')+at+': '+esc(E.a.text.length>130?E.a.text.slice(0,127)+'…':E.a.text):'')+'</small></div>'):(data&&data.emergency?'<div class="emg">Діють екстрені відключення<small>Планові графіки можуть не застосовуватися. Орієнтуйся на повідомлення оператора.</small></div>':''))}
 if((emgInfo()||{}).lvl==='emergency'||(!emgInfo()&&data&&data.emergency))mood='emg';
 setH($('offb'),offBanner(today));document.body.classList.toggle('offl',OFFL());
 if(loading&&!data){SW.prev=null;setH(hero,'<div class="loc">Завантаження…</div><div class="status" style="opacity:.4">⋯</div>','card hero')}
@@ -1169,7 +1169,7 @@ function closeShare(){$('shm').classList.add('hid')}
 addEventListener('keydown',e=>{if(e.key==='Escape')closeShare()});
 function saveCard(){if(!SH.blob){toast('Картка ще готується…');return}const u=URL.createObjectURL(SH.blob),a=document.createElement('a');a.href=u;a.download=SH.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);toast('Картинку збережено')}
 async function doShare(){if(!SH.blob){toast('Картка ще готується…');return}const f=new File([SH.blob],SH.name,{type:'image/png'});
- try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'ТребаСвітло?',text:PN()+', черга '+P.q});return}}catch(e){if(e&&e.name==='AbortError')return}
+ try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});return}}catch(e){if(e&&e.name==='AbortError')return}
  saveCard()}
 function cardText(){const d=cardData();if(!d)return null;
  return`ТребаСвітло? · ${PN()}, черга ${P.q}, ${fmtDate(d.date)}\n`+d.pr.map(p=>`${hm(p.from)}–${hmE(p.to)} ${p.on?'світло є':'світла немає'}`).join('\n')+(d.s.approx?`\n(збережений графік за ${fmtDate(d.s.approx)}, на сьогодні даних немає)`:'')+'\nНеофіційні дані, звіряйся з сайтом ДТЕК.'}
