@@ -5,8 +5,8 @@
 //   stabilizing.enabled         — діють стабілізаційні (погодинні) відключення.
 // Це дані самого оператора, а не здогад за текстом новин, тому вони головне джерело статусу.
 // Сайт ДТЕК закритий захистом, його напряму не обходимо — лише відкрите дзеркало.
-const BASE = 'https://raw.githubusercontent.com/Baskerville42/outage-data-ua/main/data/';
-export const FILES = ['dnipro-oblast.json', 'dnipro.json'];
+import { MIRROR_BASE as BASE, AREAS, ALL_FLAG_FILES } from './_regions.js';
+export const FILES = ALL_FLAG_FILES;
 const UA = { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/130 Safari/537.36', 'accept-language': 'uk-UA,uk;q=0.9' };
 const STALE_MS = 3 * 36e5; // дзеркало оновлюється кожні ~5 хв; старше 3 год — вважаємо застарілим
 
@@ -57,9 +57,17 @@ export function parseFlags(j, file = '') {
 // Чи стосується прапорець міста
 export function flagForCity(f, city) {
   if (!f) return null;
+  const A = AREAS[city];
+  if (!A || !A.flags.includes(f.file)) return null; // файл іншого оператора до цієї зони не стосується
   const now = Date.now();
   const stale = !f.updatedTs || now - f.updatedTs > STALE_MS || !f.parseOk;
   let emergency = false, why = null;
+  // Київ, Київська, Одеська: файл цілком належить зоні. Якщо оператор назвав райони, показуємо їх у повідомленні,
+  // а червоним позначаємо зону загалом: за назвою селища відфільтрувати надійно неможливо.
+  if (!CITY_RE[city]) {
+    if (f.enabled) { emergency = true; why = f.districts ? 'districts' : 'all'; }
+    return { checked: true, stale, emergency, why, districts: f.districts, stabilizing: f.stabilizing, updatedTs: f.updatedTs, file: f.file };
+  }
   if (f.scope === 'city' && city !== 'dp') {
     return { checked: false, stale, emergency: false, why: null, file: f.file };
   }
@@ -78,12 +86,12 @@ async function getJson(url) {
 }
 
 // Тягнемо всі файли паралельно; повертаємо розібрані прапорці й помилки (для діагностики)
-export async function fetchFlags() {
-  const settled = await Promise.allSettled(FILES.map(async (f) => parseFlags(await getJson(BASE + f), f)));
+export async function fetchFlags(files = FILES) {
+  const settled = await Promise.allSettled(files.map(async (f) => parseFlags(await getJson(BASE + f), f)));
   const flags = [], errors = [];
   settled.forEach((s, i) => {
     if (s.status === 'fulfilled' && s.value) flags.push(s.value);
-    else errors.push(FILES[i] + ': ' + (s.status === 'rejected' ? String(s.reason && s.reason.message || s.reason) : 'немає полів emergency/stabilizing'));
+    else errors.push(files[i] + ': ' + (s.status === 'rejected' ? String(s.reason && s.reason.message || s.reason) : 'немає полів emergency/stabilizing'));
   });
   return { flags, errors };
 }

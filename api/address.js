@@ -7,7 +7,13 @@ const UA_HDR = { 'user-agent': 'TrebaSvitlo/2.4 (+mailto:ssssssifo@gmail.com)', 
 const CITY = {
   kr: { name: 'Кривий Ріг', bbox: [33.18, 47.80, 33.65, 48.04], alias: ['кривийріг', 'кривойрог'] },
   dp: { name: 'Дніпро', bbox: [34.70, 48.32, 35.25, 48.60], alias: ['дніпро', 'днепр'] },
-  kz: { name: 'Кам’янське', bbox: [34.45, 48.42, 34.80, 48.60], alias: ['камянське', 'каменское', 'дніпродзержинськ'] }
+  kz: { name: 'Кам’янське', bbox: [34.45, 48.42, 34.80, 48.60], alias: ['камянське', 'каменское', 'дніпродзержинськ'] },
+  ky: { name: 'Київ', bbox: [30.20, 50.21, 30.83, 50.59], alias: ['київ', 'киев', 'kyiv'] },
+  od: { name: 'Одеса', bbox: [30.60, 46.33, 30.86, 46.60], alias: ['одеса', 'одесса', 'odesa'] },
+  lv: { name: 'Львів', bbox: [23.88, 49.76, 24.15, 49.91], alias: ['львів', 'львов', 'lviv'] },
+  // області: пошук у межах області, назва селища береться з відповіді карти
+  kv: { name: 'Київська область', bbox: [29.2, 49.4, 32.2, 51.6], alias: [], any: true },
+  dn: { name: 'Дніпропетровська область', bbox: [32.8, 47.5, 36.9, 49.3], alias: [], any: true }
 };
 const L = '\\p{L}\\d';
 
@@ -72,7 +78,7 @@ async function nominatim(q, c) {
 
 // ---------- перетворення в підказки ----------
 const strip = (s) => String(s || '').toLowerCase().replace(/[^\p{L}]/gu, '');
-const sameCity = (pc, c) => !pc || CITY[c].alias.some((a) => strip(pc).includes(a) || a.includes(strip(pc)));
+const sameCity = (pc, c) => !pc || CITY[c].any || CITY[c].alias.some((a) => strip(pc).includes(a) || a.includes(strip(pc)));
 export function toItem(f, c) {
   const p = (f && f.properties) || {};
   if (!sameCity(p.city, c)) return null;
@@ -80,7 +86,8 @@ export function toItem(f, c) {
   const street = p.street || (isStreet ? p.name : null);
   if (!street) return null;
   const district = p.district || p.suburb || p.locality;
-  const sub = CITY[c].name + (district && strip(district) !== strip(CITY[c].name) ? ', ' + district : '');
+  const cn = CITY[c].any ? (p.city || CITY[c].name) : CITY[c].name;
+  const sub = cn + (district && strip(district) !== strip(cn) ? ', ' + district : '');
   if (p.housenumber) return { label: street + ', ' + p.housenumber, sub, kind: 'house', street, house: String(p.housenumber) };
   if (isStreet) return { label: street, sub, kind: 'street', street };
   return null;

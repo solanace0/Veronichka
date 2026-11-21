@@ -2,7 +2,8 @@
 import { storeEnabled, subId, getSub, putSub, delSub } from './_store.js';
 import { sendPush, vapidReady } from './_send.js';
 const PUSH_HOST = /^https:\/\/([a-z0-9-]+\.)*(googleapis\.com|mozilla\.com|mozaws\.net|push\.apple\.com|notify\.windows\.com)\//i;
-const CITIES = ['kr', 'dp', 'kz'], LEADS = [5, 10, 15, 30, 60];
+import { AREAS_WITH_DATA } from './_regions.js';
+const CITIES = AREAS_WITH_DATA, LEADS = [5, 10, 15, 30, 60];
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');

@@ -13,7 +13,8 @@ const YASNO = 'https://app.yasno.ua/api/blackout-service/public/shutdowns/region
 const ANNOUNCE = 'https://static.yasno.ua/dnipro/outages';
 const UA = { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/130 Safari/537.36', 'accept-language': 'uk-UA,uk;q=0.9' };
 const GROUP_RE = /^[1-6]\.[12]$/;
-const CITIES = ['kr', 'dp', 'kz'];
+import { AREA_CODES, AREAS } from './_regions.js';
+const CITIES = AREA_CODES;
 const kyivYmd = (s) => { const d = new Date(s); return isNaN(d) ? String(s).slice(0, 10) : new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Kyiv' }).format(d); };
 
 // ---------- Оголошення на сторінці YASNO (м. Дніпро) ----------
@@ -143,6 +144,8 @@ export default async function handler(req, res) {
     for (const c of CITIES) {
       cities[c] = buildCity(c, { dtek: cityStatus(F.flags, c), yasno, annYasno: A.items, tgItems: T.items });
       cities[c].feed = (T.feed || []).filter((a) => a.cities.includes(c)).slice(0, 8);
+      cities[c].operator = AREAS[c].operator;
+      if (!AREAS[c].mirror) cities[c].soon = true;
     }
     if (!(F.flags.length || yasno || T.ok || A.ok)) throw new Error('жодне джерело не відповіло');
     const groups = yasno ? yasno.groups : {};

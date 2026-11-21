@@ -7,10 +7,9 @@
 // Якщо жодне джерело не дало підтвердженого графіка на день, цей день не повертається
 // (інтерфейс не має малювати «24 години світла» без даних).
 import { fetchFlags, cityStatus } from './_dtek.js';
+import { AREAS, MIRROR_BASE } from './_regions.js';
 const kyivYmd = (s) => { const d = new Date(s); return isNaN(d) ? String(s).slice(0, 10) : new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Kyiv' }).format(d); };
 const YASNO = 'https://app.yasno.ua/api/blackout-service/public/shutdowns/regions/3/dsos/301/planned-outages';
-const MIRROR_BASE = 'https://raw.githubusercontent.com/Baskerville42/outage-data-ua/main/data/';
-const MIRROR_FILES = ['dnipro.json', 'dnipro-oblast.json'];
 const KOLY = 'https://kolybude.com/dnipro/kryvyi-rih';
 const MONTHS = ['січня','лютого','березня','квітня','травня','червня','липня','серпня','вересня','жовтня','листопада','грудня'];
 const UA = { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/130 Safari/537.36', 'accept-language': 'uk-UA,uk;q=0.9' };
@@ -92,9 +91,9 @@ function hoursToSlots(hmap) {
   return slots;
 }
 
-async function fromMirror(GROUP) {
+async function fromMirror(GROUP, files) {
   let j = null, lastErr = null;
-  for (const f of MIRROR_FILES) {
+  for (const f of files) {
     try { j = await getJson(MIRROR_BASE + f); break; } catch (e) { lastErr = e; }
   }
   if (!j) throw lastErr || new Error('Дзеркало ДТЕК недоступне');
@@ -189,12 +188,20 @@ async function run(req, res) {
   const q = req.query || {};
   const GROUP = String(q.group || '4.2');
   if (!/^[1-6]\.[12]$/.test(GROUP)) { res.setHeader('Cache-Control', 'no-store'); return res.status(400).json({ ok: false, error: 'Невірна черга' }); }
-  const city = ['kr', 'dp', 'kz'].includes(String(q.city)) ? String(q.city) : 'kr';
-  const fns = { mirror: () => fromMirror(GROUP), yasno: () => fromYasno(GROUP), kolybude: () => fromKoly(GROUP) };
-  // kolybude.com використовуємо лише для Кривого Рогу (сторінка міста)
-  const all = city === 'kr' ? ['mirror', 'yasno', 'kolybude'] : ['mirror', 'yasno'];
+  const city = AREAS[String(q.city)] ? String(q.city) : 'kr';
+  const area = AREAS[city];
+  if (!area.mirror) {
+    // для цієї зони джерело ще не підключене: чесно кажемо «скоро», а не малюємо «24 години світла»
+    res.setHeader('Cache-Control', 'no-store');
+    return res.status(503).json({ ok: false, soon: true, city, operator: area.operator, error: 'Для зони «' + area.name + '» джерело графіків ще не підключене (' + area.operator + ')' });
+  }
+  const fns = { mirror: () => fromMirror(GROUP, area.mirror) };
+  const all = ['mirror'];
+  // YASNO і kolybude.com — лише для ДТЕК Дніпровських електромереж; для інших зон беремо тільки перевірене дзеркало
+  if (area.yasno) { fns.yasno = () => fromYasno(GROUP); all.push('yasno'); }
+  if (area.koly) { fns.kolybude = () => fromKoly(GROUP); all.push('kolybude'); }
   const names = q.src && fns[q.src] ? [q.src] : all;
-  const [settled, flagRes] = await Promise.all([Promise.allSettled(names.map(n => fns[n]())), fetchFlags().catch(() => ({ flags: [], errors: [] }))]);
+  const [settled, flagRes] = await Promise.all([Promise.allSettled(names.map(n => fns[n]())), fetchFlags(area.flags).catch(() => ({ flags: [], errors: [] }))]);
   const ok = [], errors = [], report = [];
   settled.forEach((s, i) => {
     if (s.status === 'fulfilled') {
@@ -227,7 +234,7 @@ async function run(req, res) {
   }
   res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=30');
   res.status(200).json({
-    ok: true, group: GROUP, city, fetchedAt: Date.now(), emergency,
+    ok: true, group: GROUP, city, operator: area.operator, fetchedAt: Date.now(), emergency,
     source: m.sources.join(' + '), updated: fmtUpdated(m.ts), updatedTs: m.ts,
     days: m.days, statuses: Object.assign({}, ...ok.map(r => r.statuses)), fallbackErrors: errors,
     ...(q.debug ? { report } : {})
