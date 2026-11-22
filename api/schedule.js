@@ -153,19 +153,23 @@ async function fromKoly(GROUP) {
 // Пріоритет за рівної/невідомої свіжості: дзеркало сайту ДТЕК > YASNO > kolybude.
 const PRIORITY = { 'Львівобленерго': 0, 'сайт ДТЕК (дзеркало)': 0, 'YASNO / ДТЕК': 1, 'kolybude.com': 2 };
 
+// «Усе світло» від kolybude.com — це часто заглушка «ще не опубліковано», а не справжній графік.
+// Такий день слабкий: його не беруть, якщо інше джерело має цю дату, і не вважають підтвердженим.
+const weak = (r, d) => r.source === 'kolybude.com' && d.slots.every((v) => v === 1);
 export function merge(results) {
-  const best = {}; // date -> {day, source}
+  const best = {}; // date -> {day, source, weak}
   for (const r of results) {
     for (const [date, d] of Object.entries(r.days)) {
-      const cur = best[date];
+      const cur = best[date], w = weak(r, d);
       const a = d.ts || 0, b = cur ? cur.day.ts || 0 : -1;
-      if (!cur || a > b || (a === b && PRIORITY[r.source] < PRIORITY[cur.source])) best[date] = { day: d, source: r.source };
+      const better = !cur || (cur.weak && !w) || (!(w && !cur.weak) && (a > b || (a === b && PRIORITY[r.source] < PRIORITY[cur.source])));
+      if (better) best[date] = { day: d, source: r.source, weak: w };
     }
   }
   const days = {}, used = new Set();
   let ts = 0;
-  for (const [date, { day, source }] of Object.entries(best)) {
-    days[date] = { date, slots: day.slots, confirmed: true, source };
+  for (const [date, { day, source, weak: w }] of Object.entries(best)) {
+    days[date] = { date, slots: day.slots, confirmed: !w, source };
     used.add(source);
     if (day.ts && day.ts > ts) ts = day.ts;
   }
