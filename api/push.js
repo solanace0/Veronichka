@@ -24,9 +24,10 @@ export default async function handler(req, res) {
     if (b.a === 'test') {
       const rec = await getSub(id);
       if (!rec) return res.status(404).json({ ok: false, error: 'Підписку не знайдено' });
-      const r = await sendPush(rec.sub, { title: '✨ ТребаСвітло?', body: 'Сповіщення працюють. Так виглядатимуть попередження про світло.', tag: 'test', url: '/' });
-      if (r === 'gone') await delSub(id);
-      return res.status(r === 'ok' ? 200 : 502).json({ ok: r === 'ok' });
+      if (rec.testAt && Date.now() - rec.testAt < 20000) return res.status(429).json({ ok: false, error: 'Зачекай кілька секунд' });
+      const r = await sendPush(rec.sub, { title: '✅ Сповіщення працюють', body: 'Так виглядатимуть попередження про світло.\nМи напишемо перед вимкненням і вмиканням.', tag: 'test', kind: 'test', url: '/', ts: Date.now() }, { ttl: 300, urgency: 'high', topic: 'test' });
+      if (r === 'gone') await delSub(id); else await putSub(id, { ...rec, testAt: Date.now() });
+      return res.status(r === 'ok' ? 200 : 502).json({ ok: r === 'ok', status: r });
     }
     if (b.a !== 'subscribe') return res.status(400).json({ ok: false, error: 'Невідома дія' });
     const s = b.sub, keys = s && s.keys;
@@ -38,7 +39,7 @@ export default async function handler(req, res) {
     await putSub(id, {
       sub: { endpoint, keys: { p256dh: keys.p256dh, auth: keys.auth } }, city: b.city, group: String(b.group),
       lead: LEADS.includes(+b.lead) ? +b.lead : 15, ev: { pre: !!ev.pre, chg: !!ev.chg, nw: !!ev.nw, emg: !!ev.emg },
-      st: keepSt, at: prev && prev.at || Date.now(), upd: Date.now()
+      st: keepSt, bad: undefined, at: prev && prev.at || Date.now(), upd: Date.now()
     });
     return res.status(200).json({ ok: true });
   } catch (e) {
