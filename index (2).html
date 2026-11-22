@@ -1,0 +1,1562 @@
+<!doctype html><html lang="uk" data-theme="dark"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ТребаСвітло?</title>
+<meta name="description" content="Графік відключень світла для Кривого Рогу, Дніпра та Кам’янського: вибери свою чергу й завжди знай, коли буде світло.">
+<script>/* тема до першого малювання: без спалаху світлої версії */
+(function(){var d=document.documentElement;try{var _m=localStorage.getItem('theme');d.dataset.theme=_m==='light'||(_m==='auto'&&!matchMedia('(prefers-color-scheme: dark)').matches)?'light':'dark';d.dataset.boot='1'}catch(e){}
+/* заставка показується ще до першого малювання: без миготіння екрана реєстрації */
+try{if(!sessionStorage.getItem('intro')&&!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('intro-pre','intro-on');setTimeout(function(){d.classList.remove('intro-pre')},6000)}}catch(e){}})()</script>
+<link rel="preload" as="image" href="intro-girl.png"><link rel="preload" as="image" href="intro-bulb-dim.png"><link rel="preload" as="image" href="intro-bulb.png">
+<meta name="theme-color" content="#000000"><link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="ТребаСвітло?">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"></noscript>
+<style>
+:root{--bg:#F7F4FF;--bg2:#EFEAFD;--card:#FFFFFF;--bd:#2a244018;--ac:#8C75EE;--acs:#E9E2FE;--acx:#FFFFFF;--tx:#2A2440;--mu:#7A7394;
+--onb:#E2F4EA;--onx:#1D8458;--offb:#FCE7EC;--offx:#C0405F;--wb:#F2F2F5;--wx:#9A6A06;--sh:0 4px 18px #6a4bc414;--r:20px;--sw:#D9D2EE;
+--font:"Inter","Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif}
+html[data-theme=dark]{--bg:#08070C;--bg2:#1A1724;--card:#15131F;--bd:#ffffff14;--ac:#FFFFFF;--acs:#FFFFFF24;--acx:#000000;--tx:#F5F3FA;--mu:#A9A6B8;
+--onb:#12281F;--onx:#3FD79A;--offb:#2C1519;--offx:#FF6B7D;--wb:#161618;--wx:#E4E4E8;--sh:0 6px 24px #00000066;--sw:#37343F;color-scheme:dark}
+/* темна тема: чорний фон з м’якими відблисками (зверху зліва — холодний, зверху справа — теплий), без лілового */
+html[data-theme=dark] body{background:transparent}
+html[data-theme=dark] body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+background:radial-gradient(ellipse min(46vw,380px) min(40vh,380px) at 0% 9%,#7A5AE61D 0%,#7A5AE60E 45%,#7A5AE600 100%),
+radial-gradient(ellipse min(62vw,560px) min(24vh,230px) at 86% 0%,#FFFFFF23 0%,#FFFFFF11 50%,#FFFFFF00 100%),#08070C}
+html[data-theme=dark] .tabs button.a,html[data-theme=dark] .seg button.a{box-shadow:0 2px 10px #00000055}
+html[data-theme=dark] .card:hover{box-shadow:0 10px 30px #00000080}
+html[data-theme=dark] .ref:hover{box-shadow:0 4px 14px #00000066}
+html[data-theme=dark] .chip.a.mine::after{background:#000000}
+html[data-theme=dark] .aclist{box-shadow:0 14px 34px #000000b0}
+html[data-theme=dark] .acitem svg{stroke:var(--ac)}
+html[data-theme=dark] .nav{background:#0d0b12d9}
+[hidden]{display:none!important}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+html,body{margin:0;background:var(--bg);color:var(--tx);font:500 16px/1.45 var(--font);transition:background .35s,color .35s}
+body{min-height:100vh;min-height:100dvh;padding:calc(env(safe-area-inset-top) + 14px) 16px calc(env(safe-area-inset-bottom) + 96px)}
+html[data-theme=light] body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top);background:var(--ac);z-index:50}
+.wrap{max-width:520px;margin:0 auto}
+button,select,input{font:inherit;color:inherit}
+button{cursor:pointer;transition:transform .12s,background .2s,color .2s,box-shadow .2s}button:active{transform:scale(.97)}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+a{color:var(--ac)}
+.hid{display:none!important}
+.top{display:flex;justify-content:space-between;align-items:flex-start}
+#clock{font-size:36px;font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:-.5px;line-height:1.1}
+#date{color:var(--mu);font-size:14px}.net{font-size:12px;color:var(--mu);padding-top:8px;white-space:nowrap}
+.hello{display:flex;gap:12px;align-items:center;margin:16px 0}.hello img{width:56px;height:56px;border-radius:16px;box-shadow:var(--sh)}
+.hello h1{font-size:19px;font-weight:800;margin:0;line-height:1.25}.hello p{margin:2px 0 0;color:var(--ac);font-weight:700;font-size:14px}
+.card{background:var(--card);border-radius:var(--r);padding:18px;margin-bottom:14px;border:1px solid var(--bd);box-shadow:var(--sh)}
+.card h2{margin:0 0 4px;font-size:18px;font-weight:800}
+.loc{color:var(--mu);font-size:13px}.addr{color:var(--mu);font-size:13px;margin-top:1px}
+.status{font-size:26px;font-weight:800;margin:6px 0 2px;line-height:1.2}
+.hero.on .status{color:var(--onx)}.hero.off .status{color:var(--offx)}
+.big{font-size:28px;font-variant-numeric:tabular-nums;font-weight:800;margin:6px 0 2px;line-height:1.2}.sub{color:var(--mu);font-size:14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.grid>div{background:var(--bg2);border-radius:14px;padding:10px 12px}.grid b{display:block;font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
+.tabs,.seg{display:flex;background:var(--bg2);border-radius:14px;padding:4px;margin-bottom:14px;gap:2px}
+.tabs button,.seg button{flex:1;border:0;background:none;color:var(--mu);padding:9px 6px;border-radius:11px;font-weight:800;min-width:0}
+.tabs button.a,.seg button.a{background:var(--ac);color:var(--acx);box-shadow:0 2px 8px #6a4bc430}
+.pill{display:inline-block;padding:8px 14px;border-radius:14px;font-weight:800;margin-bottom:10px;font-size:15px}.pill.on{background:var(--onb);color:var(--onx)}.pill.off{background:var(--offb);color:var(--offx)}
+.row{display:flex;justify-content:space-between;align-items:center;padding:13px 15px;border-radius:15px;margin-top:8px;font-size:16px;font-variant-numeric:tabular-nums}
+.row.on{background:var(--onb)}.row.off{background:var(--offb)}.row.on span:last-child{color:var(--onx)}.row.off span:last-child{color:var(--offx)}
+.row span:last-child{font-weight:700;font-size:14px}.row.cur{box-shadow:inset 0 0 0 2px var(--ac)}
+.meta{color:var(--mu);font-size:13px;margin-top:12px}
+.empty{text-align:center;padding:10px 6px}.empty .ico{font-size:44px}
+.warn{background:var(--wb);color:var(--wx);border-radius:12px;padding:10px 12px;font-size:13px;margin:10px 0}
+.emg{background:var(--offb);color:var(--offx);border-radius:16px;padding:12px 14px;font-size:14px;margin-bottom:14px;font-weight:800}
+.emg small{display:block;font-weight:500;margin-top:2px;opacity:.9}.emg.w{background:var(--wb);color:var(--wx)}
+.kd{font-style:normal;font-size:11px;font-weight:800;border-radius:8px;padding:1px 6px;background:var(--offb);color:var(--offx)}.kd.c{background:var(--onb);color:var(--onx)}
+.ckrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.ck{font-size:12px;border-radius:10px;padding:3px 8px;background:var(--bg2);color:var(--mu)}.ck.ok{color:var(--onx)}.ck.bad{color:var(--offx)}
+.ref{display:inline-block;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:12px;padding:9px 16px;margin-top:8px;text-decoration:none;font-weight:800;font-size:15px}
+.ref.p{background:var(--ac);color:var(--acx);border:0}.ref.w{display:block;width:100%;text-align:center}
+.hint{background:var(--bg2);border-radius:16px;padding:12px 14px;display:flex;justify-content:space-between;gap:10px;margin-bottom:14px;font-size:14px}.hint button{border:0;background:none;color:var(--ac);font-size:18px}
+.f label,.lbl{display:block;font-size:13px;color:var(--mu);margin:12px 0 4px}
+.f input[type=text],.f select,.sel{width:100%;padding:12px;border-radius:12px;border:1px solid var(--bd);background:var(--bg2);color:var(--tx)}
+.f .ref{margin-top:16px}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--mu);margin-top:14px}.chk input{margin-top:3px;width:18px;height:18px;accent-color:var(--ac);flex:none}
+.tl{border-left:2px solid var(--bd);margin-left:6px;padding-left:14px;max-height:340px;overflow:auto}.tl>div{margin:10px 0;font-size:14px}.tl small{color:var(--mu)}
+.trow{display:flex;gap:8px;margin-bottom:14px}.trow .tabs{flex:1;margin:0}.mini{border:1px solid var(--bd);background:var(--card);color:var(--mu);border-radius:14px;padding:0 12px;font-size:13px;font-weight:800}.mini.a{background:var(--ac);color:var(--acx)}
+.cen{text-align:center}
+.chips{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:6px}
+.chip{border:1px solid var(--bd);background:var(--bg2);color:var(--tx);border-radius:14px;padding:12px 4px;font-weight:800;font-size:17px;font-variant-numeric:tabular-nums;position:relative}
+.chip.a{background:var(--ac);color:var(--acx);border-color:transparent}
+.chip.mine::after{content:"";position:absolute;top:7px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--onx)}
+.chip.a.mine::after{background:#fff}
+.opt{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:11px 0;border-top:1px solid var(--bd)}.opt:first-of-type{border-top:0}
+.opt b{display:block;font-weight:700;font-size:15px}.opt small{display:block;color:var(--mu);font-size:12.5px;line-height:1.35;margin-top:1px}
+.sw{width:50px;height:30px;border-radius:99px;background:var(--sw);border:0;position:relative;flex:none;padding:0}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 4px #0003;transition:transform .22s}
+.sw[aria-checked=true]{background:var(--ac)}.sw[aria-checked=true]::after{transform:translateX(20px)}
+input[type=range]{width:100%;accent-color:var(--ac)}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid var(--bd);font-size:14px}.kv:first-of-type{border-top:0}.kv span:first-child{color:var(--mu)}.kv span:last-child{text-align:right;font-weight:700}
+.lnk{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-top:1px solid var(--bd);text-decoration:none;color:var(--tx);font-weight:700;font-size:15px}.lnk:first-of-type{border-top:0}.lnk span{color:var(--mu)}
+.src{border-radius:12px;padding:9px 11px;margin-top:8px;font-size:13px;background:var(--bg2)}.src b{display:block;font-size:14px;font-weight:800}.src.ok b{color:var(--onx)}.src.bad b{color:var(--offx)}
+.sgrid{display:block}
+body.nonav .nav{display:none}
+.nav{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;gap:8px;padding:10px 14px calc(env(safe-area-inset-bottom) + 10px);background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);z-index:20}
+.nav .brand{display:none}
+.nav button{flex:1;max-width:170px;min-width:0;border-radius:16px;padding:8px 2px;background:none;color:var(--mu);font-size:12px;font-weight:800;border:0;display:flex;flex-direction:column;align-items:center;gap:3px;white-space:nowrap}
+.nav button svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav button.a{color:var(--ac);background:var(--acs)}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 92px);transform:translate(-50%,20px);background:var(--tx);color:var(--bg);padding:11px 18px;border-radius:14px;font-size:14px;font-weight:700;opacity:0;pointer-events:none;transition:.3s;z-index:90;max-width:90vw;text-align:center}
+.toast.s{opacity:1;transform:translate(-50%,0)}
+/* ---- вступна анімація ---- */
+@keyframes rise{from{transform:translateY(105vh)}to{transform:none}}
+@keyframes fadein{to{opacity:1}}@keyframes fadeout{to{opacity:0}}
+@keyframes fadeup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes ray{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:scale(1)}}
+/* ---- вступна анімація: ПК-версія (заставка на всю ширину, «штора» при виході) ---- */
+@keyframes letter{to{opacity:1;filter:none;transform:none}}
+@keyframes riseD{from{opacity:0;transform:translate(-5vw,16vh) scale(.78)}to{opacity:1;transform:none}}
+@keyframes fill{to{transform:scaleX(1)}}
+@keyframes drift{to{transform:translate(6vw,4vh) scale(1.12)}}
+/* ---- плавні вхідні анімації інтерфейсу ---- */
+@keyframes pop{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes inL{from{opacity:0;transform:translateX(-26px)}to{opacity:1;transform:none}}
+@keyframes wordin{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+@keyframes glow{50%{box-shadow:inset 0 0 0 2px var(--ac),0 0 0 5px color-mix(in srgb,var(--ac) 14%,transparent)}}
+@keyframes shake{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ent .cols>div>*,.ent .sgrid>.card,.ent>.card,.ent>.hint{animation:pop .6s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*65ms)}
+.ent .c1>:nth-child(2){--i:1}.ent .c1>:nth-child(3){--i:2}
+.ent .c2>*{--i:1}.ent .c2>:nth-child(2){--i:2}.ent .c2>:nth-child(3){--i:3}.ent .c2>:nth-child(4){--i:4}
+.ent .sgrid>.card:nth-child(2){--i:1}.ent .sgrid>.card:nth-child(3){--i:2}.ent .sgrid>.card:nth-child(4){--i:3}.ent .sgrid>.card:nth-child(5){--i:4}.ent .sgrid>.card:nth-child(6){--i:5}.ent .sgrid>.card:nth-child(n+7){--i:6}
+.ent .row,.ent .pill{animation:pop .5s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(.12s + var(--r,0)*45ms)}
+.row.cur{animation:glow 2.8s ease-in-out infinite}
+.ent .row.cur{animation:pop .5s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(.12s + var(--r,0)*45ms)}
+.w{display:inline-block;animation:wordin .65s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(.12s + var(--w,0)*90ms)}
+.hello p{animation:up .7s .55s cubic-bezier(.2,.8,.2,1) both}
+.boot .top,.boot .hello,.boot .hint{animation:up .7s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--bd,.1s)}
+.boot .hello{--bd:.2s}
+.boot .nav{animation:inL .8s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--bd,.1s)}
+.card:focus-within{position:relative;z-index:5}
+.sw{transition:background .25s}
+.chip,.tabs button,.seg button{transition:transform .12s,background .22s,color .22s,box-shadow .22s}
+.ref:disabled,.ref[aria-disabled=true]{opacity:.45;box-shadow:none}
+.chk{transition:color .25s}.chk input:checked+span{color:var(--tx)}
+.chk.shake{animation:shake .45s}
+.need{text-align:center;font-size:12.5px;color:var(--mu);margin-top:8px;max-height:30px;overflow:hidden;transition:opacity .3s,max-height .3s,margin .3s}
+.need.ok{opacity:0;max-height:0;margin-top:0}
+/* ---- підказки адрес ---- */
+.ac{position:relative}
+.ac.ld::after{content:"";position:absolute;right:13px;top:50%;width:16px;height:16px;margin-top:-8px;border-radius:50%;border:2px solid var(--acs);border-top-color:var(--ac);animation:spin .7s linear infinite}
+.aclist{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:30;margin:0;padding:6px;list-style:none;background:var(--card);border:1px solid var(--bd);border-radius:16px;box-shadow:0 14px 34px #2a244a2b;max-height:270px;overflow:auto;opacity:0;visibility:hidden;transform:translateY(-6px) scale(.98);transform-origin:top;transition:opacity .18s,transform .22s cubic-bezier(.2,.8,.2,1),visibility 0s .22s}
+.ac.o .aclist{opacity:1;visibility:visible;transform:none;transition-delay:0s}
+.acitem{display:flex;gap:10px;align-items:center;padding:10px 11px;border-radius:11px;cursor:pointer;transition:background .15s}
+.acitem svg{width:18px;height:18px;flex:none;stroke:var(--ac);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.acitem b{display:block;font-weight:700;font-size:15px;line-height:1.25}.acitem small{display:block;color:var(--mu);font-size:12.5px;line-height:1.3}
+.acitem.s,.acitem:hover{background:var(--bg2)}
+.acnone{padding:10px 11px;color:var(--mu);font-size:13px}
+.aq small{display:block;font-size:11px;font-weight:700;margin-top:2px;opacity:.92}
+.aq.em{background:var(--offb);color:var(--offx)}.aq.ok{background:var(--onb);color:var(--onx)}.aq.wt{background:var(--wb);color:var(--wx)}.aq.na{opacity:.6}
+.aq.sel{box-shadow:inset 0 0 0 2px var(--ac)}
+.note{background:var(--bg2);border-radius:14px;padding:12px 14px;font-size:14px;margin-top:12px;line-height:1.45}.note b{display:block;margin-bottom:3px;font-weight:800}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font-size:12.5px;color:var(--mu)}.legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:baseline}
+@media(hover:hover){.card{transition:box-shadow .3s}.card:hover{box-shadow:0 8px 28px #6a4bc41f}.ref:hover{box-shadow:0 4px 14px #6a4bc428}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01s!important;animation-delay:0s!important;animation-iteration-count:1!important;transition:none!important}}
+/* ---- ПК / планшет ---- */
+@media(min-width:900px){
+body{padding:28px 32px 40px 280px}
+body.nonav{padding-left:32px}
+.wrap{max-width:1040px}
+.nav{top:0;bottom:0;left:0;right:auto;width:248px;flex-direction:column;justify-content:flex-start;align-items:stretch;gap:6px;padding:26px 16px;background:var(--card);border-right:1px solid var(--bd);backdrop-filter:none}
+.nav .brand{display:flex;align-items:center;gap:12px;margin:0 6px 22px;font-weight:800;font-size:19px;line-height:1.1}.nav .brand img{width:46px;height:46px;border-radius:14px}
+.nav button{flex:none;max-width:none;flex-direction:row;gap:12px;font-size:15px;padding:12px 14px;justify-content:flex-start;border-radius:14px}
+.nav button:hover:not(.a){background:var(--bg2)}
+.cols{display:grid;grid-template-columns:1.05fr 1fr;gap:18px;align-items:start}
+#v2 .cols{grid-template-columns:.8fr 1.2fr}
+.sgrid{columns:2;column-gap:18px}.sgrid>.card{break-inside:avoid}
+.toast{bottom:28px}
+html[data-theme=light] body::before{display:none}
+.hello{margin-top:8px}
+#v1 .cols{grid-template-columns:.85fr 1.15fr;gap:22px}
+#sched{padding:26px 28px}
+#sched .pill{font-size:18px;padding:11px 18px;margin-bottom:14px}
+#sched .row{font-size:21px;padding:19px 22px;margin-top:11px;border-radius:18px}
+#sched .row span:last-child{font-size:17px}
+#sched .meta{font-size:15px;margin-top:16px}
+.tabs button,.trow .mini{font-size:17px;padding-top:12px;padding-bottom:12px}
+/* заставка на ПК: логотип зліва, назва літерами справа, «штора» вгору при виході */
+.boot .nav{--bd:.45s}.boot .top{--bd:.55s}.boot .hello{--bd:.62s}
+}
+.avwhy{display:flex;gap:12px;align-items:flex-start;padding:15px 16px}.avwhy .ic{flex:none;width:38px;height:38px;border-radius:12px;background:var(--acs);display:grid;place-items:center;font-size:19px}.avwhy b{display:block;font-weight:800;margin-bottom:2px}.avwhy p{margin:0;font-size:13.5px;color:var(--mu);line-height:1.45}
+.anl{margin:6px 0 4px;padding-left:18px}.anl li{margin:3px 0}.note small{display:block;color:var(--mu);margin-top:4px;font-size:12px}
+.av-go{margin-top:14px;padding-top:12px;border-top:1px dashed var(--bd);font-size:13px;color:var(--mu);line-height:1.4}.av-go .ref{display:block;text-align:center;margin-top:10px}
+#av-city{margin-bottom:14px}
+
+/* живий фон: три шари, між якими плавно перетікає прозорість */
+#mood{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+#mood .m{position:absolute;inset:0;opacity:0;transition:opacity 1.8s ease}
+#mood .on{background:radial-gradient(ellipse 85vw 55vh at 50% -6%,#FFFFFF42,#FFFFFF00 72%),radial-gradient(ellipse 70vw 45vh at 100% 100%,#3FD79A24,#3FD79A00 72%)}
+#mood .off{background:radial-gradient(ellipse 85vw 55vh at 50% -6%,#5B6CFF44,#5B6CFF00 72%),radial-gradient(ellipse 75vw 50vh at 0% 100%,#2A2F9A40,#2A2F9A00 72%)}
+#mood .emg{background:radial-gradient(ellipse 95vw 60vh at 50% -8%,#FF2D4A44,#FF2D4A00 74%),radial-gradient(ellipse 70vw 45vh at 100% 100%,#FF2D4A26,#FF2D4A00 72%)}
+body[data-mood=on] #mood .on,body[data-mood=off] #mood .off,body[data-mood=emg] #mood .emg{opacity:1}
+body[data-mood=emg] #mood .emg{animation:moodp 4.5s ease-in-out infinite}
+@keyframes moodp{0%,100%{opacity:.7}50%{opacity:1}}
+body.nomood #mood{display:none}
+/* коли живий фон увімкнено, старі кольорові відблиски темної теми вимикаємо, щоб не змішувалися */
+html[data-theme=dark] body:not(.nomood)[data-mood=on]::before,html[data-theme=dark] body:not(.nomood)[data-mood=off]::before,html[data-theme=dark] body:not(.nomood)[data-mood=emg]::before{background:#08070C}
+html[data-theme=light] #mood{opacity:.55}
+@media (prefers-reduced-motion:reduce){#mood .m{transition:none}body[data-mood=emg] #mood .emg{animation:none}}
+/* офлайн-банер */
+.offb{background:var(--wb);color:var(--wx);border-radius:16px;padding:12px 14px;margin-bottom:14px;font-size:14px;font-weight:800}.offb small{display:block;font-weight:500;margin-top:3px;line-height:1.45}
+/* статистика */
+.whead{display:flex;justify-content:space-between;align-items:center;gap:10px}.wks{margin:0;width:176px;flex:none}.wks button{padding:6px 4px;font-size:13px}
+.wbig{font-size:30px;font-weight:900;margin-top:8px;font-variant-numeric:tabular-nums;letter-spacing:-.3px}
+.wbars{display:flex;align-items:flex-end;gap:3px;height:84px;margin:14px 0 4px}.wbars .b{flex:1;min-width:2px;background:var(--offx);opacity:.78;border-radius:4px 4px 2px 2px}
+.wbars .b.na{background:var(--bd);opacity:1;height:4px!important}.wbars .b.em{background:var(--wx);opacity:1}.wbars .b.td{opacity:1;outline:2px solid var(--ac);outline-offset:1px}
+.wax{display:flex;justify-content:space-between;font-size:12px;color:var(--mu)}.winfo{font-size:13px}.winfo i{font-style:normal;font-weight:700}
+/* вікно «Поділитися» */
+.shm{position:fixed;inset:0;background:#000000bd;z-index:200;display:flex;align-items:center;justify-content:center;padding:14px;overflow:auto}
+.shb{background:var(--card);border-radius:20px;padding:14px;width:min(100%,420px);max-height:100%;overflow:auto;border:1px solid var(--bd)}
+#shi{width:100%;display:block;border-radius:14px;background:var(--bg2);aspect-ratio:1080/1080}.shr{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.shr .ref{margin-top:0;flex:1 1 auto;text-align:center}
+
+/* ===== Нова айдентика: чорний фон, біле сяйво, тепла «лампочка» ===== */
+html[data-theme=dark]{--bg:#000;--bg2:#0E0D10;--card:#0A0A0C;--bd:#ffffff1a;--ac:#FFFFFF;--acs:#FFFFFF1f;--acx:#000000;--tx:#FFFFFF;--mu:#9B97A3;--sh:0 0 0 1px #ffffff08,0 10px 40px #00000099;--sw:#2a2830;--onb:#0F1A14;--onx:#FFFFFF;--offb:#14141A;--offx:#C9CBD6;--wb:#161618;--wx:#FFFFFF;color-scheme:dark}
+html[data-theme=dark] body::before{background:radial-gradient(ellipse min(70vw,560px) min(34vh,320px) at 78% 0%,#FFFFFF2e 0%,#FFFFFF12 50%,#FFFFFF00 100%),radial-gradient(ellipse min(60vw,480px) min(40vh,380px) at 0% 100%,#ffffff12 0%,#ffffff00 100%),#000}
+html[data-theme=dark] .nav{background:#000000d9;border-color:#ffffff14}
+html[data-theme=dark] .card{background:linear-gradient(160deg,#121114,#0A0A0C);border:1px solid #ffffff1a;box-shadow:0 0 0 1px #ffffff06 inset,0 12px 40px #000000b0}
+html[data-theme=dark] .card:hover{box-shadow:0 0 28px #FFFFFF22,0 10px 30px #000000b0;border-color:#FFFFFF44}
+html[data-theme=dark] h1,html[data-theme=dark] h2{text-shadow:0 0 22px #ffffff30}
+html[data-theme=dark] .hello img,.nav .brand img{border-radius:50%!important;box-shadow:0 0 0 1px #ffffff40,0 0 22px #ffffff40,0 0 34px #FFFFFF40;object-fit:cover}
+html[data-theme=dark] .hello img{width:64px;height:64px}
+html[data-theme=dark] .hello p{color:var(--ac);text-shadow:0 0 14px #FFFFFF66}
+html[data-theme=dark] .nav button.a{color:#FFFFFF;background:#FFFFFF1a;box-shadow:0 0 18px #FFFFFF26 inset}
+html[data-theme=dark] .nav button.a svg{filter:drop-shadow(0 0 5px #FFFFFF99)}
+html[data-theme=dark] .ref.p,html[data-theme=dark] button.p{background:linear-gradient(180deg,#FFFFFF,#FFFFFF);color:#000000;box-shadow:0 0 24px #FFFFFF55;border-color:transparent}
+html[data-theme=dark] .chip.a{box-shadow:0 0 14px #FFFFFF44}
+/* ===== Заставка: дівчина, орбіти, лампочка (лише transform/opacity — без blur і важких фільтрів) ===== */
+#intro{position:fixed;inset:0;z-index:100;background:radial-gradient(ellipse 90% 60% at 62% 28%,#101012 0%,#000 72%),#000;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .75s ease .18s;contain:layout paint;-webkit-user-select:none;user-select:none;cursor:pointer}
+#intro.out{opacity:0;pointer-events:none}
+#intro .stage{position:relative;width:min(90vw,60vh,620px);aspect-ratio:1;transform-origin:64.2% 31%;transition:transform 1s cubic-bezier(.55,0,.25,1);will-change:transform}
+#intro.out .stage{transform:scale(1.7)}
+#intro .lyr,#intro .cv{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+#intro .girl{opacity:0}
+#intro.go .girl{animation:ig-girl 1.1s .1s cubic-bezier(.2,.8,.2,1) both}
+#intro .dim{opacity:0}
+#intro.go .dim{animation:ig-fade .8s 1s ease both}
+#intro .lit{opacity:0;transform-origin:64.2% 31%}
+#intro.go .lit{animation:ig-ignite .8s 2.1s ease-out both}
+#intro .halo,#intro .flash{position:absolute;left:64.2%;top:31%;border-radius:50%;opacity:0;pointer-events:none}
+#intro .halo{width:84%;aspect-ratio:1;margin:-42% 0 0 -42%;background:radial-gradient(circle,#FFFFFF70 0%,#FFFFFF2a 34%,#FFFFFF00 68%)}
+#intro.go .halo{animation:ig-halo 1.8s 2.1s cubic-bezier(.2,.7,.2,1) both}
+#intro .flash{width:240%;aspect-ratio:1;margin:-120% 0 0 -120%;background:radial-gradient(circle,#FFFFFF 0%,#FFFFFF 12%,#FFFFFF66 29%,#FFFFFF00 64%)}
+#intro .girl,#intro .dim,#intro .lit,#intro .halo,#intro .flash{will-change:opacity,transform;backface-visibility:hidden}
+#intro .cv{will-change:contents}
+#intro.out .flash{animation:ig-flash .8s ease both}
+#intro .st{position:absolute;width:5.5%;aspect-ratio:1;margin:-2.75% 0 0 -2.75%;opacity:0;pointer-events:none}
+#intro .st svg{display:block;width:100%;height:100%}
+#intro.go .st{animation:ig-tw 2.8s var(--d) ease-in-out infinite both}
+#intro .ttl{margin-top:2vh;font:900 clamp(26px,5.4vw,46px)/1.1 var(--font,system-ui,sans-serif);letter-spacing:.01em;color:#fff;text-shadow:0 0 26px #ffffff50;text-align:center;opacity:0}
+#intro .tag{margin-top:8px;font:700 clamp(14px,2.4vw,19px)/1.2 var(--font,system-ui,sans-serif);color:#FFFFFF;text-align:center;opacity:0}
+#intro.go .ttl{animation:ig-up .9s 1.25s cubic-bezier(.2,.8,.2,1) both}
+#intro.go .tag{animation:ig-up .9s 1.6s cubic-bezier(.2,.8,.2,1) both}
+@keyframes ig-girl{from{opacity:0;transform:translate3d(0,3%,0) scale(.97)}to{opacity:1;transform:none}}
+@keyframes ig-fade{to{opacity:1}}
+@keyframes ig-ignite{0%{opacity:0;transform:scale(.9)}12%{opacity:1}24%{opacity:.3}40%{opacity:1;transform:scale(1.08)}56%{opacity:.75}100%{opacity:1;transform:none}}
+@keyframes ig-halo{0%{opacity:0;transform:scale(.4)}30%{opacity:1;transform:scale(1.15)}100%{opacity:.8;transform:scale(1)}}
+@keyframes ig-flash{0%{opacity:0}45%{opacity:1}100%{opacity:1}}
+@keyframes ig-tw{0%,100%{opacity:.15;transform:scale(.55) rotate(0)}50%{opacity:1;transform:scale(1) rotate(45deg)}}
+@keyframes ig-up{from{opacity:0;transform:translate3d(0,12px,0)}to{opacity:1;transform:none}}
+
+/* ===== Головна: графік зверху, статус і статистика поруч/нижче ===== */
+html,body{transition:none}
+html[data-theme=dark] body:not(.nomood)[data-mood=on]::before,html[data-theme=dark] body:not(.nomood)[data-mood=off]::before,html[data-theme=dark] body:not(.nomood)[data-mood=emg]::before{background:#000}
+#mood .on{background:radial-gradient(ellipse 85vw 50vh at 50% -8%,#FFFFFF38,#FFFFFF00 72%)}
+#mood .off{background:radial-gradient(ellipse 85vw 50vh at 50% -8%,#7C86B83a,#7C86B800 72%)}
+.top{align-items:center;margin-bottom:14px}
+#clock{font-size:30px;font-weight:900;letter-spacing:-.5px;text-shadow:0 0 18px #ffffff40}
+#date{font-size:13px}
+.avb{border:0;background:none;padding:0;width:46px;height:46px;border-radius:50%;flex:none;transition:transform .25s cubic-bezier(.3,1.4,.5,1)}
+.avb:active{transform:scale(.92)}
+.avb img{display:block;width:100%;height:100%;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px #ffffff40,0 0 18px #ffffff30,0 0 28px #FFFFFF40}
+.prof .hello{margin:0 0 12px}.prof .net{padding:0;font-size:13px}.prof .hint{margin-bottom:10px}
+.home{display:block}
+.lb{font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--mu);margin:18px 4px 8px}
+.hs .lb:first-child{margin-top:20px}
+.seg3{margin-bottom:12px;position:relative;padding:4px;background:#ffffff0d;border:1px solid #ffffff14}
+.seg3 button{position:relative;z-index:1;padding:11px 6px;transition:color .3s}
+.seg3 button.a{background:none!important;box-shadow:none!important;color:var(--acx)}
+.seg3 .thumb{position:absolute;left:0;top:4px;bottom:4px;width:0;border-radius:11px;background:linear-gradient(180deg,#FFFFFF,#FFFFFF);box-shadow:0 0 20px #FFFFFF55;transition:transform .4s cubic-bezier(.3,.9,.3,1),width .4s cubic-bezier(.3,.9,.3,1);will-change:transform}
+#sched{padding:18px 16px 14px;margin-bottom:12px}
+#sched .pill{display:inline-flex;align-items:center;gap:8px;margin-bottom:14px}
+#sched .pill::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;animation:dotp 2.2s ease-in-out infinite}
+@keyframes dotp{50%{opacity:.35;transform:scale(.7)}}
+#sched .row{padding:12px 14px;font-size:15px;margin-top:7px}
+.acts{margin:2px 0 10px}.acts .sub{margin-bottom:8px}
+.hs .hero{margin-bottom:0}
+.sbar{grid-column:1/-1;padding:0!important;height:8px;border-radius:99px!important;background:#ffffff14!important;overflow:hidden}
+.sbar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#FFFFFF,#FFFFFF);box-shadow:0 0 12px #FFFFFF88;transform-origin:left;animation:grow 1s .25s cubic-bezier(.2,.8,.2,1) both}
+@keyframes grow{from{transform:scaleX(0)}}
+/* анімації */
+.ent .home>div>*{animation:pop .6s cubic-bezier(.2,.8,.2,1) both}
+.ent .hm>:nth-child(2){animation-delay:.07s}.ent .hm>:nth-child(3){animation-delay:.14s}
+.ent .hs>:nth-child(1){animation-delay:.12s}.ent .hs>:nth-child(2){animation-delay:.16s}.ent .hs>:nth-child(3){animation-delay:.22s}.ent .hs>:nth-child(4){animation-delay:.26s}
+.sw::after{transition:transform .32s cubic-bezier(.3,1.5,.5,1)}
+.acitem{transition:background .15s,transform .2s}.acitem:hover{transform:translateX(3px)}
+.ref,.chip,.mini{transition:transform .2s cubic-bezier(.3,1.4,.5,1),box-shadow .25s,background .25s}.ref:active,.chip:active{transform:scale(.96)}
+.nav button{transition:color .25s,background .25s,transform .25s cubic-bezier(.3,1.4,.5,1)}.nav button:active{transform:scale(.93)}
+.nav button svg{transition:transform .3s cubic-bezier(.3,1.5,.5,1)}.nav button.a svg{transform:translateY(-1px) scale(1.1)}
+.boot .tt{animation:up .7s .1s cubic-bezier(.2,.8,.2,1) both}.boot .avb{animation:up .7s .2s cubic-bezier(.2,.8,.2,1) both}
+/* мобільна компоновка: нижня плаваюча навігація */
+@media(max-width:899px){
+body{padding:calc(env(safe-area-inset-top) + 12px) 14px calc(env(safe-area-inset-bottom) + 104px)}
+.wrap{max-width:600px}
+.nav{left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom) + 10px);padding:6px;gap:4px;border-radius:24px;background:#0a0a0cf2;border:1px solid #ffffff1f;box-shadow:0 12px 40px #000,0 0 0 1px #ffffff08 inset;backdrop-filter:none;-webkit-backdrop-filter:none}
+.nav button{border-radius:18px;padding:9px 2px 7px}
+}
+/* ПК: бокова панель + двоколонкова головна */
+@media(min-width:900px){
+body{padding:34px 44px 44px 292px}
+.wrap{max-width:1200px}
+.nav{width:252px;padding:28px 16px 22px;background:linear-gradient(180deg,#0c0b0d,#000);border-right:1px solid #ffffff14}
+.nav .brand{margin:0 8px 26px;gap:12px;font-size:19px}.nav .brand img{width:48px;height:48px}
+.nav button{position:relative;overflow:hidden;padding:13px 16px}
+.nav button::before{content:"";position:absolute;left:0;top:22%;bottom:22%;width:3px;border-radius:3px;background:#FFFFFF;box-shadow:0 0 12px #FFFFFF;transform:scaleY(0);transition:transform .3s cubic-bezier(.3,1.3,.5,1)}
+.nav button.a::before{transform:scaleY(1)}
+.nav button:hover:not(.a){background:#ffffff0d;color:var(--tx)}
+.avb{display:none}
+.top{margin-bottom:22px}#clock{font-size:36px}#date{font-size:14px}
+.home{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(310px,1fr);gap:26px;align-items:start}
+.hs{position:sticky;top:34px}
+.hs .lb:first-child{margin-top:0}
+.seg3 button{font-size:16px;padding:13px 6px}
+#sched{padding:26px 28px 22px}
+#sched .row{font-size:19px;padding:16px 20px;margin-top:9px;border-radius:16px}
+}
+
+.rows{margin-top:4px}
+.rows summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-radius:14px;background:#ffffff0a;font-weight:800;font-size:14px;color:var(--tx);transition:background .2s}
+.rows summary::-webkit-details-marker{display:none}
+.rows summary:hover{background:#ffffff12}
+.rows summary small{color:var(--mu);font-weight:700;font-size:12px;margin-left:auto;margin-right:10px}
+.rows summary::after{content:"";width:8px;height:8px;border-right:2px solid var(--mu);border-bottom:2px solid var(--mu);transform:rotate(45deg) translate(-2px,-2px);transition:transform .3s cubic-bezier(.3,1.3,.5,1)}
+.rows[open] summary::after{transform:rotate(-135deg) translate(-2px,-2px)}
+@media(max-width:899px){
+.home{display:flex;flex-direction:column}.hm{display:contents}
+.hm>.tabs{order:1}.hm>#sched{order:2}.hs{order:3}.hm>.acts{order:4;margin-top:16px}
+.nav button{font-size:11px}
+}
+@media(min-width:900px){.hm{display:block}.rows summary{display:none}.rows[open]>.row:first-of-type{margin-top:0}}
+
+/* ===== Свіжий мінімалістичний стиль: чорне + біле ===== */
+html{scrollbar-gutter:stable;overflow-y:scroll}
+html[data-theme=dark]{--bg:#000;--bg2:#111113;--card:#0b0b0d;--bd:#ffffff14;--ac:#fff;--acs:#ffffff14;--acx:#000;--tx:#fafafa;--mu:#8d8d96;--r:24px;--onb:#ffffff14;--onx:#fff;--offb:#0d0d0f;--offx:#9b9ba4;--wb:#161618;--wx:#e4e4e8;--sw:#2a2a2e;--sh:none}
+body{letter-spacing:-.005em}
+html[data-theme=dark] body::before{background:radial-gradient(ellipse min(90vw,760px) 300px at 50% -60px,#ffffff17,#ffffff00 70%),#000}
+html[data-theme=dark] .card{background:#0b0b0d;border:1px solid #ffffff12;box-shadow:none;border-radius:24px}
+html[data-theme=dark] .card:hover{box-shadow:none;border-color:#ffffff24}
+html[data-theme=dark] h1,html[data-theme=dark] h2{text-shadow:none;letter-spacing:-.02em}
+#clock{text-shadow:none;letter-spacing:-.03em;font-weight:800}
+html[data-theme=dark] .hello p{text-shadow:none;color:var(--mu)}
+.avb img,html[data-theme=dark] .hello img,.nav .brand img{box-shadow:0 0 0 1px #ffffff2e,0 0 24px #ffffff1f!important}
+html[data-theme=dark] .ref.p,html[data-theme=dark] button.p{background:#fff;color:#000;box-shadow:none}
+html[data-theme=dark] .chip.a{box-shadow:none;background:#fff;color:#000}
+.sw[aria-checked=true]::after{background:#000}
+/* вкладки */
+.seg3{background:#0b0b0d;border:1px solid #ffffff14;border-radius:18px;padding:4px}
+.seg3 button{border-radius:14px;font-weight:700}
+.seg3 button.a{color:#000}
+.seg3 .thumb{border-radius:14px;background:#fff;box-shadow:0 4px 18px #ffffff24}
+/* графік */
+#sched{padding:18px 16px 12px;border-radius:26px}
+#sched .pill{display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:99px;font-size:13.5px;font-weight:700;margin-bottom:6px}
+#sched .pill.on{background:#fff;color:#000}
+#sched .pill.off{background:#ffffff14;color:#d6d6dc}
+#sched .pill.n{background:#ffffff0f;color:#b4b4bc}
+#sched .pill.n::before{animation:none;opacity:.45}
+.tlw{position:relative;padding-top:30px;margin:0 0 16px}
+.tlb{position:relative;height:46px}
+.sg{position:absolute;top:0;bottom:0;border-left:1.5px solid transparent;border-right:1.5px solid transparent;background-clip:padding-box;border-radius:10px;transform-origin:50% 100%}
+.sg.on{background:linear-gradient(180deg,#fff,#cfcfd6)}
+.sg.off{background:#1b1b1f}
+.tlt{position:relative;height:26px;margin-top:8px;font-size:11.5px;font-weight:600;color:var(--mu);font-variant-numeric:tabular-nums}
+.tlt::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:repeating-linear-gradient(90deg,#ffffff38 0 1px,transparent 1px calc(100% / 24))}
+.tlt span{position:absolute;top:10px;transform:translateX(-50%)}.tlt .t0{transform:none}.tlt .t24{transform:translateX(-100%)}
+.nowm{position:absolute;top:26px;height:58px;left:calc(var(--p)*1%);width:2px;margin-left:-1px;border-radius:2px;background:#fff;z-index:2;pointer-events:none;box-shadow:0 0 0 1px #000}
+.nowm::before{content:attr(data-t);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);margin-bottom:4px;padding:3px 8px;border-radius:99px;background:#fff;color:#000;font-size:11.5px;font-weight:800;line-height:1.3;white-space:nowrap;font-variant-numeric:tabular-nums}
+.nowm.l::before{transform:translateX(-14%)}.nowm.r::before{transform:translateX(-86%)}
+.nowm::after{content:"";position:absolute;left:50%;top:50%;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #000;animation:pulseD 2.4s ease-out infinite}
+@keyframes pulseD{0%{box-shadow:0 0 0 2px #000,0 0 0 2px #ffffff80}100%{box-shadow:0 0 0 2px #000,0 0 0 12px #ffffff00}}
+/* рядки */
+.rows summary{display:none}
+#sched .row{border-radius:16px;padding:12px 15px;margin-top:7px;font-size:15px;font-weight:700;border:1px solid transparent;transition:background .25s,border-color .25s}
+#sched .row.on{background:#ffffff14;border-color:#ffffff1a}
+#sched .row.on span:last-child{color:#fff}
+#sched .row.off{background:transparent;border-color:#ffffff10}
+#sched .row.off span:first-child{color:#a0a0a9}#sched .row.off span:last-child{color:#7c7c85}
+#sched .row span:first-child::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:12px;background:#fff}
+#sched .row.off span:first-child::before{background:#3b3b41}
+#sched .row.cur{box-shadow:inset 0 0 0 1.5px #fff;animation:none}
+#sched .meta{margin-top:12px;font-size:12.5px}
+/* статус і статистика */
+.hero.on .status{color:#fff}.hero.off .status{color:#c4c4cb}
+.sbar i{background:#fff;box-shadow:none}
+.grid>div{background:#111113;border:1px solid #ffffff0f}
+/* перемикання вкладок без стрибків: лише м’яке проявлення */
+#sched.ent .row,#sched.ent .sg,#sched.ent .pill,#sched.ent .nowm{animation:fadein .35s both;animation-delay:0s}
+.ent .sg{animation:segin .7s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(.05s + var(--r,0)*45ms)}
+@keyframes segin{from{opacity:0;transform:scaleY(.2)}}
+.ent .nowm{animation:fadein .5s .5s both}
+.nav .brand span{letter-spacing:-.02em}
+html[data-theme=dark] #mood .on{background:radial-gradient(ellipse 85vw 40vh at 50% -10%,#ffffff12,#ffffff00 72%)}
+#mood .off{background:radial-gradient(ellipse 85vw 40vh at 50% -10%,#ffffff08,#ffffff00 72%)}
+/* мобільна */
+@media(max-width:899px){
+body{padding:calc(env(safe-area-inset-top) + 10px) 14px calc(env(safe-area-inset-bottom) + 96px)}
+.top{margin-bottom:10px}#clock{font-size:26px}#date{font-size:12.5px}.avb{width:40px;height:40px}
+.seg3{margin-bottom:10px}.seg3 button{padding:10px 6px;font-size:15px}
+.nav{background:#0b0b0df2;border:1px solid #ffffff1a;box-shadow:0 10px 36px #000}
+html[data-theme=dark] .nav button.a{background:#fff;color:#000;box-shadow:none}
+html[data-theme=dark] .nav button.a svg{filter:none}
+#sched .row{padding:10px 14px;margin-top:6px;font-size:14.5px}
+}
+@media(max-width:380px){#clock{font-size:23px}.tlb{height:40px}.nowm{height:52px}}
+/* ПК */
+@media(min-width:900px){
+.nav{background:#050506;border-right:1px solid #ffffff12}
+html[data-theme=dark] .nav button.a{background:#ffffff12;color:#fff;box-shadow:none}
+html[data-theme=dark] .nav button.a svg{filter:none}
+.nav button::before{background:#fff;box-shadow:none}
+#sched{padding:26px 28px 22px;min-height:560px}
+.tlb{height:60px}.nowm{height:72px}.tlw{padding-top:32px}.nowm{top:28px}
+#sched .row{padding:15px 20px;font-size:17px;margin-top:8px}
+.seg3 button{font-size:16px}
+}
+
+/* ===== Янтарна палітра + сучасний вигляд ===== */
+html[data-theme=dark]{--ac:#EFEBE4;--acx:#141414;--acs:#EFEBE420;--onb:#EFEBE41a;--onx:#F6F3EE;--offb:#0d0d0f;--offx:#9b9ba4;--wb:#1a1918;--wx:#F6F3EE;--r:28px;--amb:linear-gradient(180deg,#F8F6F2,#D2CEC6 55%,#BDB9B1)}
+html[data-theme=dark] body::before{background:radial-gradient(ellipse min(90vw,780px) 320px at 50% -70px,#EFEBE426,#EFEBE400 70%),radial-gradient(ellipse 50vw 40vh at 100% 100%,#ffffff0a,#ffffff00 70%),#000}
+html[data-theme=dark] .card{background:linear-gradient(180deg,#131315,#0a0a0b);border:1px solid #ffffff12;border-radius:28px;box-shadow:inset 0 1px 0 #ffffff0d,0 18px 40px -24px #000}
+html[data-theme=dark] .card:hover{border-color:#EFEBE438;box-shadow:inset 0 1px 0 #ffffff10,0 18px 44px -22px #EFEBE426}
+.avb img,html[data-theme=dark] .hello img,.nav .brand img{box-shadow:0 0 0 1px #ffffff30,0 0 26px #EFEBE43a!important}
+#clock .sec{color:var(--mu);font-weight:700;font-size:.62em;letter-spacing:0;margin-left:2px}
+#clock{font-weight:800;letter-spacing:-.04em}
+html[data-theme=dark] .ref.p,html[data-theme=dark] button.p{background:var(--amb);color:#141414;box-shadow:0 8px 24px -8px #EFEBE488}
+.ref{border-radius:16px}
+html[data-theme=dark] .chip.a{background:var(--amb);color:#141414;box-shadow:0 6px 18px -8px #EFEBE4aa}
+.sw[aria-checked=true]{background:var(--amb)}.sw[aria-checked=true]::after{background:#141414}
+a{color:var(--ac)}
+/* вкладки */
+.seg3{background:#0c0c0e;border-radius:20px}
+.seg3 button.a{color:#141414}
+.seg3 .thumb{background:var(--amb);border-radius:16px;box-shadow:0 6px 22px -6px #EFEBE4aa,inset 0 1px 0 #ffffff66}
+/* графік */
+#sched{border-radius:30px}
+#sched .pill.on{background:var(--amb);color:#141414;box-shadow:0 6px 20px -8px #EFEBE4aa}
+#sched .pill.off{background:#ffffff12;color:#d6d6dc}
+.sg.on{background:var(--amb);box-shadow:inset 0 1px 0 #ffffff66}
+.sg.off{background:#18181c}
+.sg{border-radius:11px}
+/* маркер: рівна паличка без кружечка */
+.nowm::after{display:none}
+.nowm{width:3px;margin-left:-1.5px;border-radius:3px;background:#fff;box-shadow:0 0 0 1.5px #000,0 0 16px #ffffff66}
+.nowm::before{background:#fff;color:#000;box-shadow:0 4px 14px -4px #000}
+/* рядки */
+#sched .row{border-radius:18px}
+#sched .row.on{background:linear-gradient(90deg,#EFEBE422,#EFEBE40d);border-color:#EFEBE42e}
+#sched .row.on span:first-child{color:#fff}#sched .row.on span:last-child{color:var(--onx)}
+#sched .row.cur{box-shadow:inset 0 0 0 1.5px var(--ac)}
+/* статус */
+.hero.on{background:linear-gradient(155deg,#1b1a19,#0b0b0d 62%)!important;border-color:#EFEBE42e!important}
+.hero.on .status{color:#F6F3EE}.hero.off .status{color:#d0d0d6}
+.hero .status{font-size:28px;letter-spacing:-.025em}
+.sbar i{background:var(--amb);box-shadow:0 0 14px #EFEBE488}
+.grid>div{background:#0e0e10;border:1px solid #ffffff0f;border-radius:18px}
+.lb{color:#7d7d86}
+#mood .on{background:radial-gradient(ellipse 85vw 44vh at 50% -10%,#EFEBE430,#EFEBE400 72%)}
+/* навігація */
+@media(max-width:899px){
+.nav{border-radius:26px;background:#0a0a0cf5}
+html[data-theme=dark] .nav button.a{background:var(--amb);color:#141414}
+}
+@media(min-width:900px){
+html[data-theme=dark] .nav button.a{background:#EFEBE41a;color:#F6F3EE}
+.nav button::before{background:var(--ac);box-shadow:0 0 12px #EFEBE4}
+.nav{background:linear-gradient(180deg,#0b0b0c,#050506)}
+}
+/* заставка — янтарне сяйво */
+#intro{background:radial-gradient(ellipse 90% 60% at 62% 28%,#16151f 0%,#000 72%),#000}
+#intro .halo{background:radial-gradient(circle,#D8D2FF70 0%,#A79CFF2a 34%,#A79CFF00 68%)}
+#intro .flash{background:radial-gradient(circle,#F8F6F2 0%,#F3F0EA 12%,#E4DFFF66 29%,#E4DFFF00 64%)}
+#intro .tag{color:#E4E0D8}
+/* статус усередині картки графіка */
+#hslot{margin:2px 0 16px}
+#sched #hero{margin:0;border-radius:22px;box-shadow:none;animation:none}
+#sched #hero:hover{box-shadow:none}
+/* перламутрова палітра: кольорові лише крапки статусу */
+.hero.on{background:linear-gradient(155deg,#1d1d1f,#0b0b0d 62%)!important}
+html[data-theme=dark] .chip.a,.sw[aria-checked=true],.seg3 .thumb,#sched .pill.on,html[data-theme=dark] .ref.p,html[data-theme=dark] button.p,html[data-theme=dark] .nav button.a{box-shadow:inset 0 1px 0 #ffffffcc,inset 0 -1px 0 #0000001f,0 6px 20px -8px #E6E2DA77}
+/* без крапок статусу */
+#sched .row span:first-child::before{display:none!important}
+#sched .row span:first-child{padding-left:2px}
+/* живий фон: повільні м'які плями та кола, приглушені кольори */
+#bgfx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;contain:strict}
+#mood .on,#mood .off{background:none}
+html[data-theme=dark] .card{background:linear-gradient(180deg,#131315d6,#0a0a0bdb)}
+/* під час заставки фон стоїть на паузі — уся потужність іде на анімацію входу */
+/* ===== Плавність: легкий фон, інтро без миготіння, червоні екстрені черги ===== */
+html.intro-pre #intro.hid{display:flex!important}
+#bgc{position:absolute;left:0;top:0;width:100%;height:100%;display:block}
+.nav button{position:relative}
+.nav button.al::after{content:"";position:absolute;top:6px;left:calc(50% + 8px);width:9px;height:9px;border-radius:50%;background:#ff4d6a;box-shadow:0 0 0 2px #0b0b0d,0 0 10px #ff4d6acc;animation:dotp 1.8s ease-in-out infinite}
+@media(min-width:900px){.nav button.al::after{left:auto;right:16px;top:50%;margin-top:-4.5px}}
+/* червоне підсвічування черг, де діють екстрені відключення */
+html[data-theme] .chip.em{background:#2a0e14;border-color:#ff4d6a8c;color:#ff8f9e;box-shadow:inset 0 0 0 1px #ff4d6a2e,0 0 18px -6px #ff4d6a88}
+html[data-theme] .chip.em small{color:#ff8f9e}
+html[data-theme] .chip.em::before{content:"";position:absolute;top:8px;left:9px;width:7px;height:7px;border-radius:50%;background:#ff4d6a;animation:dotp 1.8s ease-in-out infinite}
+html[data-theme] .chip.em.a{background:linear-gradient(180deg,#ff6f84,#e0344f);color:#fff;border-color:transparent;box-shadow:0 6px 20px -8px #ff4d6acc}
+html[data-theme] .chip.em.a::before{background:#fff}
+html[data-theme] .chip.em.a small{color:#ffffffdd}
+html[data-theme] .chip.am{background:#241b08;border-color:#f5b94a66;color:#f5c86a}
+html[data-theme] .chip.am.a{background:linear-gradient(180deg,#f8d27c,#d9a53a);color:#1a1405;border-color:transparent}
+.chip.aq.sel{box-shadow:inset 0 0 0 2px var(--ac)}
+html[data-theme] .chip.em.aq.sel{box-shadow:inset 0 0 0 2px #ff8f9e,0 0 18px -6px #ff4d6a88}
+.chip{transition:transform .2s cubic-bezier(.3,1.4,.5,1),background .3s,color .3s,border-color .3s,box-shadow .3s}
+.legend i.r{background:#ff4d6a}
+
+
+/* кнопка «Ігри» — лівий нижній кут і на ПК, і на телефоні */
+.gm-fab{position:fixed;z-index:21;left:14px;bottom:calc(env(safe-area-inset-bottom) + 88px);display:flex;align-items:center;gap:8px;height:42px;padding:0 15px 0 12px;border-radius:99px;background:#0c0c0ff2;border:1px solid #ffffff26;box-shadow:0 8px 28px #000c;color:#fafafa;text-decoration:none;font-size:13.5px;font-weight:800;transition:transform .2s cubic-bezier(.3,1.4,.5,1),background .2s}
+.gm-fab:active{transform:scale(.94)}
+.gm-fab span{font-size:18px;line-height:1}
+body.nonav .gm-fab{display:none}
+@media(min-width:900px){.gm-fab{left:16px;bottom:20px;width:220px;height:46px;border-radius:14px;background:#ffffff0d;border:1px solid #ffffff1a;box-shadow:none;font-size:15px;font-weight:700;padding:0 16px;gap:12px;color:#9b9ba4}.gm-fab:hover{background:#ffffff16;color:#fff}.gm-fab span{font-size:20px;width:22px;text-align:center}}
+
+/* ---- вибір області й міста ---- */
+.cp{margin-bottom:14px}
+.cpcur{padding:12px 14px;border-radius:14px;background:var(--bg2);margin-bottom:10px}
+.cpcur b{display:block;font-size:16px}.cpcur small{display:block;color:var(--mu);font-size:12.5px;margin-top:2px}
+.cpn{margin-top:8px;font-size:12.5px;line-height:1.4;color:var(--mu)}
+.cpw{margin-top:8px;padding:8px 10px;border-radius:10px;background:var(--wb);color:var(--wx);font-size:12.5px;font-weight:700;line-height:1.35}
+.cpres{display:grid;gap:6px;margin-top:8px}.cpres:empty{display:none}
+.cpr{text-align:left;border:1px solid var(--bd);background:none;color:var(--tx);border-radius:12px;padding:9px 12px;transition:background .18s,transform .12s}
+.cpr:hover{background:var(--bg2)}.cpr:active{transform:scale(.99)}.cpr b{display:block;font-size:15px}.cpr small{color:var(--mu);font-size:12px}
+.cpno{font-size:12.5px;color:var(--mu);padding:4px 2px;line-height:1.4}
+.cpt{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
+.cptb{border:0;border-radius:12px;padding:10px 8px;background:var(--bg2);color:var(--mu);font-weight:800;font-size:13px;line-height:1.2;transition:background .22s,color .22s,transform .12s}
+.cptb.a{background:var(--ac);color:var(--acx)}.cptb:active{transform:scale(.97)}
+.cpl{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;max-height:200px;overflow:auto;padding:2px}
+.cpc{border:1px solid var(--bd);background:none;color:var(--tx);padding:7px 11px;border-radius:999px;font-weight:700;font-size:13px;transition:background .18s,color .18s}
+.cpc.a{background:var(--ac);color:var(--acx);border-color:transparent}
+#av-city,#q-city{flex-wrap:wrap}
+.obtheme{margin:0 0 14px}#av-city button,#q-city button{flex:1 1 auto;padding:9px 10px}
+
+/* ===== Світла тема: мінімалізм «біле + чорне», в тому ж дусі, що й темна ===== */
+html[data-theme=light]{--bg:#F5F5F7;--bg2:#EAEAEE;--card:#FFFFFF;--bd:#0000001a;--ac:#111114;--acs:#0000000f;--acx:#FFFFFF;--tx:#0E0E12;--mu:#686873;--sh:0 1px 2px #0000000a,0 10px 30px #0000000d;--sw:#CBCBD3;--onb:#E3F5EC;--onx:#117A4E;--offb:#EFEFF3;--offx:#4F4F5A;--wb:#F0F0F4;--wx:#3A3A44;--amb:linear-gradient(180deg,#1A1A1E,#0E0E12);--r:24px;color-scheme:light}
+html[data-theme=light] body::before{display:none}
+html[data-theme=light] .card{background:#fff;border:1px solid #0000000f;box-shadow:var(--sh)}
+html[data-theme=light] .card:hover{box-shadow:0 2px 4px #0000000a,0 14px 36px #00000014;border-color:#0000001f}
+html[data-theme=light] #clock{text-shadow:none}
+html[data-theme=light] .avb img,html[data-theme=light] .hello img,html[data-theme=light] .nav .brand img{box-shadow:0 0 0 1px #0000001a,0 4px 14px #00000018}
+html[data-theme=light] #mood{opacity:.5}
+html[data-theme=light] #mood .on{background:radial-gradient(ellipse 85vw 50vh at 50% -8%,#3FD79A22,#3FD79A00 72%)}
+html[data-theme=light] #mood .off{background:radial-gradient(ellipse 85vw 50vh at 50% -10%,#5B6CFF1c,#5B6CFF00 72%)}
+html[data-theme=light] h1,html[data-theme=light] h2{text-shadow:none}
+html[data-theme=light] .hero{background:linear-gradient(155deg,#F1F1F5,#fff 72%)!important;border-color:#0000001a!important}
+html[data-theme=light] .hero.on{background:linear-gradient(155deg,#E4F6EE,#fff 72%)!important;border-color:#117A4E30!important}
+html[data-theme=light] .hero.off{background:linear-gradient(155deg,#EDEDF2,#fff 72%)!important}
+html[data-theme=light] .hero.on .status{color:#0E6B45}
+html[data-theme=light] .hero.off .status{color:#2B2B33}
+html[data-theme=light] .grid>div{background:#fff;border:1px solid #0000000f;box-shadow:0 1px 2px #0000000a}
+html[data-theme=light] .hero .grid>div{background:#ffffffcc}
+/* кнопки й перемикачі */
+html[data-theme=light] .ref.p,html[data-theme=light] button.p{background:#111114;color:#fff;box-shadow:0 8px 22px -8px #00000066;border-color:transparent}
+html[data-theme=light] .ref:hover{box-shadow:0 4px 14px #0000001a}
+html[data-theme=light] .tabs button.a,html[data-theme=light] .seg button.a{background:#111114;color:#fff;box-shadow:0 2px 8px #00000030}
+html[data-theme=light] .seg3{background:#EAEAEE;border:0}
+html[data-theme=light] .seg3 .thumb{background:#111114;box-shadow:0 4px 14px #00000030}
+html[data-theme=light] .seg3 button.a{color:#fff}
+html[data-theme=light] .sw[aria-checked=true]::after{background:#fff}
+html[data-theme=light] .rows summary{background:#0000000a}
+html[data-theme=light] .rows summary:hover{background:#00000012}
+/* меню */
+html[data-theme=light] .nav{background:#ffffffee;border:1px solid #0000001a;box-shadow:0 10px 30px #00000022;backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px)}
+html[data-theme=light] .nav button{color:var(--mu)}
+html[data-theme=light] .nav button:hover:not(.a){background:#0000000a;color:var(--tx)}
+html[data-theme=light] .nav button.a{background:#111114;color:#fff;box-shadow:none}
+html[data-theme=light] .nav button.a svg{filter:none}
+html[data-theme=light] .nav button::before{background:#111114;box-shadow:none}
+html[data-theme=light] .nav button.al::after{box-shadow:0 0 0 2px #fff,0 0 10px #ff4d6a88}
+@media (min-width:900px){html[data-theme=light] .nav{background:#fff;border:0;border-right:1px solid #0000001a;box-shadow:none}}
+/* графік дня */
+html[data-theme=light] #sched .pill.on{background:#E3F5EC;color:#0E6B45;box-shadow:none}
+html[data-theme=light] #sched .pill.off{background:#EDEDF1;color:#4F4F5A}
+html[data-theme=light] #sched .pill.n{background:#EDEDF1;color:#686873}
+html[data-theme=light] .sg.on{background:#2DB27D;box-shadow:none}
+html[data-theme=light] .sg.off{background:#D5D5DC}
+html[data-theme=light] .tlt::before{background:repeating-linear-gradient(90deg,#00000030 0 1px,transparent 1px calc(100% / 24))}
+html[data-theme=light] .nowm{background:#111114;box-shadow:0 0 0 1.5px #fff,0 0 12px #00000033}
+html[data-theme=light] .nowm::before{background:#111114;color:#fff;box-shadow:0 4px 14px -4px #00000066}
+html[data-theme=light] .nowm::after{background:#111114;box-shadow:0 0 0 2px #fff}
+html[data-theme=light] #sched .row.on{background:#EEF8F3;border-color:#117A4E1f}
+html[data-theme=light] #sched .row.on span:first-child{color:var(--tx)}
+html[data-theme=light] #sched .row.on span:last-child{color:#0E6B45}
+html[data-theme=light] #sched .row.off{background:transparent;border-color:#0000000f}
+html[data-theme=light] #sched .row span:first-child::before{background:#2DB27D}
+html[data-theme=light] #sched .row.off span:first-child::before{background:#9A9AA6}
+html[data-theme=light] #sched .row.cur{box-shadow:inset 0 0 0 1.5px #111114}
+html[data-theme=light] .sbar{background:#0000000f!important}
+html[data-theme=light] .sbar i{background:#111114;box-shadow:none}
+/* черги й аварії */
+html[data-theme=light] .chip.am{background:#FFF4D8;border-color:#D9A62E88;color:#7F5300}
+html[data-theme=light] .chip.am.a{background:linear-gradient(180deg,#F6C95A,#E0A62E);color:#2A1D00}
+html[data-theme=light] .chip.em small{color:#C0233E}
+html[data-theme=light] .chip.em.aq.sel{box-shadow:inset 0 0 0 2px #E0344F,0 0 16px -6px #ff4d6a88}
+html[data-theme=light] .aclist{box-shadow:0 14px 34px #00000026}
+html[data-theme=light] .gm-fab{background:#fff;border:1px solid #0000001a;color:var(--tx);box-shadow:0 6px 20px #00000018}
+html[data-theme=light] .gm-fab:hover{background:#F5F5F7;color:var(--tx)}
+html[data-theme=light] .cptb.a,html[data-theme=light] .cpc.a{background:#111114;color:#fff}
+html[data-theme=light] .chip.em{background:#FFE9ED;border-color:#E0344F70;color:#B3203A}
+html[data-theme=light] .chip.em small{color:#C0233E}
+html[data-theme=light] .chip.em.a{background:linear-gradient(180deg,#ff6f84,#e0344f);color:#fff}
+html[data-theme=light] .chip.em.a small{color:#ffffffdd}
+html[data-theme=light] .chip.am small{color:#7F5300}
+html[data-theme=light] #sched .row.off span:first-child{color:#5E5E69}
+html[data-theme=light] .chip{background:var(--card)}
+/* поле пошуку міста: в одному стилі з іншими полями */
+.cpi{width:100%;display:block;border:1px solid var(--bd);background:var(--bg2);color:var(--tx);border-radius:14px;padding:12px 14px;font-size:16px;outline:none;-webkit-appearance:none;appearance:none;transition:border-color .2s,box-shadow .2s}
+.cpi::placeholder{color:var(--mu)}
+.cpi:focus{border-color:var(--ac);box-shadow:0 0 0 3px #8a8a9440}
+.cpmw{margin-top:10px;border-radius:16px;background:var(--bg2);overflow:hidden;border:1px solid var(--bd)}
+.cpm{display:block;width:100%;height:auto;aspect-ratio:780/480;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.mo{fill:var(--card);stroke:var(--mu);stroke-width:1;vector-effect:non-scaling-stroke;stroke-linejoin:round;opacity:.5;cursor:pointer;outline:none;transition:fill .25s,opacity .25s}
+.mo.on{fill:var(--acs);stroke:var(--tx);opacity:1}
+.mo.on:hover{filter:brightness(.9)}.mo:focus-visible{stroke-width:2.5}
+.mo.cur{stroke-width:2}
+.mo.sel{fill:var(--ac);opacity:1}.mo.sel:not(.on){fill:var(--mu);opacity:.55}
+.mk .mkd{fill:#e5484d;stroke:#fff;stroke-width:1.5;vector-effect:non-scaling-stroke}
+.mk .mkp{fill:none;stroke:#e5484d;stroke-width:2;vector-effect:non-scaling-stroke;transform-box:fill-box;transform-origin:center;animation:mkp 1.7s ease-out infinite}
+@keyframes mkp{from{transform:scale(.7);opacity:.9}to{transform:scale(2.6);opacity:0}}
+.cpp{margin-top:6px}.cpp>*{animation:cpin .28s ease both}@keyframes cpin{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.cph{font-size:12.5px;color:var(--mu);margin:10px 2px 8px}
+.cpo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.cpob{flex-direction:column;align-items:flex-start;justify-content:center;gap:4px}.cpob span{min-width:0}.cpob em{flex:none}
+.cpob{display:flex;justify-content:space-between;align-items:center;gap:6px;border:1px solid var(--bd);background:none;color:var(--tx);border-radius:12px;padding:9px 11px;font-weight:700;font-size:13px;text-align:left;line-height:1.2;transition:background .18s,transform .12s}
+.cpob:active{transform:scale(.98)}.cpob.soon{color:var(--mu);font-weight:600}
+.cpob em{font-style:normal;font-size:10.5px;color:var(--mu);border:1px solid var(--bd);border-radius:999px;padding:1px 7px;white-space:nowrap}
+.cpob.a{background:var(--ac);color:var(--acx);border-color:transparent}
+.cpbar{margin-top:10px}.cpback{border:0;background:none;color:var(--mu);font-weight:700;font-size:13px;padding:4px 2px}
+.cpt2{font-size:17px;font-weight:800;margin:6px 2px 10px}
+.cpctr{margin-bottom:8px}.cpc.big{font-size:16px;font-weight:800;padding:10px 18px}
+.cpl2{display:flex;flex-wrap:wrap;gap:6px}.cpl2 .cpc{font-weight:500}
+.cpsame{margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--bg2);font-size:12.5px;line-height:1.45;color:var(--mu)}
+.cp .cpob{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;text-align:left;min-height:62px}.cp .cpob span{text-align:left}.cp .cpob em{align-self:flex-start;margin-top:auto}
+@media (prefers-reduced-motion:reduce){.cpp>*,.mk .mkp{animation:none}}
+
+/* ===== Світла тема: трохи темніші межі й м’який градієнт фону (дзеркало темної теми) ===== */
+html[data-theme=light]{--bd:#00000026;--sh:0 1px 2px #0000000d,0 10px 30px #0000000f}
+html[data-theme=light],html[data-theme=light] body{background:#F2F2F5}
+html[data-theme=light] body{background:transparent}
+html[data-theme=light] body::before{display:block;content:"";position:fixed;inset:0;height:auto;z-index:-1;pointer-events:none;background:radial-gradient(ellipse min(90vw,760px) 320px at 50% -70px,#0000001c,#00000000 70%),radial-gradient(ellipse min(70vw,560px) 360px at 100% 100%,#00000010,#00000000 72%),linear-gradient(180deg,#FBFBFD 0%,#F1F1F5 55%,#EAEAEF 100%)}
+html[data-theme=light] .card{border-color:#00000026}
+html[data-theme=light] .card:hover{border-color:#00000040}
+html[data-theme=light] .grid>div{border-color:#0000001f}
+html[data-theme=light] #sched .row.off{border-color:#0000001f}
+html[data-theme=light] .hero{border-color:#00000026!important}
+html[data-theme=light] .nav{border-color:#00000026}
+@media (min-width:900px){html[data-theme=light] .nav{border-right-color:#00000026}}
+html[data-theme=light] .gm-fab{border-color:#00000026}
+html[data-theme=light] .shb,html[data-theme=light] .aclist{border:1px solid #00000030;box-shadow:0 18px 48px #0000002e}
+html[data-theme=light] .seg3{border:1px solid #0000001f}
+html[data-theme=light] .rows summary{background:#00000010}
+</style></head><body><div id="bgfx" aria-hidden="true"><canvas id="bgc" width="96" height="160"></canvas></div>
+<div id="mood" aria-hidden="true"><i class="m on"></i><i class="m off"></i><i class="m emg"></i></div>
+<div id="intro" class="hid" aria-hidden="true"><div class="stage"><canvas class="cv back"></canvas><img class="lyr girl" src="intro-girl.png" alt="" decoding="async"><img class="lyr dim" src="intro-bulb-dim.png" alt="" decoding="async"><div class="halo"></div><img class="lyr lit" src="intro-bulb.png" alt="" decoding="async"><canvas class="cv front"></canvas><span class="st" style="left:30.5%;top:30.3%;--d:.7s"><svg viewBox="-10 -10 20 20"><path d="M0-10C1-3 3-1 10 0 3 1 1 3 0 10-1 3-3 1-10 0-3-1-1-3 0-10Z" fill="#fff"/></svg></span><span class="st" style="left:83%;top:50.4%;--d:1.1s"><svg viewBox="-10 -10 20 20"><path d="M0-10C1-3 3-1 10 0 3 1 1 3 0 10-1 3-3 1-10 0-3-1-1-3 0-10Z" fill="#fff"/></svg></span><span class="st" style="left:15.3%;top:63%;width:3%;margin:-1.5% 0 0 -1.5%;--d:1.5s"><svg viewBox="-10 -10 20 20"><path d="M0-10C1-3 3-1 10 0 3 1 1 3 0 10-1 3-3 1-10 0-3-1-1-3 0-10Z" fill="#fff"/></svg></span><div class="flash"></div></div><div class="ttl">ТребаСвітло?</div><div class="tag">Знай, коли буде світло</div></div>
+
+<a class="gm-fab" href="games.html" aria-label="Офлайн міні-ігри"><span>🎮</span>Ігри</a><nav class="nav" aria-label="Основна навігація"><div class="brand"><img src="icon-192.png" alt=""><span>ТребаСвітло?</span></div>
+<button id="n1" class="a" onclick="setView(1)"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3Z"/></svg>Світло</button>
+<button id="n2" onclick="setView(2)"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg>Черги</button>
+<button id="n4" onclick="setView(4)"><svg viewBox="0 0 24 24"><path d="M12 4 2.8 19.5h18.4L12 4Z"/><path d="M12 10v4.2M12 17h.01"/></svg>Аварії</button>
+<button id="n3" onclick="setView(3)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>Налаштування</button></nav>
+
+<div class="wrap">
+<div class="top"><div class="tt"><div id="clock">--:--:--</div><div id="date"></div></div><button class="avb" onclick="setView(3)" aria-label="Налаштування"><img src="icon-192.png" alt=""></button></div>
+
+<main id="v0" class="hid"><div class="card"><div class="seg themeseg obtheme" role="group" aria-label="Тема"><button data-t="dark" onclick="setTheme('dark')">🌙 Темна</button><button data-t="light" onclick="setTheme('light')">☀️ Світла</button><button data-t="auto" onclick="setTheme('auto')">Авто</button></div><div class="cen" style="margin-bottom:6px"><img src="icon-192.png" alt="" style="width:84px;height:84px;border-radius:22px;box-shadow:var(--sh)"></div><h2 class="cen">Вітаємо в ТребаСвітло?</h2><div class="sub cen">Вкажи ім’я, місто та свою чергу — і ми покажемо графік відключень.</div>
+<div class="f"><label for="ob-n">Ім’я</label><input type="text" id="ob-n" maxlength="30" autocomplete="given-name"><label for="ob-cps">Область, місто чи селище</label><div class="cp" id="ob-cp"></div><select id="ob-c" hidden></select><label for="ob-q">Черга</label><select id="ob-q"></select><label for="ob-a">Адреса або позначка (необов’язково)</label><div class="ac" id="ob-ac"><input type="text" id="ob-a" maxlength="60" placeholder="Почни вводити: проспект Металургів 12" autocomplete="off" autocapitalize="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="ob-al"><ul class="aclist" id="ob-al" role="listbox"></ul></div>
+<label class="chk" id="ob-chk"><input type="checkbox" id="ob-ok"><span>Я погоджуюсь з <a href="terms.html" target="_blank" rel="noopener">Умовами користування</a> та <a href="privacy.html" target="_blank" rel="noopener">Політикою конфіденційності</a>.</span></label>
+<button class="ref p w" id="ob-go" aria-disabled="true" onclick="saveP('ob')">Почати</button><div class="need" id="ob-need">Постав галочку згоди, щоб продовжити</div></div>
+<div class="meta">Дані зберігаються лише на твоєму пристрої. Не знаєш свою чергу? <a href="https://www.dtek-dnem.com.ua/ua/shutdowns" target="_blank" rel="noopener">Дізнатися за адресою на сайті ДТЕК</a>.</div></div></main>
+
+<main id="v1"><div id="offb"></div><div id="emg"></div>
+<div class="home"><div class="hm">
+<div class="tabs seg3" id="tabs" role="tablist"><i class="thumb"></i><button id="t2" onclick="setTab(2)">Вчора</button><button id="t0" class="a" onclick="setTab(0)">Сьогодні</button><button id="t1" onclick="setTab(1)">Завтра</button></div>
+<div id="sched" class="card"></div>
+<div class="cen acts"><div class="sub" id="upd"></div><button class="ref" onclick="load(true)">↻ Оновити</button> <button class="ref" onclick="shareSched()">Поділитися</button></div>
+</div><div class="hs">
+<div class="lb" id="hlb">Статус на сьогодні</div><div id="hero" class="card hero"></div>
+<div class="lb">Статистика на сьогодні</div><div class="card"><div class="grid" id="stats"></div></div>
+</div></div></main>
+
+<main id="v2" class="hid"><div class="cols"><div class="c1"><div class="card"><h2>Вибір черги</h2><div class="sub" style="margin-bottom:12px">Переглянь графік будь-якої черги. Твоя черга позначена зеленою крапкою, а черги з екстреними відключеннями підсвічені червоним.</div>
+<div class="seg" id="q-city"></div><div class="chips" id="q-chips"></div><div class="legend" id="q-leg"></div></div><div class="card" id="wk"></div></div>
+<div class="c2"><div id="q-detail"></div></div></div></main>
+
+<main id="v4" class="hid"><div class="cols"><div class="c1">
+<div class="seg" id="av-city" role="tablist" aria-label="Місто"></div>
+<div class="card"><h2>Усі черги</h2><div class="sub" style="margin-bottom:12px">Чи діє зараз звичайний графік, чи оператор запровадив екстрені відключення. Натисни чергу, щоб побачити її графік.</div><div class="chips" id="av-grid"></div>
+<div class="legend"><span><i style="background:var(--onx)"></i>за графіком</span><span><i class="r"></i>екстрено</span><span><i style="background:var(--wx)"></i>статус ще не оновлено</span></div><div class="meta" id="av-meta"></div></div>
+<div id="av-hero" class="card hero"></div>
+</div>
+<div class="c2"><div class="card avwhy"><div class="ic" aria-hidden="true">⚠️</div><div><b>Навіщо цей розділ</b><p>Він для випадків, коли за графіком світло має бути, а його немає. Тут видно, чи діють екстрені відключення (тоді графік не працює) і що показує графік для вибраного міста та черги. Якщо причини тут немає — найімовірніше, це локальна аварія: перевір свою адресу на сайті ДТЕК.</p></div></div>
+<div class="cen"><button class="ref" onclick="avRetry()">↻ Оновити</button></div><div class="card"><h2>Про ці дані</h2><div class="sub" style="font-size:13.5px">Статуси беруться з YASNO (ДТЕК Дніпровські електромережі) — з тих самих відкритих даних, що й графіки, і стосуються черги загалом. Вибір міста змінює, для якого міста завантажується графік. Адресні аварійні роботи (вулиця, будинок, причина, час відновлення) публікує лише сайт ДТЕК за захистом від автоматичних запитів, тому застосунок їх не показує і нічого не вигадує.</div><a class="ref w" style="text-decoration:none" href="https://www.dtek-dnem.com.ua/ua/shutdowns" target="_blank" rel="noopener">Перевірити адресу на сайті ДТЕК</a><a class="ref w" style="text-decoration:none" href="https://t.me/DTEKDniprovskiElektromerezhiBot" target="_blank" rel="noopener">Telegram-бот ДТЕК: аварії за адресою</a><a class="ref w" style="text-decoration:none" href="viber://pa?chatURI=dtekdniprovskielektromerezhi">Viber ДТЕК Дніпровські електромережі</a></div></div></div></main>
+
+<main id="v3" class="hid"><div class="sgrid"><div class="card prof"><div class="hello"><img src="icon-192.png" alt=""><div><h1 id="hi"></h1><p>Ось твоє світло!</p></div></div><div id="hint" class="hint hid"><span>Додай ТребаСвітло? на головний екран 💜 <small>(Поділитися → Додати на початковий екран)</small></span><button onclick="hideHint()" aria-label="Закрити">✕</button></div><div class="net" id="net"></div></div>
+<div class="card"><h2>Мій графік</h2><div class="f"><label for="st-n">Ім’я</label><input type="text" id="st-n" maxlength="30" autocomplete="given-name"><label for="st-cps">Область, місто чи селище</label><div class="cp" id="st-cp"></div><select id="st-c" hidden></select><label for="st-q">Черга</label><select id="st-q"></select><label for="st-a">Адреса або позначка (необов’язково)</label><div class="ac" id="st-ac"><input type="text" id="st-a" maxlength="60" placeholder="Почни вводити: проспект Металургів 12" autocomplete="off" autocapitalize="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="st-al"><ul class="aclist" id="st-al" role="listbox"></ul></div><button class="ref p" onclick="saveP('st')">Зберегти</button></div>
+<div class="meta">Не знаєш свою чергу? <a href="https://www.dtek-dnem.com.ua/ua/shutdowns" target="_blank" rel="noopener">Дізнатися за адресою на сайті ДТЕК</a>.</div></div>
+
+<div class="card"><h2>Оформлення</h2>
+<div class="seg themeseg"><button data-t="dark" onclick="setTheme('dark')">🌙 Темна</button><button data-t="light" onclick="setTheme('light')">☀️ Світла</button><button data-t="auto" onclick="setTheme('auto')">Авто</button></div><div class="meta" style="margin-top:8px">«Авто» повторює тему твого телефона чи комп’ютера.</div>
+</div>
+
+<div class="card"><h2>Звук</h2>
+<div class="opt"><div><b>Звуки застосунку</b><small>Головний перемикач усіх звуків</small></div><button class="sw" role="switch" data-nosound="1" data-k="sound" aria-label="Звуки застосунку"></button></div>
+<div class="opt"><div><b>Натискання кнопок</b><small>Тихий м’який клік</small></div><button class="sw" role="switch" data-nosound="1" data-k="sClick" aria-label="Звук натискань"></button></div>
+<div class="opt"><div><b>Перемикачі</b><small>Окремий звук для вмикання та вимикання</small></div><button class="sw" role="switch" data-nosound="1" data-k="sSwitch" aria-label="Звук перемикачів"></button></div>
+<div class="opt"><div><b>Нагадування</b><small>Звук, коли світло скоро зміниться</small></div><button class="sw" role="switch" data-nosound="1" data-k="sAlert" aria-label="Звук нагадувань"></button></div>
+<label class="lbl" for="vol">Гучність: <span id="vol-v"></span></label><input type="range" id="vol" min="0" max="100" step="5" aria-label="Гучність">
+<button class="ref" data-nosound="1" onclick="testSound()">Перевірити звук</button></div>
+
+<div class="card"><h2>Важливе</h2>
+<div class="opt"><div><b>Попередження про вимкнення</b><small>Push за кілька хвилин до вимкнення чи ввімкнення світла. Приходить навіть коли застосунок закрито.</small></div><button class="sw" role="switch" data-nosound="1" data-k="notify" aria-label="Попередження про вимкнення"></button></div>
+<div class="opt"><div><b>Графік змінився</b><small>Коли ДТЕК оновив графік на сьогодні чи завтра</small></div><button class="sw" role="switch" data-nosound="1" data-k="pChg" aria-label="Графік змінився"></button></div>
+<div class="opt"><div><b>З’явився графік на завтра</b><small>Одразу, як тільки графік опубліковано</small></div><button class="sw" role="switch" data-nosound="1" data-k="pNew" aria-label="З’явився графік на завтра"></button></div>
+<div class="opt"><div><b>Екстрені відключення</b><small>Коли для твого міста починають діяти екстрені відключення</small></div><button class="sw" role="switch" data-nosound="1" data-k="emgN" aria-label="Екстрені відключення"></button></div>
+<div class="opt"><div><b>Вібрація</b><small>Коротка вібрація, коли світло вмикається чи вимикається за графіком, і при екстрених відключеннях. Є на Android; iPhone вібрацію в застосунках не підтримує.</small></div><button class="sw" role="switch" data-nosound="1" data-k="vib" aria-label="Вібрація"></button></div>
+<label class="lbl" for="lead">За скільки часу нагадувати</label><select id="lead" class="sel"><option value="5">за 5 хвилин</option><option value="10">за 10 хвилин</option><option value="15">за 15 хвилин</option><option value="30">за 30 хвилин</option><option value="60">за 1 годину</option></select>
+<div id="notif-note" class="meta"></div><button class="ref" data-nosound="1" onclick="pushTest()">Надіслати тестове сповіщення</button>
+<div class="opt" id="install-box" hidden><div><b>Встановити застосунок</b><small id="install-hint">Додай ТребаСвітло? на робочий стіл чи головний екран і відкривай окремим вікном, як звичайну програму.</small></div><button class="ref" id="install-btn" data-nosound="1" type="button" style="margin:0;white-space:nowrap">Встановити</button></div>
+<div class="opt"><div><b>Автооновлення графіка</b><small>Перевіряти джерела, поки застосунок відкрито</small></div><button class="sw" role="switch" data-nosound="1" data-k="auto" aria-label="Автооновлення"></button></div>
+<div class="opt"><div><b>Попередження про застарілі дані</b><small>Показувати, якщо графік давно не оновлювався</small></div><button class="sw" role="switch" data-nosound="1" data-k="stale" aria-label="Застарілі дані"></button></div></div>
+
+<div class="card" id="wgt"><h2>Віджет на iPhone</h2><div class="sub" style="margin-bottom:10px">Віджет у стилі застосунку: темний фон із м’яким сяйвом, великий статус, час наступної зміни, смужка доби та відключення дня. Є версії для головного екрана і для екрана блокування. Застосунок у браузері не може створити системний віджет, тому використовується безкоштовна програма Scriptable.</div>
+<ol class="anl"><li>Встанови безкоштовну програму <a href="https://apps.apple.com/app/scriptable/id1405459188" target="_blank" rel="noopener">Scriptable</a>.</li><li>Натисни кнопку «Скопіювати скрипт віджета» нижче.</li><li><a href="scriptable:///">Відкрий Scriptable</a>, натисни «+» угорі, довго торкнись порожнього поля й обери «Вставити». Назви скрипт «ТребаСвітло» і натисни «Готово».</li><li>Натисни ▶ у Scriptable: з’явиться перегляд віджета. Якщо бачиш графік, усе працює.</li><li>На головному екрані утримуй порожнє місце → «+» → Scriptable → «Додати віджет». Торкнись віджета й у полі Script обери «ТребаСвітло».</li></ol>
+<button class="ref p w" data-nosound="1" onclick="copyWidget()">Скопіювати скрипт віджета</button><textarea id="wgt-out" class="hid" readonly rows="6" style="width:100%;margin-top:10px;border-radius:12px;border:1px solid var(--bd);background:var(--bg2);color:var(--tx);padding:10px;font:12px/1.35 ui-monospace,Menlo,monospace"></textarea><div class="meta" id="wgt-note"></div></div>
+
+<div class="card"><h2>Інформація про дані</h2><div id="info"></div>
+<button class="ref" onclick="checkSources()" id="chk-btn">Перевірити джерела</button><div id="chk-out"></div>
+<div class="meta">Дані беруться з публічних джерел: дзеркало сайту ДТЕК, YASNO і kolybude.com (для Кривого Рогу). Застосунок неофіційний — звіряйся з сайтом оператора.</div></div>
+
+<div class="card"><h2>Історія оновлень графіка</h2><div class="sub" style="margin-bottom:6px">Коли джерела змінювали графік для обраної черги.</div>
+<div class="f"><div style="display:grid;grid-template-columns:1.4fr 1fr;gap:8px"><div><label for="h-c">Місто</label><select id="h-c"></select></div><div><label for="h-q">Черга</label><select id="h-q"></select></div></div></div>
+<div class="tl" id="hist" style="margin-top:12px"></div><button class="ref" onclick="clearHist()">Очистити історію</button></div>
+
+<div class="card"><h2>Правова інформація</h2>
+<a class="lnk" href="terms.html">Умови користування <span>›</span></a><a class="lnk" href="privacy.html">Політика конфіденційності <span>›</span></a><a class="lnk" href="about.html">Джерела даних та відмова від відповідальності <span>›</span></a>
+<a class="lnk" href="mailto:ssssssifo@gmail.com">Зв’язатися з розробником <span>›</span></a><a class="lnk" id="bug" href="#">Повідомити про помилку <span>›</span></a></div>
+
+<div class="card"><h2>Про застосунок</h2><div class="kv"><span>Назва</span><span>ТребаСвітло?</span></div><div class="kv"><span>Версія</span><span id="ver"></span></div><div class="kv"><span>Розробник</span><span>Bohdan Savchenko</span></div><div class="kv"><span>Пошта</span><span><a href="mailto:ssssssifo@gmail.com">ssssssifo@gmail.com</a></span></div>
+<div class="meta">Незалежний неофіційний проєкт. Не пов’язаний з ДТЕК, YASNO чи Укренерго.</div>
+<button class="ref w" onclick="resetSettings()">Скинути налаштування</button><button class="ref w" onclick="wipe()">Видалити мої дані</button></div>
+
+</div></main>
+</div>
+<script type="text/plain" id="wgt-src">// ТребаСвітло? — віджет для iPhone (програма Scriptable).
+// Показує графік на СЬОГОДНІ для вибраної черги: статус зараз, час наступної зміни, смужку доби та відключення дня.
+// Працює на головному екрані (малий, середній, великий) і на екрані блокування.
+// Налаштування підставляються автоматично, коли скрипт копіюється зі застосунку (Налаштування → Віджет на iPhone).
+// Інша черга без редагування: у налаштуваннях віджета в полі Parameter напиши, наприклад: kr 3.1  (kr — Кривий Ріг, dp — Дніпро, kz — Кам’янське)
+
+const CFG = { origin: "__ORIGIN__", city: "__CITY__", group: "__GROUP__", name: "__NAME__" };
+const CITY_NAMES = { kr: "Кривий Ріг", dp: "Дніпро", kz: "Кам’янське" };
+const TZ = "Europe/Kyiv";
+
+let city = CFG.city, group = CFG.group;
+const prm = (args.widgetParameter || "").trim().split(/\s+/);
+if (prm.length === 2 && CITY_NAMES[prm[0]] && /^[1-6]\.[12]$/.test(prm[1])) { city = prm[0]; group = prm[1]; }
+const cityName = CITY_NAMES[city] || CFG.name;
+
+// ---------- палітра застосунку: чорний, перлинний, м’які фіолетовий / бірюзовий / рожевий відблиски ----------
+const C = {
+  base: "#07070A",
+  pearl: new Color("#F4F1EA"), pearl2: new Color("#C9C5BD"),
+  tx: new Color("#F4F1EA"), soft: new Color("#D6D2DC"), mu: new Color("#9C98A8"),
+  segOn: new Color("#EFEBE4"), segOff: new Color("#2A2930"), tick: new Color("#5A5763"),
+  chip: new Color("#FFFFFF", 0.09), chipOn: new Color("#FFFFFF", 0.16)
+};
+
+// ---------- час за Києвом ----------
+function kyivNow() {
+  const p = {};
+  new Intl.DateTimeFormat("en-GB", { timeZone: TZ, hour12: false, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" })
+    .formatToParts(new Date()).forEach(x => (p[x.type] = x.value));
+  const h = +p.hour % 24;
+  return { date: `${p.year}-${p.month}-${p.day}`, min: h * 60 + +p.minute, sec: h * 3600 + +p.minute * 60 + +p.second };
+}
+const addDay = (d, n) => { const [y, m, dd] = d.split("-").map(Number); return new Date(Date.UTC(y, m - 1, dd + n)).toISOString().slice(0, 10); };
+const p2 = n => String(n).padStart(2, "0");
+const hm = m => `${p2(Math.floor(m / 60) % 24)}:${p2(m % 60)}`;
+const hmE = m => (m >= 1440 ? "24:00" : hm(m));
+const dh = m => { const h = Math.floor(m / 60), mm = m % 60; return h ? (mm ? `${h} год ${mm} хв` : `${h} год`) : `${mm} хв`; };
+function periods(slots, base = 0) {
+  const o = [];
+  slots.forEach((v, i) => {
+    const on = !!v, a = base + i * 30;
+    if (o.length && o[o.length - 1].on === on) o[o.length - 1].to = a + 30;
+    else o.push({ from: a, to: a + 30, on });
+  });
+  return o;
+}
+const okDay = (d) => d && d.slots && d.slots.length === 48 && !(d.slots.every(v => v === 1) && !d.confirmed);
+
+// ---------- дані (з кешем на випадок, коли немає мережі) ----------
+async function load() {
+  const fm = FileManager.local();
+  const path = fm.joinPath(fm.documentsDirectory(), `svitlo-${city}-${group}.json`);
+  try {
+    const req = new Request(`${CFG.origin}/api/schedule?group=${group}&city=${city}&t=${Date.now()}`);
+    req.timeoutInterval = 12;
+    const j = await req.loadJSON();
+    if (!j || !j.ok) throw new Error("no data");
+    fm.writeString(path, JSON.stringify({ j, at: Date.now() }));
+    return { j, stale: false };
+  } catch (e) {
+    if (fm.fileExists(path)) { const c = JSON.parse(fm.readString(path)); return { j: c.j, stale: true }; }
+    return { j: null, stale: true };
+  }
+}
+
+// ---------- фон: чорний із м’якими відблисками (як живий фон у застосунку) ----------
+function glow(ctx, x, y, r, hex, a) {
+  const N = 26;
+  for (let i = 0; i < N; i++) {
+    const k = i / N, rr = r * (1 - k);
+    ctx.setFillColor(new Color(hex, (a / N) * (0.55 + k)));
+    ctx.fillEllipse(new Rect(x - rr, y - rr, rr * 2, rr * 2));
+  }
+}
+function backdrop(w, h) {
+  const ctx = new DrawContext();
+  ctx.size = new Size(w, h); ctx.opaque = true; ctx.respectScreenScale = false;
+  ctx.setFillColor(new Color(C.base)); ctx.fillRect(new Rect(0, 0, w, h));
+  const m = Math.max(w, h);
+  glow(ctx, w * 0.08, h * -0.05, m * 0.62, "#6F63D8", 0.42);
+  glow(ctx, w * 1.0, h * 0.45, m * 0.5, "#2F9DB0", 0.30);
+  glow(ctx, w * 0.55, h * 1.12, m * 0.55, "#B8628F", 0.30);
+  return ctx.getImage();
+}
+
+// ---------- смужка доби ----------
+function bar(slots, nowMin, w, h, ticks) {
+  const th = ticks ? 14 : 0, pad = 5;
+  const ctx = new DrawContext();
+  ctx.size = new Size(w, h + pad * 2 + th); ctx.opaque = false; ctx.respectScreenScale = true;
+  const px = w / 1440, r = Math.min(4, h / 2);
+  // основа (немає світла)
+  let path = new Path(); path.addRoundedRect(new Rect(0, pad, w, h), r, r); ctx.addPath(path); ctx.setFillColor(C.segOff); ctx.fillPath();
+  // світло є
+  periods(slots).filter(p => p.on).forEach(p => {
+    const x = p.from * px, ww = (p.to - p.from) * px - 1.2;
+    path = new Path(); path.addRoundedRect(new Rect(x + 0.6, pad, Math.max(2, ww), h), r, r); ctx.addPath(path); ctx.setFillColor(C.segOn); ctx.fillPath();
+  });
+  // «зараз»
+  const nx = Math.min(w - 2, Math.max(2, nowMin * px));
+  ctx.setFillColor(new Color("#000000", 0.75)); ctx.fillRect(new Rect(nx - 2.6, 1, 5.2, h + pad * 2 - 2));
+  ctx.setFillColor(Color.white()); ctx.fillRect(new Rect(nx - 1.3, 2, 2.6, h + pad * 2 - 4));
+  if (ticks) {
+    ctx.setTextColor(C.mu); ctx.setFont(Font.mediumSystemFont(9.5)); ctx.setTextAlignedCenter();
+    [0, 6, 12, 18, 24].forEach(t => {
+      const tx = t * 60 * px, bw = 26, x0 = t === 0 ? 0 : t === 24 ? w - bw : tx - bw / 2;
+      ctx.setTextAlignedCenter();
+      ctx.drawTextInRect(String(t), new Rect(x0, h + pad * 2 + 1, bw, 12));
+    });
+  }
+  return ctx.getImage();
+}
+
+function text(stack, s, size, color, weight) {
+  const t = stack.addText(s);
+  t.textColor = color; t.font = weight === "r" ? Font.boldRoundedSystemFont(size) : weight ? Font.heavySystemFont(size) : Font.mediumSystemFont(size);
+  t.minimumScaleFactor = 0.6; t.lineLimit = 1;
+  return t;
+}
+
+// наступна зміна з урахуванням завтрашнього графіка
+function nextChange(j, k) {
+  const today = j.days[k.date], tom = j.days[addDay(k.date, 1)];
+  let tl = periods(today.slots);
+  if (okDay(tom)) {
+    const t2 = periods(tom.slots, 1440);
+    if (tl[tl.length - 1].on === t2[0].on) { tl[tl.length - 1].to = t2[0].to; t2.shift(); }
+    tl = tl.concat(t2);
+  }
+  const cur = tl.find(p => k.min >= p.from && k.min < p.to) || tl[0];
+  const known = cur.to < 1440 || (okDay(tom) && cur.to < 2880);
+  const after = tl.find(p => p.from === cur.to);
+  return { cur, known, left: cur.to - k.min, after };
+}
+
+async function build() {
+  const { j, stale } = await load();
+  const fam = config.widgetFamily || "medium";
+  const w = new ListWidget();
+  w.url = CFG.origin;
+  w.refreshAfterDate = new Date(Date.now() + 10 * 60 * 1000);
+  const k = kyivNow();
+  const day = j && j.days && j.days[k.date];
+  const known = okDay(day);
+
+  // ---- екран блокування ----
+  if (fam.startsWith("accessory")) {
+    w.setPadding(0, 0, 0, 0);
+    if (!known) { text(w, j && j.emergency ? "Екстрені відключення" : "Графік уточнюється", 12, Color.white(), true); return w; }
+    const n = nextChange(j, k), on = n.cur.on;
+    const nt = n.known ? `${on ? "Вимкнення" : "Ввімкнення"} о ${hm(n.cur.to % 1440)}` : "Змін поки немає";
+    if (fam === "accessoryInline") { text(w, `${on ? "💡" : "🌙"} ${nt}`, 12, Color.white(), true); return w; }
+    if (fam === "accessoryCircular") { w.addSpacer(); text(w, on ? "💡" : "🌙", 16, Color.white(), true); text(w, n.known ? hm(n.cur.to % 1440) : "—", 11, Color.white(), true); w.addSpacer(); return w; }
+    text(w, `${on ? "💡 Світло є" : "🌙 Світла немає"}`, 15, Color.white(), "r");
+    text(w, nt, 12, Color.white(), false);
+    if (n.known) text(w, `через ${dh(n.left)}`, 11, Color.lightGray(), false);
+    return w;
+  }
+
+  const small = fam === "small", large = fam === "large";
+  const dim = small ? [320, 320] : large ? [640, 680] : [640, 300];
+  w.backgroundImage = backdrop(dim[0], dim[1]);
+  w.setPadding(small ? 14 : 16, small ? 14 : 18, small ? 12 : 14, small ? 14 : 18);
+
+  const head = w.addStack(); head.centerAlignContent();
+  text(head, "ТребаСвітло?", small ? 11 : 12, C.pearl2, true);
+  head.addSpacer();
+  text(head, `${small ? "" : cityName + " · "}черга ${group}`, small ? 11 : 12, C.mu, false);
+
+  if (!j || !known) {
+    w.addSpacer();
+    const emg = j && j.emergency;
+    text(w, emg ? "🚨 Екстрені відключення" : j ? "Графік уточнюється" : "Немає даних", small ? 17 : 22, C.tx, "r");
+    w.addSpacer(4);
+    text(w, emg ? "Планові графіки зараз не діють" : "Відкрий застосунок або сайт ДТЕК", small ? 11 : 13, C.soft, false);
+    w.addSpacer();
+    return w;
+  }
+
+  const slots = day.slots, n = nextChange(j, k), on = n.cur.on;
+  const offs = periods(slots).filter(p => !p.on);
+
+  w.addSpacer(small ? 6 : 8);
+  text(w, on ? "💡 Світло є" : "🌙 Світла немає", small ? 23 : large ? 32 : 30, C.tx, "r");
+  w.addSpacer(2);
+  if (n.known) {
+    text(w, `${on ? "Вимкнення" : "Ввімкнення"} о ${hm(n.cur.to % 1440)}`, small ? 14 : 16, C.tx, true);
+    const sub = `через ${dh(n.left)}` + (!small && n.after ? ` · потім ${on ? "без світла" : "світло"} ${dh(Math.min(n.after.to, 2880) - n.after.from)}` : "");
+    text(w, sub, small ? 12 : 13.5, C.soft, false);
+  } else {
+    text(w, on ? "Більше відключень немає" : "Світло буде після 24:00", small ? 13 : 15, C.soft, false);
+  }
+
+  w.addSpacer(small ? 8 : 10);
+  const bw = small ? 140 : large ? 296 : 296;
+  const img = w.addImage(bar(slots, k.min, bw, small ? 9 : 11, !small));
+  img.imageSize = new Size(bw, (small ? 9 : 11) + 10 + (small ? 0 : 14)); img.resizable = true;
+
+  if (!small) {
+    const maxRows = large ? 6 : 2;
+    w.addSpacer(large ? 8 : 4);
+    if (!offs.length) {
+      text(w, "Сьогодні без відключень 🎉", 13, C.soft, false);
+    } else {
+      const shown = offs.slice(0, maxRows);
+      const row = large ? null : w.addStack();
+      shown.forEach(p => {
+        const past = p.to <= k.min, nowOff = k.min >= p.from && k.min < p.to;
+        const host = large ? w.addStack() : row;
+        if (!large) host.spacing = 6; else { host.centerAlignContent(); host.setPadding(5, 10, 5, 10); host.cornerRadius = 10; host.backgroundColor = nowOff ? C.chipOn : C.chip; }
+        const t = text(host, `${hm(p.from)}–${hmE(p.to)}`, 13.5, past ? C.mu : C.tx, true);
+        if (large) { host.addSpacer(); text(host, dh(p.to - p.from), 12, nowOff ? C.tx : C.mu, false); w.addSpacer(4); }
+        else { const t2 = text(host, dh(p.to - p.from), 11.5, C.mu, false); host.addSpacer(4); }
+      });
+      if (offs.length > shown.length) text(w, `+ ще ${offs.length - shown.length}`, 11, C.mu, false);
+    }
+    if (large) {
+      w.addSpacer();
+      const onM = slots.filter(Boolean).length * 30;
+      text(w, `Зі світлом ${dh(onM)} · без світла ${dh(1440 - onM)}`, 12, C.soft, false);
+    }
+  }
+  w.addSpacer(small ? 4 : 6);
+  if (stale) text(w, "офлайн: показано збережене", 10, C.mu, false);
+  else if (j.updated) text(w, `оновлено ${j.updated}`, 10, C.mu, false);
+  return w;
+}
+
+const widget = await build();
+if (config.runsInWidget) Script.setWidget(widget);
+else await widget.presentMedium();
+Script.complete();
+</script>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div id="shm" class="shm hid" role="dialog" aria-modal="true" aria-label="Картка для поширення" onclick="if(event.target===this)closeShare()"><div class="shb"><img id="shi" alt="Картка з графіком"><div class="shr"><button class="ref p" id="shs" onclick="doShare()">Поділитися</button><button class="ref" onclick="saveCard()">Зберегти картинку</button><button class="ref" onclick="shareText()">Текстом</button><button class="ref" onclick="closeShare()">Закрити</button></div></div></div>
+
+<script>
+const API='';/* для обгортки в App Store вкажи тут повну адресу сервера, напр. https://svitlo.example.com */
+const APP_V='2.8.0',TZ='Europe/Kyiv',$=s=>document.getElementById(s);
+const LS=(()=>{try{localStorage.setItem('_t','1');localStorage.removeItem('_t');return localStorage}catch(e){const m={};return{getItem:k=>k in m?m[k]:null,setItem:(k,v)=>{m[k]=String(v)},removeItem:k=>{delete m[k]},clear:()=>{for(const k in m)delete m[k]}}}})();
+const jget=(k,d)=>{try{const v=JSON.parse(LS.getItem(k));return v==null?d:v}catch(e){return d}};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const MON=['січня','лютого','березня','квітня','травня','червня','липня','серпня','вересня','жовтня','листопада','грудня'],DOW=['неділя','понеділок','вівторок','середа','четвер','п’ятниця','субота'];
+const CITIES={kr:'Кривий Ріг',dp:'Дніпро',kz:'Кам’янське',dn:'Дніпровщина',ky:'Київ',kv:'Київська обл.',od:'Одеса й область',lv:'Львів і область'},QS=[];for(let i=1;i<=6;i++)for(let j=1;j<=2;j++)QS.push(i+'.'+j);
+
+/* ---------- вибір області, міста чи селища (реєстрація й налаштування) ---------- */
+/* Графік визначає оператор, а не місто: «зона» (kr, dp, kz, dn, ky, kv, od, lv) = оператор + джерело даних. Селище лише підписує профіль. */
+const nz=s=>String(s||'').toLowerCase().replace(/[’'ʼ`\-\s.]/g,'').replace(/ё/g,'е').replace(/ы/g,'и').replace(/э/g,'е').replace(/ї/g,'и').replace(/і/g,'и').replace(/є/g,'е').replace(/ґ/g,'г');
+
+const AINFO={kr:{op:'ДТЕК Дніпровські електромережі'},dp:{op:'ДТЕК Дніпровські електромережі'},kz:{op:'ДТЕК Дніпровські електромережі'},
+ dn:{op:'ДТЕК Дніпровські електромережі',note:'Графік береться з сайту ДТЕК для Дніпропетровщини. Якщо в твоєму місті інший оператор, час відключень може відрізнятися.'},
+ ky:{op:'ДТЕК Київські електромережі'},
+ kv:{op:'ДТЕК Київські регіональні електромережі',note:'Графік береться з сайту ДТЕК для Київської області. Для частини міст області оператор інший, тоді графік може відрізнятися: звір із сайтом оператора.'},
+ od:{op:'ДТЕК Одеські електромережі',note:'Графік береться з сайту ДТЕК для Одещини. Якщо у твоєму селищі інший оператор, графік може відрізнятися.'},
+ lv:{op:'Львівобленерго',note:'Графік береться з офіційного сайту Львівобленерго. Черга (1.1–6.2) визначається за адресою на poweron.loe.lviv.ua.'}};
+const UO=[['vinnytsia','Вінницька область'],['volyn','Волинська область'],['dnipro','Дніпропетровська область'],['donetsk','Донецька область'],['zhytomyr','Житомирська область'],['zakarpattia','Закарпатська область'],['zaporizhzhia','Запорізька область'],['ivano','Івано-Франківська область'],['kyiv','Київ і Київська область'],['kirovohrad','Кіровоградська область'],['luhansk','Луганська область'],['lviv','Львівська область'],['mykolaiv','Миколаївська область'],['odesa','Одеська область'],['poltava','Полтавська область'],['rivne','Рівненська область'],['sumy','Сумська область'],['ternopil','Тернопільська область'],['kharkiv','Харківська область'],['kherson','Херсонська область'],['khmelnytskyi','Хмельницька область'],['cherkasy','Черкаська область'],['chernivtsi','Чернівецька область'],['chernihiv','Чернігівська область'],['crimea','АР Крим']];
+const OBL={dnp:'Дніпропетровська область',kyv:'Київ і Київська область',ode:'Одеська область',lvv:'Львівська область'};
+const OBL_DEF={dnp:'dn',kyv:'kv',ode:'od',lvv:'lv'};
+const OTH={dnp:'Дніпропетровська область',kyv:'Київська область',ode:'Одеська область',lvv:'Львівська область'};
+const AOBL={kr:'dnp',dp:'dnp',kz:'dnp',dn:'dnp',ky:'kyv',kv:'kyv',od:'ode',lv:'lvv'};
+const OBK={dnp:'dnipro',kyv:'kyiv',ode:'odesa',lvv:'lviv'},KOB={},OBN={};for(const k in OBK)KOB[OBK[k]]=k;UO.forEach(u=>OBN[u[0]]=u[1]);
+const SAME={dnp:'Дніпро, Кривий Ріг і Кам’янське мають однакові черги й графіки: у них один оператор. Для інших міст області беремо той самий графік ДТЕК. Якщо у вас інший оператор, час може відрізнятися.',kyv:'Київ і Київська область обслуговують різні оператори, тому черга 3.1 у Києві й, наприклад, у Броварах може відрізнятися. Для міст області беремо графік ДТЕК Київські регіональні електромережі. Якщо у вас інший оператор, звірте із сайтом оператора.',ode:'Для Одеси й області беремо графік ДТЕК Одеські електромережі. Якщо у вашому селищі інший оператор, час може відрізнятися.'};
+SAME.lvv='Для Львова й області беремо графік Львівобленерго: це єдиний оператор області. Черги 1.1–6.2 — за адресою на сайті poweron.loe.lviv.ua.';
+const MAPD={"volyn":{"d":"M289.6,92.7 L274.0,90.1 L244.0,93.4 L238.4,95.8 L232.8,102.7 L226.0,107.6 L222.0,108.3 L214.0,106.2 L209.7,107.7 L208.3,111.0 L208.9,126.0 L221.4,148.9 L219.7,157.1 L223.9,165.0 L237.0,169.3 L248.1,180.4 L264.8,182.3 L267.9,179.8 L269.2,171.5 L276.2,165.7 L284.0,162.0 L292.7,163.2 L294.8,162.3 L303.3,147.0 L304.5,142.0 L301.6,130.0 L290.5,120.6 L288.4,117.0 L288.2,107.0 L291.6,96.1Z","b":[208,90,97,93]},"rivne":{"d":"M373.3,113.7 L361.0,112.1 L351.8,104.4 L342.0,103.6 L305.0,92.9 L298.0,92.1 L294.7,93.1 L289.6,105.0 L289.4,116.0 L291.6,120.3 L297.6,124.4 L303.2,131.0 L305.4,144.0 L295.2,163.3 L292.9,164.2 L283.0,163.3 L270.2,171.8 L268.6,189.0 L272.8,198.6 L276.6,200.1 L282.3,193.1 L305.0,187.4 L317.0,188.6 L322.0,187.7 L338.0,174.2 L352.1,169.9 L355.7,162.0 L354.8,146.4 L360.5,140.9 L367.2,127.1 L373.9,118.9Z","b":[268,92,106,109]},"zhytomyr":{"d":"M435.3,113.8 L431.9,113.4 L426.1,115.8 L418.0,122.8 L409.9,116.4 L395.0,113.9 L385.2,115.4 L374.0,121.2 L368.2,127.1 L362.1,140.0 L356.4,148.3 L356.7,162.0 L354.5,171.0 L357.7,183.9 L370.2,194.1 L370.8,199.0 L367.8,209.0 L369.6,212.7 L375.0,217.3 L379.0,218.4 L411.0,216.6 L420.8,213.6 L424.3,217.1 L427.7,227.3 L435.0,228.9 L445.3,224.6 L449.5,217.2 L455.6,210.7 L456.5,193.0 L448.9,177.0 L451.3,166.9 L449.1,153.0 L442.6,139.0 L443.8,128.2Z","b":[354,113,103,116]},"kyiv":{"d":"M454.2,122.8 L446.9,128.4 L443.5,137.0 L445.0,143.0 L449.8,152.0 L452.0,164.0 L449.9,177.0 L456.0,188.0 L457.9,196.0 L457.0,209.9 L450.1,218.2 L448.5,223.0 L449.9,242.9 L452.3,246.0 L455.0,246.9 L471.0,244.6 L493.9,246.2 L505.0,240.9 L511.8,235.0 L515.9,228.0 L519.1,216.0 L523.0,211.5 L527.9,209.6 L537.0,212.9 L543.6,209.5 L550.3,198.0 L557.0,189.9 L557.6,186.1 L551.9,175.5 L548.0,172.2 L544.0,171.9 L533.0,175.5 L527.0,175.2 L519.7,171.3 L515.5,163.2 L502.5,160.2 L492.4,145.0 L490.8,135.4 L478.7,123.1 L473.0,122.0Z","b":[443,122,115,125]},"chernihiv":{"d":"M605.7,72.8 L600.0,71.4 L586.0,76.7 L569.3,73.7 L562.7,84.6 L555.0,88.4 L531.0,85.0 L520.0,88.0 L512.0,87.5 L508.5,88.8 L495.9,106.0 L493.3,114.0 L494.9,126.0 L492.8,143.0 L502.1,158.5 L505.1,160.5 L515.7,162.2 L520.7,171.0 L527.0,174.2 L533.0,174.5 L544.0,170.9 L548.0,171.2 L552.3,174.5 L556.4,182.1 L560.0,184.1 L569.0,182.5 L583.0,183.8 L591.0,179.8 L596.6,173.0 L598.6,165.0 L599.5,152.1 L593.0,143.0 L592.4,139.0 L597.9,118.0 L596.5,101.0 L605.9,87.6Z","b":[492,71,114,114]},"sumy":{"d":"M608.9,73.8 L606.6,79.0 L606.8,88.6 L597.5,101.1 L598.9,118.0 L593.6,139.0 L594.2,143.0 L600.5,152.1 L599.2,169.0 L600.1,172.3 L603.1,173.8 L623.0,176.5 L631.2,174.1 L641.9,174.5 L652.1,186.1 L658.0,195.3 L660.2,196.4 L672.7,195.1 L696.6,183.5 L697.8,179.9 L691.7,170.0 L691.8,161.0 L685.9,144.1 L674.8,134.9 L663.1,136.5 L644.8,130.9 L642.2,118.0 L638.3,110.3 L639.4,108.3 L646.3,104.4 L646.3,100.1 L637.5,91.0 L633.1,81.0 L626.0,73.4 L620.0,71.3Z","b":[593,71,105,126]},"kharkiv":{"d":"M800.8,205.0 L796.0,199.2 L786.5,191.8 L780.8,182.4 L774.7,177.9 L753.0,183.5 L743.0,188.1 L729.2,185.2 L720.0,178.5 L711.0,179.2 L679.1,192.5 L674.7,197.0 L672.2,204.0 L672.8,207.5 L683.6,213.9 L693.6,223.3 L695.4,226.9 L689.5,240.9 L685.0,244.0 L678.6,244.4 L677.0,247.7 L679.2,250.3 L697.0,259.3 L717.9,263.0 L733.3,283.7 L748.6,280.6 L752.4,272.1 L766.9,267.9 L775.8,259.9 L784.4,247.7 L794.9,244.3 L796.0,240.0 L795.0,230.0 L801.0,210.0Z","b":[672,177,130,107]},"luhansk":{"d":"M810.7,196.7 L803.1,207.2 L796.4,228.0 L797.2,243.8 L798.7,246.7 L802.0,248.7 L811.4,250.2 L815.6,255.2 L819.4,282.0 L823.9,291.8 L833.3,302.0 L842.1,309.2 L850.6,312.8 L856.3,319.2 L880.5,319.3 L883.0,315.9 L887.9,297.0 L883.1,283.1 L876.0,274.9 L880.0,263.0 L876.9,254.4 L884.8,248.7 L892.9,238.8 L893.1,235.0 L889.8,228.0 L889.0,221.7 L886.8,220.4 L876.0,221.2 L864.9,212.8 L856.0,211.3 L849.7,208.0 L841.0,208.0 L828.0,201.7 L821.0,200.3 L814.0,196.7Z","b":[796,196,98,124]},"donetsk":{"d":"M795.0,247.4 L785.4,248.1 L776.8,259.9 L768.9,267.5 L764.0,270.4 L753.4,272.7 L751.6,275.2 L752.6,280.9 L757.6,288.1 L757.5,296.0 L759.5,305.0 L756.6,311.3 L748.4,313.7 L747.5,323.9 L755.3,335.6 L769.0,343.2 L772.6,347.1 L772.1,350.8 L765.6,356.4 L763.6,360.9 L772.4,377.0 L782.9,374.9 L793.0,366.7 L817.4,363.3 L821.2,356.0 L821.4,346.0 L823.7,339.2 L837.7,330.9 L844.2,322.3 L851.9,317.4 L850.3,313.8 L841.1,309.5 L823.4,292.8 L818.4,282.0 L817.6,272.0 L814.9,264.0 L815.2,257.1 L812.9,252.9 L810.4,251.0 L805.0,250.8Z","b":[747,247,105,130]},"zaporizhzhia":{"d":"M647.7,350.1 L647.6,353.0 L649.5,356.3 L658.2,359.5 L661.8,370.0 L669.6,379.1 L670.7,384.0 L668.8,392.0 L670.5,396.9 L687.1,411.0 L698.0,410.1 L719.0,394.2 L736.0,392.3 L749.0,385.8 L760.0,385.3 L764.0,383.6 L767.9,379.0 L768.9,374.0 L767.9,370.1 L762.6,362.9 L762.5,360.0 L764.6,356.2 L771.1,350.6 L771.8,348.1 L768.9,344.2 L755.1,336.6 L746.9,327.5 L727.4,324.9 L722.9,317.2 L717.9,313.6 L711.0,311.4 L703.0,312.5 L686.0,310.5 L676.4,312.4 L674.4,314.4 L673.5,327.0 L675.8,337.0 L674.2,342.5 L670.0,344.5 L656.0,344.9 L650.2,347.2Z","b":[647,310,125,102]},"dnipro":{"d":"M756.3,287.4 L752.9,284.0 L748.0,282.2 L742.0,282.4 L735.0,285.2 L732.3,284.4 L720.0,266.2 L716.9,263.7 L698.0,260.6 L679.0,251.6 L668.0,251.7 L652.4,259.4 L646.6,274.8 L642.0,275.2 L631.0,271.0 L620.9,274.2 L621.0,281.7 L612.0,290.1 L610.9,305.6 L593.3,318.5 L591.9,338.8 L595.1,341.9 L605.0,345.1 L615.9,342.9 L624.0,346.5 L633.0,345.7 L644.0,346.9 L659.0,343.2 L671.7,343.1 L673.8,341.5 L674.8,338.0 L672.5,327.0 L673.5,313.4 L676.1,311.4 L685.0,309.6 L702.0,311.5 L713.0,310.8 L722.5,315.4 L728.4,324.3 L742.7,324.6 L745.8,321.8 L747.9,312.7 L755.6,310.8 L757.8,307.9 L758.5,303.0 L756.5,296.0Z","b":[591,251,168,96]},"kirovohrad":{"d":"M627.0,269.1 L623.0,266.8 L612.1,265.8 L598.8,254.6 L587.2,252.2 L585.1,253.7 L585.8,261.6 L580.0,265.2 L575.0,265.3 L568.0,261.1 L564.2,260.4 L553.0,269.1 L543.0,268.2 L537.1,269.6 L528.9,277.4 L525.0,279.4 L502.0,278.5 L495.2,279.8 L486.9,288.1 L463.1,297.5 L459.2,302.0 L458.5,305.6 L459.7,307.3 L465.9,308.0 L476.0,312.4 L512.0,308.4 L521.0,312.5 L535.8,315.2 L544.6,328.9 L558.0,331.7 L572.7,328.3 L579.2,321.2 L600.8,312.3 L608.6,306.9 L610.8,302.9 L611.3,289.1 L619.7,281.4 L619.9,273.8 L625.6,271.2Z","b":[458,252,169,80]},"kherson":{"d":"M529.9,399.7 L532.2,403.3 L541.0,405.5 L546.6,408.5 L547.5,411.6 L544.3,416.4 L546.2,419.5 L563.0,427.8 L569.0,428.7 L596.0,425.1 L610.0,430.8 L613.6,428.8 L618.5,421.8 L622.9,420.5 L633.0,426.4 L652.0,432.4 L666.9,440.2 L669.7,439.2 L671.8,435.4 L671.5,427.0 L672.9,423.2 L682.6,417.1 L684.3,413.9 L682.0,407.5 L672.3,400.4 L668.9,396.0 L667.6,391.0 L669.4,381.1 L660.8,370.0 L657.8,360.7 L649.3,357.3 L643.6,348.7 L633.0,346.7 L623.0,347.4 L615.8,343.9 L607.0,346.3 L600.2,344.6 L597.4,345.7 L596.2,350.0 L596.9,361.8 L591.3,369.1 L590.5,378.0 L584.8,384.1 L581.0,385.6 L563.0,386.8 L553.0,390.4 L541.0,398.0 L532.2,398.2Z","b":[529,343,156,98]},"mykolaiv":{"d":"M477.5,316.1 L477.0,322.0 L484.3,338.6 L487.2,340.4 L494.0,341.0 L497.7,343.3 L500.4,348.0 L505.8,366.6 L515.9,371.4 L515.8,374.8 L509.8,382.2 L514.1,394.7 L516.4,397.2 L540.0,397.2 L553.0,389.4 L562.0,386.1 L582.9,384.1 L589.3,378.0 L590.3,369.1 L594.9,362.8 L595.9,358.0 L595.0,345.2 L590.6,337.9 L592.3,328.0 L590.1,319.2 L586.9,318.9 L580.2,321.7 L572.9,329.3 L557.0,332.8 L544.4,329.9 L534.8,315.8 L521.0,313.5 L512.0,309.4 L483.0,312.3Z","b":[476,309,120,89]},"odesa":{"d":"M466.7,309.3 L457.1,309.5 L447.0,314.4 L437.0,314.8 L426.0,312.6 L422.2,313.9 L419.9,316.4 L421.4,320.1 L429.6,322.2 L432.2,325.1 L433.2,331.0 L431.4,347.0 L438.8,355.6 L445.2,359.4 L446.4,375.9 L448.5,379.1 L456.7,384.0 L459.4,387.1 L461.4,401.0 L464.2,407.9 L460.0,410.6 L452.1,408.9 L445.9,409.7 L439.0,407.6 L431.4,407.8 L425.8,403.8 L419.4,406.7 L417.2,411.0 L418.6,423.0 L417.4,429.8 L410.8,435.5 L407.3,442.7 L399.7,450.2 L396.9,460.3 L390.4,461.8 L388.7,463.4 L390.0,470.6 L397.0,475.5 L405.9,477.2 L427.0,468.4 L434.0,467.2 L441.0,469.0 L449.4,475.5 L450.8,471.1 L446.6,462.9 L447.3,456.7 L454.7,454.2 L463.3,444.8 L473.9,438.9 L490.1,418.0 L495.7,404.4 L511.7,395.6 L511.9,391.0 L508.5,381.3 L514.7,374.6 L514.8,371.7 L504.7,366.8 L498.1,345.2 L494.0,342.0 L487.1,341.4 L483.9,339.6 L476.3,323.0 L474.8,314.8Z","b":[388,309,127,169]},"crimea":{"d":"M569.3,468.9 L570.4,471.2 L573.0,472.3 L586.0,471.7 L599.0,480.5 L609.0,481.0 L612.9,483.3 L616.8,489.0 L618.4,496.0 L613.5,518.4 L624.1,525.9 L633.0,527.0 L639.0,526.2 L646.0,522.3 L651.6,517.7 L658.1,509.2 L665.0,504.5 L674.0,501.6 L687.6,500.2 L706.0,484.1 L712.0,483.7 L724.0,488.7 L744.8,485.5 L747.1,482.8 L748.5,474.0 L753.7,466.4 L750.9,464.1 L738.0,462.2 L727.0,467.0 L719.0,466.8 L709.0,471.8 L701.2,472.4 L697.0,469.6 L686.5,458.0 L673.7,437.5 L668.7,441.0 L665.1,440.8 L653.0,433.9 L638.0,429.5 L621.9,421.4 L618.8,422.8 L617.5,425.1 L618.9,436.9 L617.5,440.0 L589.0,453.4 L572.1,464.7Z","b":[569,421,185,107]},"vinnytsia":{"d":"M378.5,220.4 L376.5,223.2 L376.0,230.0 L379.6,244.0 L379.3,249.7 L376.8,252.2 L365.2,255.1 L360.4,263.0 L359.4,284.0 L362.0,291.3 L372.0,295.3 L399.2,311.7 L408.0,311.2 L418.0,313.5 L427.0,311.5 L439.0,313.8 L448.0,313.2 L452.5,311.0 L464.9,293.7 L465.6,290.0 L451.7,264.0 L451.4,260.0 L454.1,251.1 L448.9,242.9 L448.6,233.0 L446.7,227.7 L444.7,226.9 L436.0,229.9 L429.0,229.6 L425.4,225.9 L423.3,217.2 L419.8,214.7 L411.0,217.6 L389.0,218.2Z","b":[359,214,107,100]},"khmelnytskyi":{"d":"M350.8,172.4 L343.0,173.2 L338.0,175.2 L327.0,185.6 L318.7,190.9 L314.0,198.0 L311.1,207.0 L312.8,220.0 L309.5,231.0 L310.2,276.0 L314.4,285.6 L322.9,290.3 L325.5,290.3 L333.0,285.7 L347.0,286.9 L355.7,283.8 L358.6,279.0 L359.2,264.0 L362.0,257.1 L366.1,253.6 L375.8,251.5 L378.6,248.7 L378.5,243.0 L375.3,233.0 L374.6,221.0 L366.8,209.0 L369.6,200.0 L369.5,195.1 L367.5,192.1 L357.4,184.9 L354.1,175.2Z","b":[309,172,70,119]},"lviv":{"d":"M233.0,168.5 L224.4,167.9 L217.7,176.2 L204.0,182.3 L185.2,199.1 L167.4,219.0 L161.7,228.0 L163.4,247.9 L169.6,263.0 L174.0,267.2 L201.9,284.5 L205.1,282.8 L205.5,278.0 L203.5,274.7 L198.4,270.6 L197.4,267.0 L198.6,261.0 L202.2,255.2 L207.0,252.5 L217.0,252.8 L229.6,250.1 L231.3,247.7 L233.2,235.0 L235.6,230.8 L248.0,227.4 L266.3,212.2 L274.8,208.8 L277.1,205.9 L276.8,203.6 L269.5,195.0 L266.1,185.0 L258.0,181.8 L248.1,181.4 L238.8,171.6Z","b":[161,167,117,118]},"ternopil":{"d":"M305.0,188.4 L282.6,194.1 L276.6,208.5 L265.7,213.8 L248.4,228.6 L247.1,233.1 L248.5,237.4 L254.3,242.4 L254.9,253.0 L259.3,262.4 L266.0,266.8 L278.8,272.1 L287.2,280.8 L311.6,288.4 L313.0,286.6 L309.6,278.0 L308.2,265.0 L308.5,231.0 L311.8,221.0 L309.9,208.0 L315.3,192.2 L312.8,189.4Z","b":[247,188,69,101]},"ivano":{"d":"M238.2,230.8 L234.5,234.1 L231.4,250.1 L219.0,253.5 L205.1,254.1 L200.0,260.0 L198.5,267.9 L206.3,277.0 L205.9,286.0 L207.4,289.8 L217.7,300.3 L230.3,303.6 L235.9,321.0 L242.3,328.3 L249.6,332.7 L251.8,329.9 L250.6,321.0 L251.9,317.0 L259.8,305.4 L267.5,302.8 L277.4,292.9 L282.0,278.0 L278.6,273.1 L265.0,267.2 L257.5,261.8 L253.2,251.0 L252.7,242.5 L248.1,238.4 L244.3,232.1Z","b":[198,230,85,103]},"zakarpattia":{"d":"M135.9,285.0 L136.5,290.7 L146.6,303.4 L161.9,310.1 L167.5,314.0 L176.0,311.9 L185.0,316.3 L194.0,316.4 L216.0,321.6 L232.0,317.3 L231.2,308.0 L229.3,304.1 L216.7,300.9 L211.8,295.0 L196.7,281.8 L174.0,268.2 L165.3,259.1 L159.0,256.6 L154.0,256.3 L149.5,260.0Z","b":[135,256,98,66]},"chernivtsi":{"d":"M319.9,291.4 L317.8,289.8 L309.0,289.1 L288.0,282.3 L283.7,282.3 L277.6,293.9 L268.5,303.3 L260.8,305.8 L252.9,317.0 L251.6,322.0 L253.7,331.3 L256.9,331.3 L263.1,325.5 L268.0,323.0 L287.0,321.7 L303.9,317.8 L312.4,308.7 L319.9,304.4 L321.0,299.0Z","b":[251,282,71,50]},"cherkasy":{"d":"M561.8,197.1 L558.0,194.4 L554.3,194.9 L545.4,208.9 L539.0,213.3 L535.1,213.9 L527.9,210.6 L523.1,212.5 L519.7,217.0 L516.9,228.0 L513.6,234.0 L506.0,241.3 L495.4,247.1 L471.0,245.7 L461.0,246.5 L457.7,248.5 L452.6,259.0 L452.7,264.0 L468.1,292.3 L472.0,293.4 L487.7,286.6 L493.4,279.8 L497.0,278.2 L526.0,278.1 L537.0,268.6 L543.0,267.2 L553.0,268.1 L564.1,259.4 L568.0,260.1 L576.0,264.5 L584.3,262.0 L584.9,257.9 L580.6,248.9 L579.3,242.0 L581.5,231.0 L581.0,227.0 L571.1,215.8 L567.8,205.0Z","b":[452,194,133,100]},"poltava":{"d":"M561.4,186.7 L559.3,190.1 L559.8,193.0 L568.8,205.0 L572.1,215.7 L579.5,223.1 L582.3,228.0 L580.2,240.0 L582.1,249.3 L598.0,253.1 L613.1,265.2 L625.0,266.2 L640.0,273.5 L645.6,274.2 L647.6,271.8 L649.1,263.0 L652.2,258.4 L658.0,254.6 L672.7,249.3 L678.3,243.4 L686.9,242.1 L689.8,238.9 L694.3,228.7 L692.6,223.5 L682.6,214.2 L671.8,207.7 L671.3,197.4 L657.5,196.3 L651.1,186.2 L641.7,175.8 L631.3,175.1 L624.0,177.5 L600.0,175.2 L585.0,184.3 L578.0,184.9 L568.0,183.6Z","b":[559,175,136,100]}};
+const FULLVB=[130,60,780,480],RAT=780/480;
+const PL=('Дніпро|dp|dnp|Днепр|685|294;Кривий Ріг|kr|dnp|Кривой Рог|617|326;Кам’янське|kz|dnp|Каменское|667|291;Нікополь|dn|dnp|Никополь|660|345;Павлоград|dn|dnp||720|290;Новомосковськ|dn|dnp|Новомосковск|694|284;Марганець|dn|dnp|Марганец|669|341;Покров|dn|dnp||648|341;Тернівка|dn|dnp|Терновка|735|290;Підгородне|dn|dnp|Подгородное|689|288;Синельникове|dn|dnp|Синельниково|705|302;Жовті Води|dn|dnp|Желтые Воды|622|301;Вільногірськ|dn|dnp|Вольногорск|643|293;Київ|ky|kyv|Киев|494|181;Біла Церква|kv|kyv|Белая Церковь|478|219;Бровари|kv|kyv|Бровары|505|178;Бориспіль|kv|kyv|Борисполь|512|187;Ірпінь|kv|kyv|Ирпень|483|177;Буча|kv|kyv||481|176;Вишневе|kv|kyv|Вишневое|488|185;Вишгород|kv|kyv|Вышгород|493|174;Фастів|kv|kyv|Фастов|469|203;Обухів|kv|kyv|Обухов|499|201;Васильків|kv|kyv|Васильков|486|197;Українка|kv|kyv|Украинка|504|198;Славутич|kv|kyv||503|120;Бородянка|kv|kyv||469|170;Боярка|kv|kyv||485|189;Переяслав|kv|kyv||533|203;Березань|kv|kyv||534|189;Яготин|kv|kyv||547|191;Богуслав|kv|kyv||510|233;Сквира|kv|kyv||459|223;Одеса|od|ode|Одесса|507|408;Чорноморськ|od|ode|Черноморск|505|419;Южне|od|ode|Южное|523|400;Подільськ|od|ode|Подольск|456|336;Білгород-Дністровський|od|ode|Белгород-Днестровский|491|425;Ізмаїл|od|ode|Измаил|429|473;Роздільна|od|ode|Раздельная|480|388;Овідіополь|od|ode|Овидиополь|496|422;Біляївка|od|ode|Беляевка|485|409;Арциз|od|ode||453|437;Рені|od|ode|Рени|406|467;Татарбунари|od|ode||461|445;Львів|lv|lvv|Львов|223|218;Дрогобич|lv|lvv|Дрогобыч|202|246;Стрий|lv|lvv|Стрый|216|251;Червоноград|lv|lvv||231|186;Борислав|lv|lvv||199|249;Трускавець|lv|lvv|Трускавец|202|250;Самбір|lv|lvv|Самбор|189|236;Новояворівськ|lv|lvv|Новояворовск|196|212;Яворів|lv|lvv|Яворов|196|212;Моршин|lv|lvv||218|257;Золочів|lv|lvv|Золочев|260|220;Сокаль|lv|lvv||233|181;Жовква|lv|lvv|Жолква|221|205').split(';').map(x=>{const a=x.split('|');return{n:a[0],a:a[1],o:a[2],k:nz(a[0])+'|'+nz(a[3]),x:+a[4],y:+a[5]}});
+PL.forEach(x=>{if(x.n==='Київ'){x.x=494;x.y=181}});
+const OBOK=k=>{const o=KOB[k];return !!o&&!(AINFO[OBL_DEF[o]]||{}).soon};
+const CP={ob:{a:'kr',t:'Кривий Ріг',sel:null,raf:0},st:{a:'kr',t:'Кривий Ріг',sel:null,raf:0}};
+const PN=()=>(P&&(P.t||CITIES[P.c]))||'';
+const cpCity=c=>PL.find(x=>x.n===c.t&&x.a===c.a);
+function vbOb(k){const b=MAPD[k].b,cx=b[0]+b[2]/2,cy=b[1]+b[3]/2;let w=b[2]*1.55+30,h=w/RAT;if(h<b[3]*1.5+30){h=b[3]*1.5+30;w=h*RAT}return[cx-w/2,cy-h/2,w,h]}
+function vbCity(x,y,k){const b=vbOb(k),w=b[2]*.6,h=w/RAT;return[x-w/2,y-h/2,w,h]}
+function cpZoom(p,t,inst){const svg=$(p+'-cpm');if(!svg)return;const c=CP[p];cancelAnimationFrame(c.raf);
+ const set=v=>{svg.setAttribute('viewBox',v.map(n=>n.toFixed(2)).join(' '));const m=$(p+'-cpk');if(m)m.setAttribute('transform','translate('+m.dataset.x+' '+m.dataset.y+') scale('+(v[2]/780*3.5).toFixed(4)+')')};
+ const f=(svg.getAttribute('viewBox')||FULLVB.join(' ')).split(' ').map(Number),red=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+ if(inst||red){set(t);return}
+ const t0=performance.now(),D=560;const step=now=>{let k=Math.min(1,(now-t0)/D);k=k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;set(f.map((a,i)=>a+(t[i]-a)*k));if(k<1)c.raf=requestAnimationFrame(step)};c.raf=requestAnimationFrame(step)}
+function cpPanel(p){const c=CP[p],L=$(p+'-cpp');
+ if(!c.sel){L.innerHTML='<div class="cph">Обери область на карті або зі списку</div><div class="cpo">'+UO.map(u=>{const ok=OBOK(u[0]);return '<button type="button" class="cpob'+(ok?'':' soon')+(KOB[u[0]]&&KOB[u[0]]===AOBL[c.a]?' a':'')+'" data-m="'+u[0]+'"><span>'+esc(u[1])+'</span>'+(ok?'':'<em>скоро</em>')+'</button>'}).join('')+'</div>';return}
+ const k=c.sel,head='<div class="cpbar"><button type="button" class="cpback" data-m="">← Усі області</button></div><div class="cpt2">'+esc(OBN[k])+'</div>';
+ if(!OBOK(k)){L.innerHTML=head+'<div class="cpw">Скоро. Для цієї області ще немає джерела графіків, а вигадувати дані ми не будемо.</div>';return}
+ const o=KOB[k],list=PL.filter(x=>x.o===o),btn=(x,cl)=>'<button type="button" class="cpc'+cl+(x.n===c.t&&x.a===c.a?' a':'')+'" data-a="'+x.a+'" data-t="'+esc(x.n)+'">'+esc(x.n)+'</button>';
+ L.innerHTML=head+'<div class="cpctr">'+btn(list[0],' big')+'</div><div class="cpl2">'+list.slice(1).map(x=>btn(x,'')).join('')+'<button type="button" class="cpc" data-a="'+OBL_DEF[o]+'" data-t="'+esc(OTH[o])+'">Інше селище області</button></div><div class="cpsame">'+esc(SAME[o])+'</div>'}
+function cpRender(p){const box=$(p+'-cp');if(!box||!box.firstChild)return;const c=CP[p],o=AOBL[c.a],I=AINFO[c.a]||{};
+ $(p+'-cpc').innerHTML='<b>'+esc(c.t)+'</b><small>'+esc(OBL[o])+' · '+esc(I.op||'')+'</small>'+(I.soon?'<div class="cpw">Графіки для цієї області ще підключаємо: зараз джерела немає, а вигадувати дані ми не будемо. Обери іншу область.</div>':I.note?'<div class="cpn">'+esc(I.note)+'</div>':'');
+ box.querySelectorAll('.mo').forEach(e=>{const k=e.dataset.m;e.classList.toggle('sel',k===c.sel);e.classList.toggle('cur',KOB[k]===o)});
+ const ct=cpCity(c),mk=$(p+'-cpk');if(mk){const show=ct&&c.sel&&KOB[c.sel]===o;mk.style.display=show?'':'none';if(show){mk.dataset.x=ct.x;mk.dataset.y=ct.y}}
+ cpPanel(p)}
+function cpView(p,inst){const c=CP[p],ct=cpCity(c);let t=FULLVB;if(c.sel){t=ct&&KOB[c.sel]===AOBL[c.a]?vbCity(ct.x,ct.y,c.sel):vbOb(c.sel)}cpZoom(p,t,inst)}
+function cpSet(p,a,t,u){const sel=$(p+'-c');if(!sel)return;if(!CITIES[a])a='kr';sel.value=a;const c=CP[p];c.a=a;c.t=t||CITIES[a];c.sel=u?OBK[AOBL[a]]:null;cpRender(p);cpView(p,!u);sel.dispatchEvent(new Event('change'))}
+function cpSearch(p){const q=nz($(p+'-cps').value),r=$(p+'-cpr');if(q.length<2){r.innerHTML='';return}
+ const hits=PL.filter(x=>x.k.includes(q)).sort((a,b)=>(b.k.startsWith(q)?1:0)-(a.k.startsWith(q)?1:0)).slice(0,8);
+ r.innerHTML=hits.length?hits.map(x=>'<button type="button" class="cpr" data-a="'+x.a+'" data-t="'+esc(x.n)+'"><b>'+esc(x.n)+'</b><small>'+esc(OBL[x.o])+(AINFO[x.a].soon?' · скоро':'')+'</small></button>').join(''):'<div class="cpno">Такого міста чи селища в списку немає. Обери область на карті: графік визначає оператор області.</div>'}
+function cpInit(p){const box=$(p+'-cp');if(!box)return;
+ const paths=UO.map(u=>'<path class="mo'+(OBOK(u[0])?' on':'')+'" data-m="'+u[0]+'" d="'+MAPD[u[0]].d+'" tabindex="0" role="button" aria-label="'+esc(u[1])+(OBOK(u[0])?'':', скоро')+'"/>').join('');
+ box.innerHTML='<div class="cpcur" id="'+p+'-cpc" aria-live="polite"></div><input type="search" class="cpi" id="'+p+'-cps" placeholder="Знайди своє місто чи селище…" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Пошук міста чи селища"><div class="cpres" id="'+p+'-cpr"></div>'
+ +'<div class="cpmw"><svg class="cpm" id="'+p+'-cpm" viewBox="'+FULLVB.join(' ')+'" role="group" aria-label="Карта України">'+paths+'<g id="'+p+'-cpk" class="mk" style="display:none" data-x="0" data-y="0"><circle class="mkp" r="7"/><circle class="mkd" r="4"/></g></svg></div><div class="cpp" id="'+p+'-cpp"></div>';
+ $(p+'-cps').addEventListener('input',()=>cpSearch(p));
+ const act=b=>{if(b.dataset.m!==undefined){const k=b.dataset.m;CP[p].sel=k||null;cpRender(p);cpView(p,false);play('on','sSwitch');return true}
+  if(b.dataset.a){$(p+'-cps').value='';$(p+'-cpr').innerHTML='';cpSet(p,b.dataset.a,b.dataset.t,true);play('on','sSwitch');return true}return false};
+ box.addEventListener('click',e=>{const b=e.target.closest('[data-m],[data-a]');if(b)act(b)});
+ box.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.classList&&e.target.classList.contains('mo')){e.preventDefault();act(e.target)}});
+ cpSet(p,$(p+'-c').value||CP[p].a,CP[p].t)}
+
+const SRC_NAME={mirror:'Сайт ДТЕК (дзеркало)',yasno:'YASNO / ДТЕК',kolybude:'kolybude.com'};
+/* ---------- вкладка «Аварії»: статус екстрених відключень + графік вибраного міста й черги ---------- */
+let AV={j:jget('lastOut',null),err:null,loading:false,t:0,c:null,q:null,tab:0,S:{}};
+const AVT={emergency:['em','екстрено'],announced:['am','оголошено'],waiting:['wt','не оновлено'],normal:['ok','за графіком'],unknown:['na','—']};
+const AVL={local:'за офіційними оголошеннями',emergency:'діють екстрені відключення',waiting:'статус не оновлено',normal:'діє звичайний графік',unknown:'статус невідомий'};
+/* AV.c / AV.q = null означає «як у профілі» */
+const avC=()=>AV.c||P.c,avQ=()=>AV.q||P.q,avMine=()=>avC()===P.c&&avQ()===P.q;
+function avJ(){const e=AV.S[avC()+':'+avQ()];return e&&e.j?e.j:(avMine()?data:null)}
+function avDay(j,i){if(!j)return null;const d=kv().date;return dayFrom(j,i?addDay(d,1):d)}
+function loadAv(force){if(!ready()||AV.loading||(!force&&Date.now()-AV.t<60e3))return;AV.loading=true;AV.t=Date.now();renderAv();loadAvS(force);
+fetch(API+'/api/outages?t='+Math.floor(Date.now()/6e4),{cache:'no-store'}).catch(()=>{throw new Error(navigator.onLine?'сервер недоступний':'немає з’єднання з інтернетом')}).then(r=>r.text().then(t=>{let j=null;try{j=JSON.parse(t)}catch(e){}if(!j)throw new Error('сервер даних тимчасово недоступний (код '+r.status+')');if(!j.ok)throw new Error(j.error||'невідома помилка');return j}))
+.then(j=>{AV.j=j;AV.err=null;try{LS.setItem('lastOut',JSON.stringify(j))}catch(e){}if(P&&j.cities&&j.cities[P.c]&&j.cities[P.c].level==='emergency')markEm(P.c);if(force)play('ok')}).catch(e=>{AV.err=e.message}).finally(()=>{AV.loading=false;renderAv();if(view===2)syncChips();navDot()})}
+/* графік для вибраного міста й черги (кеш на 2 хв по ключу місто:черга) */
+function loadAvS(force){if(!ready())return;const c=avC(),q=avQ(),key=c+':'+q,e=AV.S[key]||(AV.S[key]={j:null,err:null,loading:false,t:0});
+if(e.loading||(!force&&e.t&&Date.now()-e.t<120e3))return;e.loading=true;e.t=Date.now();if(view===4)renderAv();
+fetchSchedC(q,c).then(j=>{e.j=j;e.err=null;recDays(c,q,j)}).catch(er=>{e.err=er.message}).finally(()=>{e.loading=false;if(view===4)renderAv()})}
+function avRetry(){loadAv(true);loadAvS(true)}
+function avCity(c){if(c===avC())return;AV.c=c;renderAv();loadAvS();enter($('av-hero'))}
+function avPick(q){if(q===avQ())return;AV.q=q;renderAv();loadAvS();enter($('av-hero'))}
+function avAdopt(){QV.c=avC();QV.q=avQ();adopt()}
+/* орієнтовний час появи світла за графіком (лише якщо він є в підтверджених даних) */
+function avRestore(sd,tm,k){if(!sd||isEmpty(sd))return null;const pr=periods(sd),nm=k.sec/60,cp=pr.find(p=>nm>=p.from&&nm<p.to);if(!cp||cp.on)return null;
+if(cp.to<1440)return hmE(cp.to);if(tm&&!isEmpty(tm)&&tm[0]===1)return '00:00';return null}
+function avTime(ts){return ts?new Date(ts).toLocaleString('uk-UA',{timeZone:TZ,day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):null}
+function renderAv(){const hero=$('av-hero');if(!hero||!P)return;const c=avC(),q=avQ(),mine=avMine(),g=(['kr','dp','kz','dn'].includes(avC())&&AV.j&&AV.j.groups)||{},cs=AV.j&&AV.j.cities&&AV.j.cities[c],who=mine?'твоєї черги':'черги '+q;
+setH($('av-city'),Object.entries(CITIES).map(x=>`<button role="tab" aria-selected="${c===x[0]}" class="${c===x[0]?'a':''}" onclick="avCity('${x[0]}')">${x[1]}</button>`).join(''));
+const loc='<div class="loc">'+CITIES[c]+' · Черга '+q+'</div>'+(mine&&P.a?'<div class="addr">'+esc(P.a)+'</div>':'');
+if(!cs){setH(hero,AV.loading||!AV.err?loc+'<div class="status" style="opacity:.4">⋯</div><div class="sub">Перевіряємо джерела…</div>':loc+`<div class="warn">Не вдалося отримати статус: ${esc(AV.err||'немає даних')}</div><button class="ref" onclick="avRetry()">Спробувати ще</button><div class="av-go"><span>Поки статус недоступний, перевір ситуацію на сайті ДТЕК.</span>${BTN}</div>`,'card hero');setH($('av-grid'),'<div class="sub" style="grid-column:1/-1">'+(AV.err?'Дані недоступні':'Завантаження…')+'</div>');setH($('av-meta'),'');return}
+if(cs.soon){setH(hero,loc+'<div class="status">Скоро</div><div class="sub">Для цієї області ще немає джерела даних. Графіки й статус екстрених відключень ми не вигадуємо.</div>','card hero');setH($('av-grid'),'');setH($('av-meta'),'');return}
+const k=kv(),j=avJ(),sd=avDay(j,0),sdt=avDay(j,1),now=sd&&!isEmpty(sd)?!!sd[Math.floor(k.sec/1800)]:null,fa=AV.j.fetchedAt,stale=!!(fa&&Date.now()-fa>10*6e4),lv=(fa&&Date.now()-fa>30*6e4&&cs.level==='none')?'unknown':cs.level,stw=stale?'<div class="warn">'+(OFFL()?'Немає з’єднання. ':'')+'Показано статус, збережений '+avTime(fa)+' ('+agoTxt(Date.now()-fa)+'). Він міг змінитися.</div>':'';
+const qHit=cs.allQueues||(cs.queues||[]).includes(q);
+/* заголовок за рівнем */
+const HD={emergency:['off','Діють екстрені відключення','Для міста '+CITIES[c]+' планові графіки зараз не застосовуються: світло може зникати без попередження.'],
+announced:['','Є оголошення про екстрені відключення','Оператор повідомив про екстрені відключення, але сайт ДТЕК ще не підтвердив це в даних. Нижче дослівний текст і джерело.'],
+none:['on','Екстрених відключень не заявлено','Сайт ДТЕК і офіційні оголошення не повідомляють про екстрені відключення для міста '+CITIES[c]+'.'+(cs.stabilizing?' Діють погодинні (стабілізаційні) відключення: орієнтуйся на графік.':'')],
+unknown:['','Статус зараз невідомий','Не вдалося отримати свіжі дані сайту ДТЕК, тому не стверджуємо, що екстрених відключень немає. Перевір сайт ДТЕК; нижче повідомлення офіційних каналів.']}[lv];
+let H=HD;
+if(lv==='emergency'&&!cs.allQueues&&cs.queues&&cs.queues.length)H=[HD[0],qHit?'Для '+who+' діють екстрені відключення':'Екстрені відключення діють для інших черг',cs.queues.length?'Екстрені відключення діють для черг: '+cs.queues.join(', ')+'.':HD[2]];
+if(lv==='announced'&&cs.queues&&cs.queues.length&&!cs.allQueues)H=[HD[0],HD[1],HD[2]+' У тексті названо черги: '+cs.queues.join(', ')+'.'];
+/* причини (дослівно) */
+const rs=(cs.reasons||[]).map(r=>'<li>'+esc(r.text)+'<br><small>'+esc(r.src||'')+(r.ts?' · '+avTime(r.ts):'')+(r.link?' · <a href="'+esc(r.link)+'" target="_blank" rel="noopener">джерело</a>':'')+'</small></li>').join('');
+const reasonHtml=rs?'<div class="note"><b>'+(lv==='emergency'?'Чому показано тривогу':'Оголошення')+'</b><ul class="anl">'+rs+'</ul></div>':'';
+/* стрічка свіжих повідомлень офіційних каналів — як є */
+const used=new Set((cs.reasons||[]).map(r=>r.link).filter(Boolean));
+const fd=(cs.feed||[]).filter(a=>!used.has(a.link)).slice(0,6);
+const fdBadge=a=>a.kind==='start'?'<i class="kd s">оголошення</i> ':a.kind==='cancel'?'<i class="kd c">скасування</i> ':'';
+const feedHtml='<div class="note"><b>Останні повідомлення офіційних каналів: '+CITIES[c]+'</b>'+(fd.length?'<ul class="anl">'+fd.map(a=>'<li>'+fdBadge(a)+esc(a.text)+'<br><small>'+esc(a.source)+' · '+avTime(a.ts)+' · <a href="'+esc(a.link)+'" target="_blank" rel="noopener">джерело</a></small></li>').join('')+'</ul>':'<div class="sub" style="margin-top:4px">'+(AV.j.telegramOk?'За останні 36 годин повідомлень про світло для цього міста в офіційних каналах не знайдено.':'Telegram-канали зараз недоступні, повідомлення не завантажено.')+'</div>')+'</div>';
+/* підказка «світла немає, а за графіком є» */
+let note='';
+if(lv==='emergency')note='<div class="note"><b>Світла немає, хоча за графіком воно є?</b>Так і має бути: під час екстрених відключень графік не діє. Це не помилка застосунку.</div>';
+else if(now===true&&(lv==='none'||lv==='unknown'))note='<div class="note"><b>Світла немає, хоча за графіком воно має бути?</b>Екстрених відключень для '+CITIES[c]+' не заявлено. Ймовірно, це локальна аварія на лінії, підстанції чи в будинку: такі випадки у відкритих даних не публікуються. Адресу й час відновлення показує сайт ДТЕК.</div>';
+else if(now===false&&lv==='none'){const r=avRestore(sd,sdt,k);note='<div class="note"><b>Зараз за графіком відключення</b>Це планова пауза, а не аварія.'+(r?'<br>Орієнтовний час відновлення за графіком: <b>'+r+'</b>.':'')+'</div>'}
+/* які джерела перевірено */
+const chk=(cs.checked||[]).map(x=>'<span class="ck '+(x.ok?'ok':'bad')+'">'+(x.ok?'✓ ':'✕ ')+esc(x.name)+(x.ok&&x.ts?' · '+avTime(x.ts):'')+(x.stale?' (застаріло)':'')+'</span>').join('')+(AV.j.telegramOk?'<span class="ck ok">✓ Telegram-канали</span>':'<span class="ck bad">✕ Telegram-канали</span>');
+const today=lv==='emergency'?'діють екстрені':lv==='announced'?'є оголошення':lv==='none'?'за графіком':'невідомо';
+setH(hero,loc+stw+`<div class="status">${H[1]}</div><div class="sub">${H[2]}</div><div class="grid"><div><span class="sub">Статус</span><b style="font-size:14px">${today}</b></div><div><span class="sub">Перевірено</span><b style="font-size:14px">${AV.j.fetchedAt?avTime(AV.j.fetchedAt):'—'}</b></div></div>${reasonHtml}${note}${feedHtml}<div class="ckrow">${chk}</div><div class="av-go"><span>Адреси аварій, причину й час відновлення показує лише сайт ДТЕК: його захист ми не обходимо.</span>${BTN}${mine?'':'<button class="ref w" onclick="avAdopt()">Зробити моєю чергою</button>'}</div>`,'card hero '+H[0]);
+/* сітка черг */
+setH($('av-grid'),QS.map(x=>{const st=avQSt(c,x),t=AVT[st]||AVT.unknown;return`<button class="chip aq ${t[0]} ${c===P.c&&x===P.q?'mine':''} ${x===q?'sel':''}" onclick="avPick('${x}')">${x}<small>${t[1]}</small></button>`}).join(''));
+setH($('av-meta'),lv==='emergency'?(cs.allQueues?'Екстрені відключення стосуються всіх черг міста '+CITIES[c]+'.':'Екстрені відключення діють для черг: <b>'+cs.queues.join(', ')+'</b>.'):lv==='announced'?'Є оголошення про екстрені відключення'+(cs.allQueues?' для всіх черг':cs.queues&&cs.queues.length?' для черг: <b>'+cs.queues.join(', ')+'</b>':'. Черги в тексті не названо')+'. Статус ще не підтверджено сайтом ДТЕК.':lv==='none'?'Екстрених відключень для міста '+CITIES[c]+' не заявлено; діє графік.':'Статус невідомий.')}
+/* ---------- налаштування ---------- */
+const DEF={sound:true,vol:45,sClick:true,sSwitch:true,sAlert:true,intro:true,notify:false,lead:15,stale:true,auto:true,vib:true,mood:true,emgN:true,pChg:true,pNew:true};
+let ST={...DEF,...jget('settings',{})};const saveST=()=>LS.setItem('settings',JSON.stringify(ST));
+/* ---------- звук (м’які синтезовані тони, без файлів) ---------- */
+let AC=null;
+function ac(){try{if(!AC){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;AC=new C()}if(AC.state==='suspended')AC.resume();return AC}catch(e){return null}}
+function bus(a){if(a._m)return a._m;const m=a.createGain(),c=a.createDynamicsCompressor(),d=a.createDelay(.5),fb=a.createGain(),lp=a.createBiquadFilter(),wet=a.createGain();
+c.threshold.value=-18;c.ratio.value=3;d.delayTime.value=.13;fb.gain.value=.24;lp.type='lowpass';lp.frequency.value=1600;wet.gain.value=.22;
+m.connect(c);m.connect(d);d.connect(lp);lp.connect(fb);fb.connect(d);lp.connect(wet);wet.connect(c);c.connect(a.destination);return a._m=m}
+/* м’яка нота: чиста синусоїда з ледь чутними обертонами, плавна атака, довге згасання */
+function tone(f,t0,d,g){const a=ac();if(!a)return;const v=g*(ST.vol/100)*.2;if(v<=0)return;const t=a.currentTime+t0,out=bus(a),n=a.createGain(),lp=a.createBiquadFilter();
+lp.type='lowpass';lp.frequency.value=3200;n.gain.setValueAtTime(.0001,t);n.gain.linearRampToValueAtTime(v,t+.014);n.gain.exponentialRampToValueAtTime(.0001,t+d);n.connect(lp);lp.connect(out);
+[[1,1],[2,.1],[3,.03]].forEach(x=>{const o=a.createOscillator(),og=a.createGain();o.type='sine';o.frequency.value=f*x[0];og.gain.value=x[1];o.connect(og);og.connect(n);o.start(t);o.stop(t+d+.05)})}
+/* м’який «бульк» для кнопок: чиста синусоїда з коротким спадом висоти (як тихий тумблер), без шуму */
+function tick1(g){const a=ac();if(!a)return;const v=g*(ST.vol/100)*.5;if(v<=0)return;const t=a.currentTime,j=1+(Math.random()-.5)*.06,
+o=a.createOscillator(),h=a.createOscillator(),hg=a.createGain(),n=a.createGain(),lp=a.createBiquadFilter();
+o.type='sine';o.frequency.setValueAtTime(440*j,t);o.frequency.exponentialRampToValueAtTime(235*j,t+.075);
+h.type='sine';h.frequency.setValueAtTime(880*j,t);h.frequency.exponentialRampToValueAtTime(470*j,t+.05);hg.gain.value=.16;
+lp.type='lowpass';lp.frequency.value=1700;
+n.gain.setValueAtTime(.0001,t);n.gain.linearRampToValueAtTime(v,t+.007);n.gain.exponentialRampToValueAtTime(.0001,t+.12);
+o.connect(n);h.connect(hg);hg.connect(n);n.connect(lp);lp.connect(a.destination);o.start(t);h.start(t);o.stop(t+.14);h.stop(t+.14)}
+const SND={tap:()=>tick1(.55),on:()=>{tone(659,0,.28,.7);tone(988,.09,.4,.6)},off:()=>{tone(784,0,.26,.6);tone(523,.09,.36,.55)},
+ok:()=>{tone(784,0,.5,.6);tone(1175,.12,.7,.5)},alert:()=>{tone(880,0,.55,.65);tone(659,.2,.8,.6)},light:(o=0)=>{tone(523,o,.6,.5);tone(659,o+.16,.6,.5);tone(784,o+.32,.9,.5)},dark:()=>{tone(784,0,.5,.55);tone(587,.16,.55,.5);tone(392,.32,.95,.5)}};
+function play(k,cat){if(!ST.sound||(cat&&!ST[cat]))return;try{SND[k]()}catch(e){}}
+document.addEventListener('pointerdown',e=>{const t=e.target.closest&&e.target.closest('button,.chip,a.ref,a.lnk,select');if(t&&!t.dataset.nosound)play('tap','sClick')},true);
+function testSound(){const was=ST.sound;ST.sound=true;SND.tap();setTimeout(SND.on,260);setTimeout(SND.ok,800);ST.sound=was;if(!was)toast('Звуки зараз вимкнено — це лише перевірка')}
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('s');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('s'),3600)}
+/* ---------- тема ---------- */
+const themeMode=()=>{const m=LS.getItem('theme');return m==='light'||m==='auto'?m:'dark'};
+function applyTheme(){const m=themeMode(),light=m==='light'||(m==='auto'&&!matchMedia('(prefers-color-scheme: dark)').matches);
+ document.documentElement.dataset.theme=light?'light':'dark';
+ const mt=document.querySelector('meta[name=theme-color]');if(mt)mt.content=light?'#F5F5F7':'#000000';
+ document.querySelectorAll('.themeseg button').forEach(b=>{const on=b.dataset.t===m;b.classList.toggle('a',on);b.setAttribute('aria-pressed',String(on))})}
+function setTheme(t){LS.setItem('theme',t);applyTheme();play('on','sSwitch')}
+/* ---------- час ---------- */
+const per=()=>kv().h>=21?12e4:3e5;
+function kv(){const p={};new Intl.DateTimeFormat('en-GB',{timeZone:TZ,hour12:false,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'}).formatToParts(new Date()).forEach(x=>p[x.type]=x.value);
+const h=+p.hour%24;return{h,date:`${p.year}-${p.month}-${p.day}`,sec:h*3600+ +p.minute*60+ +p.second,t:`${String(h).padStart(2,'0')}:${p.minute}:${p.second}`,y:+p.year,mo:+p.month,d:+p.day}}
+const addDay=(s,n)=>new Date(Date.parse(s+'T12:00:00Z')+n*864e5).toISOString().slice(0,10);
+const p2=n=>String(n).padStart(2,'0');
+const hm=m=>`${p2(Math.floor(m/60)%24)}:${p2(m%60)}`,hmE=m=>m%1440===0&&m>0?'24:00':hm(m);
+const dur=s=>{s=Math.max(0,Math.round(s));return`${p2(Math.floor(s/3600))}:${p2(Math.floor(s/60)%60)}:${p2(s%60)}`};
+const dh=m=>{const h=Math.floor(m/60),mm=m%60;return h?(mm?`${h} год ${mm} хв`:`${h} год`):`${mm} хв`};
+const fmtDate=s=>{const[y,m,d]=s.split('-').map(Number);return`${d} ${MON[m-1]}`};
+/* ---------- стан ---------- */
+let P=jget('profile',null),CON=!!jget('consent',null),data=jget('last',null);const ready=()=>!!(P&&CON);if(data&&(!P||data.group!==P.q||(data.city&&data.city!==P.c)))data=null;
+let loadSeq=0;
+let ROWS_OPEN=true;let tab=0,err=null,nextCheck=0,loading=!data,lastTry=0,view=1,NEXT=null,QV={c:(P&&P.c)||'kr',q:null,j:null,loading:false,err:null,tab:0};
+function dayFrom(d,date){const x=d&&d.days&&d.days[date];if(x&&x.slots.every(v=>v!==null)){x.slots.confirmed=!!x.confirmed;return x.slots}return null}
+function fbFrom(date){const ds=Object.keys((data&&data.days)||{}).filter(d=>d<date).sort().reverse();for(const d of ds){const x=data.days[d];if(x&&x.confirmed&&x.slots&&x.slots.length===48&&x.slots.every(v=>v!==null)){const sl=x.slots.slice();sl.confirmed=true;sl.approx=d;return sl}}return null}
+const day=date=>dayFrom(data,date)||(OFFL()&&date===kv().date?fbFrom(date):null);
+const isEmpty=s=>s&&s.every(v=>v===1)&&!s.confirmed;
+function periods(slots,base=0){const o=[];slots.forEach((v,i)=>{const L=!!v,a=base+i*30;if(o.length&&o[o.length-1].on===L)o[o.length-1].to=a+30;else o.push({from:a,to:a+30,on:L})});return o}
+/* ---------- завантаження даних ---------- */
+function netErr(raw){const e=new Error(navigator.onLine?'сервер недоступний'+(raw?' ('+raw+')':''):'немає з’єднання з інтернетом');e.net=true;return e}
+function fetchSched(q,c,extra){const go=()=>fetch(API+'/api/schedule?group='+q+'&city='+c+(extra||'')+'&t='+Math.floor(Date.now()/per()),{cache:'no-store'});return go().catch(()=>new Promise(r=>setTimeout(r,2500)).then(go)).catch(er=>{throw netErr(String(er&&er.message||er))}).then(r=>r.text().then(t=>{let j=null;try{j=JSON.parse(t)}catch(e){}if(!j)throw new Error('сервер даних тимчасово недоступний (код '+r.status+')');if(!j.ok)throw new Error(j.error||'невідома помилка');return j}))}
+/* Офлайн: кожен успішно отриманий графік зберігається окремо для кожної пари «місто:черга» */
+let netFail=false;const OFFL=()=>!navigator.onLine||netFail;
+const scKey=(c,q)=>'sc:'+c+':'+q;
+function scSave(c,q,j){try{const lim=addDay(kv().date,-3),days={};Object.keys(j.days||{}).forEach(d=>{if(d>=lim)days[d]=j.days[d]});LS.setItem(scKey(c,q),JSON.stringify({...j,days,city:c}))}catch(e){}}
+function fetchSchedC(q,c){return fetchSched(q,c).then(j=>{scSave(c,q,j);return j}).catch(e=>{const cj=e.net?jget(scKey(c,q),null):null;if(cj){cj.cached=true;return cj}throw e})}
+function recHist(c,q,j){const H=jget('histq',{}),k=c+':'+q,a=H[k]||[];if(a[0]&&a[0].u===(j.updated||null))return;const kd=kv().date,off=s=>s&&!isEmpty(s)?(48-s.filter(Boolean).length)*30:null;
+a.unshift({at:Date.now(),u:j.updated||null,s:j.source||null,t:off(dayFrom(j,kd)),m:off(dayFrom(j,addDay(kd,1)))});H[k]=a.slice(0,40);LS.setItem('histq',JSON.stringify(H))}
+function load(manual){if(!ready())return;const my=++loadSeq,pp=P;if(manual)loading=true;lastTry=Date.now();render();
+fetchSched(pp.q,pp.c).then(j=>{if(my!==loadSeq)return;netFail=false;scSave(pp.c,pp.q,j);recDays(pp.c,pp.q,j);recHist(pp.c,pp.q,j);const old=data&&data.days||{},keep={};Object.keys(old).forEach(d=>{if(d>=addDay(kv().date,-35))keep[d]=old[d]});j.days={...keep,...j.days};j.city=pp.c;data=j;err=null;LS.setItem('last',JSON.stringify(j));if(manual)play('ok')}).catch(e=>{if(my===loadSeq){err=e.message;netFail=!!e.net}}).finally(()=>{if(my!==loadSeq)return;loading=false;
+if(!day(addDay(kv().date,1)))nextCheck=Date.now()+15*60e3;render();if(view===3)renderInfo()})}
+
+/* ---------- статистика «скільки без світла» (зберігається лише на пристрої) ---------- */
+let SD=jget('statd',{}),SDv=0,WK=+(LS.getItem('wk')||0);
+const slotStr=a=>a.map(v=>v?1:0).join('');
+function saveSD(){SDv++;try{LS.setItem('statd',JSON.stringify(SD))}catch(e){}}
+function recDays(c,q,j){if(!j||!j.days)return;const key=c+':'+q,t=kv().date,m=SD[key]||(SD[key]={});let ch=false;
+ Object.keys(j.days).forEach(d=>{const x=j.days[d];if(!x||!x.slots||x.slots.length!==48||x.slots.some(v=>v===null))return;if(x.slots.every(v=>v===1)&&!x.confirmed)return;
+  if(d<t&&m[d])return;const sx=slotStr(x.slots);if(!m[d]||m[d].s!==sx){m[d]={...(m[d]||{}),s:sx,a:Date.now()};ch=true}});
+ const lim=addDay(t,-62);Object.keys(m).forEach(d=>{if(d<lim){delete m[d];ch=true}});if(ch)saveSD()}
+function markEm(c){const t=kv().date;let ch=false;Object.keys(SD).forEach(k=>{if(k.split(':')[0]===c&&SD[k][t]&&!SD[k][t].e){SD[k][t].e=1;ch=true}});if(ch)saveSD()}
+function statsFor(n){const k=kv().date,m=(P&&SD[P.c+':'+P.q])||{},days=[];
+ for(let i=n-1;i>=0;i--){const d=addDay(k,-i),r=m[d];days.push({d,off:r?(48-(r.s.match(/1/g)||[]).length)*30:null,e:!!(r&&r.e)})}
+ const got=days.filter(x=>x.off!==null),tot=got.reduce((a,x)=>a+x.off,0),mx=got.reduce((a,x)=>(!a||x.off>a.off)?x:a,null);
+ return{days,got:got.length,n,tot,avg:got.length?Math.round(tot/got.length):0,mx,em:got.filter(x=>x.e).length,on:got.length*1440-tot}}
+function setWk(i){WK=i;LS.setItem('wk',String(i));renderWk()}
+function clearStats(){if(!confirm('Очистити збережену статистику на цьому пристрої?'))return;SD={};LS.removeItem('statd');SDv++;if(P)recDays(P.c,P.q,data);renderWk();toast('Статистику очищено')}
+function renderWk(){const el=$('wk');if(!el||!P)return;const k=kv().date,key=SDv+'|'+k+'|'+WK+'|'+P.c+P.q;if(renderWk.k===key)return;renderWk.k=key;
+ const n=WK?30:7,S=statsFor(n),mxv=Math.max(360,...S.days.map(x=>x.off||0));
+ const bars=S.days.map(x=>`<i class="b${x.off==null?' na':''}${x.d===k?' td':''}${x.e?' em':''}" style="height:${x.off==null?4:Math.max(6,Math.round(x.off/mxv*100))}%" title="${esc(fmtDate(x.d))}: ${x.off==null?'немає даних':dh(x.off)}${x.e?' · були екстрені':''}"></i>`).join('');
+ setH(el,`<div class="whead"><div class="sub" style="font-weight:800">Скільки без світла</div><div class="seg wks"><button class="${WK?'':'a'}" onclick="setWk(0)">Тиждень</button><button class="${WK?'a':''}" onclick="setWk(1)">Місяць</button></div></div>
+<div class="wbig">${S.got?dh(S.tot):'—'}</div>
+<div class="sub">${S.got?'за графіками: '+S.got+' з '+S.n+' днів, у середньому '+dh(S.avg)+' на добу':'Поки немає збережених графіків. Вони накопичуються, коли застосунок отримує дані.'}</div>
+<div class="wbars">${bars}</div><div class="wax"><span>${fmtDate(S.days[0].d)}</span><span>сьогодні</span></div>
+<div class="grid"><div><span class="sub">Найдовше без світла</span><b>${S.mx?dh(S.mx.off)+' · '+fmtDate(S.mx.d):'—'}</b></div><div><span class="sub">Зі світлом</span><b>${S.got?dh(S.on):'—'}</b></div></div>
+${S.em?`<div class="warn">⚠ Днів з екстреними відключеннями: ${S.em} (жовті стовпчики). Тоді графік не діяв, і світла могло бути менше, ніж показано.</div>`:''}
+<div class="note winfo"><b>ⓘ Про ці дані</b>Це години без світла за <i>графіками</i>, які застосунок отримав на цьому пристрої для черги ${esc(P.q)}. Це планові дані, а не заміри: реальне світло могло вимикатися частіше чи рідше.<br>Дні, коли графік не завантажився (немає інтернету чи застосунок не відкривали), не враховуються, тому підсумок може бути меншим за справжній. Скільки днів враховано, показано вище. Сьогоднішній день рахується повністю, за весь графік доби.<br>Історія зберігається лише на твоєму пристрої, до двох місяців.</div>
+<button class="ref" onclick="clearStats()">Очистити статистику</button>`)}
+
+/* ---------- офлайн-банер ---------- */
+function agoTxt(ms){const m=Math.max(0,Math.round(ms/6e4));if(m<2)return 'щойно';if(m<60)return m+' хв тому';const h=Math.floor(m/60);if(h<24)return h+' год тому';return Math.floor(h/24)+' дн тому'}
+function offBanner(today){if(!OFFL())return '';const t=data&&data.fetchedAt,ttl=navigator.onLine?'Сервер даних недоступний':'Немає з’єднання з інтернетом';
+ if(!data)return `<div class="offb"><b>${ttl}</b><small>Збереженого графіка поки немає. Відкрий застосунок з інтернетом хоча б раз, і далі він працюватиме й без мережі.</small></div>`;
+ return `<div class="offb"><b>${ttl}</b><small>Показуємо останній збережений графік: отримано ${t?new Date(t).toLocaleString('uk-UA',{timeZone:TZ,day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})+' ('+agoTxt(Date.now()-t)+')':'раніше'}${data.updated?', джерело оновило його '+esc(data.updated):''}. ${today&&today.approx?'На сьогодні збереженого графіка немає, тому показано графік за '+fmtDate(today.approx)+': він може відрізнятися. ':''}Таймер, лічильники, статистика й картка для поширення працюють без інтернету. Зміни ДТЕК після цього моменту не враховано.</small></div>`}
+
+/* ---------- живий фон, вібро й звук при зміні стану ---------- */
+let MOODC='unk';
+function applyMood(m){MOODC=m;document.body.dataset.mood=m;document.body.classList.remove('nomood')}
+function buzz(p){if(ST.vib&&navigator.vibrate){try{navigator.vibrate(p)}catch(e){}}}
+let SW={prev:null,t:0};
+function stateSwitch(on,cur,k){const now=Date.now(),since=k.sec-cur.from*60;
+ if(SW.prev!==null&&SW.prev!==on&&now-SW.t<5000&&since>=0&&since<=10){play(on?'light':'dark','sAlert');buzz(on?[120,70,120]:[400]);toast(on?'За графіком світло з’явилося 💡':'За графіком світло вимкнулося 🌙')}
+ SW.prev=on;SW.t=now}
+
+/* ---------- головний екран ---------- */
+const DTEK='https://www.dtek-dnem.com.ua/ua/shutdowns',BTN='<a class="ref" style="text-decoration:none" href="'+DTEK+'" target="_blank" rel="noopener">Відкрити сайт ДТЕК</a>';
+function setH(el,html,cls){if(cls!=null&&el.className!==cls)el.className=cls;if(el._h!==html){el._h=html;el.innerHTML=html}}
+/* «Статус на сьогодні» переїжджає в картку графіка замість смужки; під час перезапису картки ховаємо його в безпечне місце */
+function setS(sd,html,useHero){const hero=$('hero'),lb=$('hlb'),slotNow=hero.parentNode&&hero.parentNode.id==='hslot';if(sd._h!==html&&slotNow)lb.after(hero);setH(sd,html);const slot=$('hslot');if(useHero&&slot){if(hero.parentNode!==slot)slot.appendChild(hero);lb.style.display='none'}else{if(hero.previousElementSibling!==lb)lb.after(hero);lb.style.display=''}}
+function render(){if(!ready())return;renderHome();$('net').textContent=navigator.onLine?'● онлайн':'○ офлайн'}
+/* Екстрені відключення для моєї черги: статус YASNO або свіже оголошення ДТЕК/Укренерго (Telegram) */
+const CSTAT=()=>{const j=AV.j;return j&&j.cities&&P?j.cities[P.c]||null:null};
+function emgInfo(){if(AV.j&&AV.j.fetchedAt&&Date.now()-AV.j.fetchedAt>3*36e5)return null;const cs=CSTAT();if(!cs||(cs.level!=='emergency'&&cs.level!=='announced'))return null;const r=cs.reasons&&cs.reasons[0]||null;return{lvl:cs.level,a:r}}
+let lastOutT=0;function loadOut(){if(!ready())return;lastOutT=Date.now();fetch(API+'/api/outages?t='+Math.floor(Date.now()/per()),{cache:'no-store'}).then(r=>r.json()).then(j=>{if(!j||!j.ok)return;AV.j=j;AV.t=Date.now();AV.err=null;try{LS.setItem('lastOut',JSON.stringify(j))}catch(e){}navDot();if(view===2)syncChips();if(P&&j.cities&&j.cities[P.c]&&j.cities[P.c].level==='emergency')markEm(P.c);renderHome();renderAv();
+const E=emgInfo();if(E&&ST.emgN){const key='emg2|'+E.lvl+'|'+P.c+'|'+kv().date+'|'+(E.a&&E.a.ts?Math.floor(E.a.ts/36e5):'x');let seen=jget('alerted2',[]);if(!Array.isArray(seen))seen=[];if(!seen.includes(key)){seen.push(key);LS.setItem('alerted2',JSON.stringify(seen.slice(-40)));const m=E.lvl==='emergency'?'Діють екстрені відключення: графіки не застосовуються':'Є оголошення про екстрені відключення. Перевір деталі в застосунку';toast(m);play('alert','sAlert');buzz(E.lvl==='emergency'?[250,120,250,120,500]:[200,100,200]);if('Notification'in window&&Notification.permission==='granted'&&navigator.serviceWorker)navigator.serviceWorker.ready.then(r=>r.showNotification(E.lvl==='emergency'?'⚠ Екстрені відключення':'ТребаСвітло?',{body:m,icon:'icon-192.png',tag:key,renotify:false,vibrate:[250,120,250]})).catch(()=>{})}}}).catch(()=>{})}
+function renderHome(){const k=kv(),today=day(k.date),tom=day(addDay(k.date,1)),yest=day(addDay(k.date,-1));NEXT=null;let mood='unk';
+const hero=$('hero'),loc='<div class="loc">'+PN()+' · Черга '+P.q+'</div>'+(P.a?'<div class="addr">'+esc(P.a)+'</div>':'');
+{const E=emgInfo(),at=E&&E.a&&E.a.ts?', '+new Date(E.a.ts).toLocaleTimeString('uk-UA',{timeZone:TZ,hour:'2-digit',minute:'2-digit'}):'';
+setH($('emg'),E?(E.lvl==='emergency'?'<div class="emg">Діють екстрені відключення<small>Планові графіки не застосовуються, світло може зникати без попередження.'+(E.a?'<br>'+esc(E.a.src||'')+at+(E.a.text?': '+esc(E.a.text.length>150?E.a.text.slice(0,147)+'…':E.a.text):''):'')+'</small></div>':'<div class="emg w">Є оголошення про екстрені відключення<small>Сайт ДТЕК ще не підтвердив. Зазирни у вкладку «Аварії».'+(E.a?'<br>'+esc(E.a.src||'')+at+': '+esc(E.a.text.length>130?E.a.text.slice(0,127)+'…':E.a.text):'')+'</small></div>'):(data&&data.emergency?'<div class="emg">Діють екстрені відключення<small>Планові графіки можуть не застосовуватися. Орієнтуйся на повідомлення оператора.</small></div>':''))}
+if((emgInfo()||{}).lvl==='emergency'||(!emgInfo()&&data&&data.emergency))mood='emg';
+setH($('offb'),offBanner(today));document.body.classList.toggle('offl',OFFL());
+if(loading&&!data){SW.prev=null;setH(hero,'<div class="loc">Завантаження…</div><div class="status" style="opacity:.4">⋯</div>','card hero')}
+else if(!today){setH(hero,loc+'<div class="status">Графіка на сьогодні немає</div><div class="sub">'+(OFFL()?'Немає з’єднання, а збереженого графіка ще немає. Відкрий застосунок з інтернетом хоча б раз.':'Не показуємо застарілі дані.')+'</div>'+(data&&data.emergency?'<div class="sub" style="margin-top:6px">Під час екстрених відключень графіки не публікуються.</div>':'')+BTN,'card hero')}
+else if(isEmpty(today)){setH(hero,loc+'<div class="status">Графік уточнюється ⏳</div><div class="sub">Джерело ще не підтвердило графік на сьогодні (можливо, ДТЕК його вже оновив). Не показуємо припущень.</div>'+BTN,'card hero')}
+else{let tl=periods(today);
+if(tom&&!isEmpty(tom)){const t2=periods(tom,1440);if(tl[tl.length-1].on===t2[0].on){tl[tl.length-1].to=t2[0].to;t2.shift()}tl=tl.concat(t2)}
+const nm=k.sec/60,cur=tl.find(p=>nm>=p.from&&nm<p.to)||tl[0],on=cur.on,end=cur.to,known=end<1440||(tom&&!isEmpty(tom)&&end<2880);if(mood!=='emg')mood=on?'on':'off';stateSwitch(on,cur,k);
+if(known)NEXT={ts:Date.now()+(end*60-k.sec)*1000,on:!on,key:k.date+'|'+end+'|'+(on?'off':'on')};
+// скільки вже триває поточний стан (з урахуванням вчорашнього дня)
+let since=cur.from;if(cur.from===0&&yest&&!isEmpty(yest)){const yp=periods(yest),lp=yp[yp.length-1];if(lp.on===on)since=lp.from-1440}
+setH(hero,loc+(today.approx?'<div class="warn">Показано графік за '+fmtDate(today.approx)+': на сьогодні збереженого графіка немає, тому реальні години можуть відрізнятися.</div>':'')+`<div class="status">${on?'Зараз світло є 💡':'Зараз світла немає 🌙'}</div>
+${known?`<div class="sub" style="margin-top:8px">${on?'До вимкнення залишилося':'Світло буде через'}</div><div class="big" style="font-size:40px;margin:0 0 6px">${dur(end*60-k.sec)}</div><div class="sub">${on?'Наступне вимкнення':'Наступне ввімкнення'}: <b>${hmE(end)}</b></div>`:`<div class="sub">Наступних змін за графіком поки немає</div>`}
+<div class="grid"><div><span class="sub">${on?'Зі світлом уже':'Без світла вже'}</span><b>${dur(Math.max(0,k.sec-since*60))}</b></div><div><span class="sub">Оновлено</span><b>${data.updated?data.updated.split(' ').pop():'—'}</b></div></div>`,'card hero '+(on?'on':'off'))}
+const s0=tab==1?tom:tab==2?yest:today,s=s0&&!isEmpty(s0)?s0:null,sd=$('sched');
+if(!s){const c=Math.max(0,Math.round((nextCheck-Date.now())/1000)),msg=tab==1?'Графіка на завтра ще немає. Зазвичай він з’являється ввечері — ми перевіримо знову.':tab==2?'Графік за вчора не збережено. Застосунок запам’ятовує лише ті дні, які встиг побачити.':'Дані на сьогодні ще не підтверджено джерелом. Перевір на офіційному сайті ДТЕК.';
+setS(sd,`<div class="empty"><div class="ico">💡</div><p>${msg}</p>${tab==2?'':BTN}${tab==1?`<div class="sub" style="margin-top:10px">Наступна перевірка через <span id="ncd"></span></div>`:''}</div>`);const nc=$('ncd');if(nc)nc.textContent=nextCheck?p2(Math.floor(c/60))+':'+p2(c%60):'скоро'}
+else{const pr=periods(s),isT=tab===0,nm=k.sec/60,cp=pr.find(p=>nm>=p.from&&nm<p.to);
+setS(sd,'<div id="hslot"></div>'+(isT?'':`<div class="pill n">${tab==1?'Завтра':'Вчора'} · ${fmtDate(addDay(k.date,tab==1?1:-1))}</div>`)+`<details class="rows"${ROWS_OPEN?' open':''} ontoggle="ROWS_OPEN=this.open"><summary>Детально за годинами<small>${pr.length} періодів</small></summary>`+pr.map((p,ri)=>`<div style="--r:${ri}" class="row ${p.on?'on':'off'} ${isT&&nm>=p.from&&nm<p.to?'cur':''}"><span>${hm(p.from)} – ${hmE(p.to)}</span><span>${p.on?'Світло є':'Світла немає'}</span></div>`).join('')+'</details>'+
+`<div class="meta">${s.approx?'Графік за '+fmtDate(s.approx)+' (на сьогодні даних немає). ':''}Останнє оновлення: ${esc(data&&data.updated||'—')}</div>`,true)}
+if(today&&!isEmpty(today)){const on=today.filter(Boolean).length*30;setH($('stats'),`<div><span class="sub">Зі світлом</span><b>${dh(on)}</b></div><div><span class="sub">Без світла</span><b>${dh(1440-on)}</b></div><div class="sbar"><i style="width:${(on/14.4).toFixed(1)}%"></i></div>`)}else setH($('stats'),'<div class="sub">—</div>');
+const age=data?(Date.now()-data.fetchedAt)/6e4:0;
+setH($('upd'),(data?`Джерело: ${esc(data.source||'ДТЕК')} · перевірено ${new Date(data.fetchedAt).toLocaleTimeString('uk-UA',{timeZone:TZ,hour:'2-digit',minute:'2-digit'})}`:'')+(err&&!OFFL()?`<div class="warn">Не вдалося оновити${data?' — показуємо останній збережений графік':''}: ${esc(err)}</div>`:'')+(ST.stale&&age>20?'<div class="warn">Дані давно не оновлювалися. Перевіряємо…</div>':''));applyMood(mood);renderWk()}
+/* ---------- картка для поширення (PNG 1080×1350) ---------- */
+const CFONT='Nunito,"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif';
+function rr(c,x,y,w,h,r){r=Math.min(r,w/2,h/2);c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
+function cardData(){const k=kv(),off=tab==1?1:tab==2?-1:0,dt=addDay(k.date,off),s=day(dt);if(!P||!s||isEmpty(s))return null;
+ const E=emgInfo(),today=day(k.date),tom=day(addDay(k.date,1));let st=null;
+ /* стан «зараз» і відлік до зміни: та сама логіка, що в картці «Статус» */
+ if(today&&!isEmpty(today)){let tl=periods(today);if(tom&&!isEmpty(tom)){const t2=periods(tom,1440);if(tl[tl.length-1].on===t2[0].on){tl[tl.length-1].to=t2[0].to;t2.shift()}tl=tl.concat(t2)}
+  const nm=k.sec/60,cur=tl.find(p=>nm>=p.from&&nm<p.to)||tl[0],end=cur.to,known=end<1440||(tom&&!isEmpty(tom)&&end<2880);
+  st={on:cur.on,left:known?end*60-k.sec:null}}
+ return{k,date:s.approx||dt,live:off===0,s,emg:!!E&&E.lvl==='emergency',pr:periods(s),st}}
+function drawCard(cv,d,logo){const W=1080,H=1080,M=64,c=cv.getContext('2d');cv.width=W;cv.height=H;
+ const k=d.k,pr=d.pr,st=d.st,nm=k.sec/60,bw=W-2*M;
+ const COL={on:'#3FD79A',off:'#FF6B7D',tx:'#F5F3FA',mu:'#A9A6B8',bg:'#0B0A12'};
+ const mood=d.emg?'emg':st&&st.on?'on':st?'off':'neutral';
+ c.fillStyle=COL.bg;c.fillRect(0,0,W,H);
+ const glow=mood==='emg'?'#FF2D4A':mood==='on'?'#3FD79A':mood==='off'?'#FF6B7D':'#5B6CFF';
+ const g=c.createRadialGradient(W/2,-80,20,W/2,-80,860);g.addColorStop(0,glow+'3A');g.addColorStop(1,glow+'00');c.fillStyle=g;c.fillRect(0,0,W,H);
+ c.textBaseline='alphabetic';c.textAlign='left';
+ /* шапка: назва застосунку і дата графіка */
+ if(logo){c.save();rr(c,M,52,76,76,20);c.clip();c.drawImage(logo,M,52,76,76);c.restore()}
+ c.fillStyle=COL.tx;c.font='800 44px '+CFONT;c.fillText('ТребаСвітло?',M+(logo?96:0),103);
+ const[dy,dm,dd]=d.date.split('-').map(Number);
+ c.fillStyle=COL.mu;c.font='700 32px '+CFONT;c.textAlign='right';c.fillText(DOW[new Date(Date.UTC(dy,dm-1,dd)).getUTCDay()]+', '+dd+' '+MON[dm-1],W-M,100);c.textAlign='left';
+ c.fillStyle=COL.tx;c.font='800 38px '+CFONT;c.fillText(PN()+' · Черга '+P.q,M,178);
+ /* графік: періоди колонками, як на головній сторінці */
+ const bh=(st||d.emg)?156:0,by=H-52-bh,y0=212,yEnd=bh?by-24:H-52,lim=16,list=pr.slice(0,lim),n=list.length,cols=n>8?2:1,per=Math.ceil(n/cols),gap=12,
+  avail=yEnd-y0-(pr.length>lim?36:0),rh=Math.max(40,Math.min(76,Math.floor((avail+gap)/per)-gap)),cw=(bw-(cols-1)*20)/cols,
+  f1=cols===1?(rh>=64?36:32):30,f2=cols===1?(rh>=64?30:27):25;
+ list.forEach((p,i)=>{const col=Math.floor(i/per),row=i%per,x=M+col*(cw+20),y=y0+row*(rh+gap),cl=p.on?COL.on:COL.off;
+  c.fillStyle=cl+'22';rr(c,x,y,cw,rh,rh/3);c.fill();
+  if(d.live&&nm>=p.from&&nm<p.to){c.lineWidth=3;c.strokeStyle='#FFFFFF';rr(c,x,y,cw,rh,rh/3);c.stroke()}
+  c.fillStyle=COL.tx;c.font='800 '+f1+'px '+CFONT;c.fillText(hm(p.from)+' – '+hmE(p.to),x+24,y+rh/2+Math.round(f1*.34));
+  c.fillStyle=cl;c.font='800 '+f2+'px '+CFONT;c.textAlign='right';c.fillText(p.on?'Світло є':'Світла немає',x+cw-24,y+rh/2+Math.round(f2*.34));c.textAlign='left'});
+ if(pr.length>lim){c.fillStyle=COL.mu;c.font='600 26px '+CFONT;c.fillText('… і ще '+(pr.length-lim),M,y0+per*(rh+gap)+22)}
+ /* внизу: скільки лишилося до зміни на момент поширення */
+ if(bh){const cl=d.emg?COL.off:st.on?COL.on:COL.off,x1=M+40;
+  c.fillStyle=cl+'22';rr(c,M,by,bw,bh,38);c.fill();c.lineWidth=2;c.strokeStyle=cl+'66';rr(c,M,by,bw,bh,38);c.stroke();
+  if(d.emg){c.fillStyle=COL.off;c.font='900 50px '+CFONT;c.fillText('Діють екстрені відключення',x1,by+80);c.fillStyle=COL.mu;c.font='600 28px '+CFONT;c.fillText('Планові графіки зараз не застосовуються',x1,by+124)}
+  else{if(st.left!=null){c.fillStyle=COL.mu;c.font='700 29px '+CFONT;c.fillText(st.on?'До вимкнення залишилося':'Світло буде через',x1,by+52);c.fillStyle=cl;c.font='900 78px '+CFONT;c.fillText(dur(st.left),x1,by+132)}
+   else{c.fillStyle=COL.tx;c.font='800 42px '+CFONT;c.fillText('До кінця доби змін немає',x1,by+96)}
+   c.textAlign='right';c.fillStyle=cl;c.font='800 32px '+CFONT;c.fillText(st.on?'Зараз світло є':'Зараз світла немає',W-M-40,by+62);
+   c.fillStyle=COL.mu;c.font='600 26px '+CFONT;c.fillText('станом на '+k.t.slice(0,5),W-M-40,by+104);c.textAlign='left'}}}
+async function buildCard(){const d=cardData();if(!d)return null;try{await document.fonts.load('800 40px Nunito')}catch(e){}
+ const logo=await new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src='icon-192.png';setTimeout(()=>r(null),2000)});
+ const cv=document.createElement('canvas');drawCard(cv,d,logo);return cv}
+let SH={blob:null,name:'trebasvitlo.png'};
+async function shareSched(){const d=cardData();if(!d){toast(tab==1?'Графіка на завтра ще немає':tab==2?'Графік за вчора не збережено':'Поки немає підтвердженого графіка');return}
+ const cv=await buildCard();if(!cv){toast('Не вдалося створити картку');return}
+ SH.blob=null;SH.name='trebasvitlo-'+P.q.replace('.','-')+'-'+d.date+'.png';$('shi').src=cv.toDataURL('image/png');$('shm').classList.remove('hid');cv.toBlob(b=>{SH.blob=b},'image/png')}
+function closeShare(){$('shm').classList.add('hid')}
+addEventListener('keydown',e=>{if(e.key==='Escape')closeShare()});
+function saveCard(){if(!SH.blob){toast('Картка ще готується…');return}const u=URL.createObjectURL(SH.blob),a=document.createElement('a');a.href=u;a.download=SH.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);toast('Картинку збережено')}
+async function doShare(){if(!SH.blob){toast('Картка ще готується…');return}const f=new File([SH.blob],SH.name,{type:'image/png'});
+ try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'ТребаСвітло?',text:PN()+', черга '+P.q});return}}catch(e){if(e&&e.name==='AbortError')return}
+ saveCard()}
+function cardText(){const d=cardData();if(!d)return null;
+ return`ТребаСвітло? · ${PN()}, черга ${P.q}, ${fmtDate(d.date)}\n`+d.pr.map(p=>`${hm(p.from)}–${hmE(p.to)} ${p.on?'світло є':'світла немає'}`).join('\n')+(d.s.approx?`\n(збережений графік за ${fmtDate(d.s.approx)}, на сьогодні даних немає)`:'')+'\nНеофіційні дані, звіряйся з сайтом ДТЕК.'}
+function shareText(){const txt=cardText();if(!txt){toast('Поки немає підтвердженого графіка');return}
+ if(navigator.share)navigator.share({text:txt}).catch(()=>{});else if(navigator.clipboard)navigator.clipboard.writeText(txt).then(()=>toast('Графік скопійовано'),()=>toast('Не вдалося скопіювати'))}
+/* ---------- вкладка «Черги» ---------- */
+/* статус черги для таблиць: emergency | announced | normal | unknown (один розрахунок для «Черги» і «Аварії») */
+function avQSt(c,x){const j=AV.j,cs=j&&j.cities&&j.cities[c];if(!cs)return 'unknown';
+ const e=AV.S[c+':'+x];if(e&&e.j&&e.j.emergency)return 'emergency';if(P&&P.c===c&&P.q===x&&data&&data.emergency)return 'emergency';
+ const g=j.groups||{},fa=j.fetchedAt;if(fa&&Date.now()-fa>3*36e5)return 'unknown';
+ const lv=(fa&&Date.now()-fa>30*6e4&&cs.level==='none')?'unknown':cs.level;
+ if(lv==='emergency'||lv==='announced')return(cs.allQueues||(cs.queues||[]).includes(x))?(lv==='emergency'?'emergency':'announced'):(cs.queues&&cs.queues.length?(c==='dp'&&g[x]&&g[x].today?g[x].today.state:'normal'):'normal');
+ if(lv==='none')return c==='dp'&&g[x]&&g[x].today&&g[x].today.state==='emergency'?'emergency':'normal';
+ return 'unknown'}
+function syncChips(){const box=$('q-chips');if(!box)return;
+ if(box._c!==QV.c||!box.children.length){box._c=QV.c;box.innerHTML=QS.map(q=>`<button class="chip" data-q="${q}" onclick="pickQ('${q}')">${q}</button>`).join('')}
+ let n=0;[...box.children].forEach(b=>{const q=b.dataset.q,st=avQSt(QV.c,q),em=st==='emergency';if(em)n++;
+  const cl='chip'+(QV.q===q?' a':'')+(P&&P.c===QV.c&&P.q===q?' mine':'')+(em?' em':st==='announced'?' am':'');if(b.className!==cl)b.className=cl;
+  const t=em?'Діють екстрені відключення':st==='announced'?'Є оголошення про екстрені відключення':'';if(b.title!==t)b.title=t});
+ setH($('q-leg'),n?'<span><i class="r"></i>діють екстрені відключення ('+n+')</span>':'')}
+/* червона крапка на «Аварії», якщо в місті користувача діють екстрені відключення */
+function navDot(){const b=$('n4');if(!b||!P)return;const on=QS.some(x=>avQSt(P.c,x)==='emergency');if(b.classList.contains('al')!==on)b.classList.toggle('al',on)}
+function renderQueues(){setH($('q-city'),Object.entries(CITIES).map(c=>`<button class="${QV.c===c[0]?'a':''}" onclick="QV.c='${c[0]}';QV.q=null;QV.j=null;renderQueues()">${c[1]}</button>`).join(''));
+syncChips();
+const d=$('q-detail');if(!QV.q){d.innerHTML='<div class="card"><div class="empty"><div class="ico">👆</div><p>Обери чергу, щоб побачити її графік.</p></div></div>';return}
+const hd=`<h2>Черга ${QV.q} · ${CITIES[QV.c]}</h2>`;
+if(QV.loading){d.innerHTML=`<div class="card">${hd}<div class="sub">Завантаження…</div></div>`;return}
+if(QV.err||!QV.j){d.innerHTML=`<div class="card">${hd}<div class="warn">Не вдалося отримати графік: ${esc(QV.err||'немає даних')}</div><button class="ref" onclick="pickQ('${QV.q}')">Спробувати ще</button></div>`;return}
+const k=kv(),dd=[k.date,addDay(k.date,1)],sl=dayFrom(QV.j,dd[QV.tab]),mine=P&&P.c===QV.c&&P.q===QV.q;let body='';
+if(!sl||isEmpty(sl))body=`<div class="empty"><div class="ico">💡</div><p>${QV.tab?'Графіка на завтра ще немає.':'Графік на сьогодні ще не підтверджено джерелом.'}</p>${BTN}</div>`;
+else{const nm=QV.tab?null:k.sec/60,pr=periods(sl),cp=nm!=null?pr.find(p=>nm>=p.from&&nm<p.to):null;
+body=(cp?`<div class="pill ${cp.on?'on':'off'}">${cp.on?'Зараз світло є':'Зараз світла немає'} · ще ${dh(Math.floor((cp.to*60-k.sec)/60))}</div>`:'')+pr.map((p,ri)=>`<div style="--r:${ri}" class="row ${p.on?'on':'off'}"><span>${hm(p.from)} – ${hmE(p.to)}</span><span>${p.on?'Світло є':'Світла немає'}</span></div>`).join('')}
+d.innerHTML=`<div class="card">${hd}<div class="sub" style="margin-bottom:12px">${mine?'Це твоя черга':'Перегляд — твоя черга не змінюється'}</div><div class="seg"><button class="${QV.tab?'':'a'}" onclick="QV.tab=0;renderQueues()">Сьогодні</button><button class="${QV.tab?'a':''}" onclick="QV.tab=1;renderQueues()">Завтра</button></div>${body}${QV.j.cached?`<div class="warn">Немає з’єднання: показано збережений графік${QV.j.fetchedAt?' від '+esc(new Date(QV.j.fetchedAt).toLocaleString('uk-UA',{timeZone:TZ,day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})):''}.</div>`:''}<div class="meta">Оновлено: ${esc(QV.j.updated||'—')} · ${esc(QV.j.source||'')}</div>${mine?'':`<button class="ref p w" onclick="adopt()">Зробити моєю чергою</button>`}</div>`}
+function refreshQ(){const q=QV.q,c=QV.c;if(!q)return;QV.t=Date.now();fetchSchedC(q,c).then(j=>{if(QV.q===q&&QV.c===c){QV.j=j;recDays(c,q,j);recHist(c,q,j);if(view===2)renderQueues()}}).catch(()=>{})}
+function pickQ(q){QV.t=Date.now();QV.q=q;QV.j=null;QV.err=null;QV.loading=true;renderQueues();const c=QV.c;fetchSchedC(q,c).then(j=>{if(QV.q===q&&QV.c===c){QV.j=j}recDays(c,q,j);recHist(c,q,j)}).catch(e=>{if(QV.q===q)QV.err=e.message}).finally(()=>{if(QV.q===q&&QV.c===c)QV.loading=false;if(view===2){renderQueues();enter($('q-detail'))}})}
+function adopt(){P={...P,c:QV.c,q:QV.q,t:QV.c===P.c?P.t:CITIES[QV.c]};resetData();LS.setItem('profile',JSON.stringify(P));pushSync();toast('Тепер твоя черга — '+P.q);play('ok');setView(1);tick();load(true)}
+function resetData(){loadSeq++;AV.c=null;AV.q=null;AV.S={};AV.tab=0;data=null;LS.removeItem('last');loading=true;err=null}
+/* ---------- налаштування ---------- */
+function syncSwitches(){document.querySelectorAll('.sw').forEach(b=>b.setAttribute('aria-checked',String(!!ST[b.dataset.k])));$('vol').value=ST.vol;$('vol-v').textContent=ST.vol+'%';$('lead').value=String(ST.lead);
+const n=$('notif-note');if(n)n.textContent=noteText()}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('.sw');if(!b)return;const k=b.dataset.k,v=!ST[k];
+if(k==='sound'){if(v){ST.sound=true;play('on')}else{play('off');ST.sound=false}}else{ST[k]=v;if(k!=='intro')play(v?'on':'off','sSwitch')}
+if(k==='vib'&&v)buzz(40);if(PUSHK.includes(k)){if(v&&'Notification'in window&&Notification.permission==='default')Notification.requestPermission().then(()=>{syncSwitches();pushSync()});else pushSync()}
+if(k==='auto')lastTry=Date.now();saveST();syncSwitches()});
+$('vol').addEventListener('input',e=>{ST.vol=+e.target.value;$('vol-v').textContent=ST.vol+'%'});$('vol').addEventListener('change',()=>{saveST();play('tap')});
+$('lead').addEventListener('change',e=>{ST.lead=+e.target.value;saveST();pushSync()});
+/* Нагадування: РІВНО одне на кожну зміну світла.
+   Ключ береться зі стабільної межі графіка (дата + хвилина зміни), а не з часу «зараз», тому не змінюється щосекунди.
+   Показані ключі запам’ятовуються в сховищі, тож повторів немає ні після перезапуску, ні в іншій вкладці. */
+let alertBusy='';
+function checkAlert(){if(!ST.notify||!NEXT||!NEXT.key)return;const left=(NEXT.ts-Date.now())/6e4;if(!(left>0&&left<=ST.lead))return;
+const key=NEXT.key;if(alertBusy===key)return;let seen=jget('alerted2',[]);if(!Array.isArray(seen))seen=[];if(seen.includes(key)){alertBusy=key;return}
+alertBusy=key;seen.push(key);LS.setItem('alerted2',JSON.stringify(seen.slice(-40)));LS.removeItem('alerted');
+const m=NEXT.on?`Через ${Math.ceil(left)} хв за графіком з’явиться світло 💡`:`Через ${Math.ceil(left)} хв за графіком вимкнення світла`;toast(m);play('alert','sAlert');
+if(!PUSH.on&&'Notification'in window&&Notification.permission==='granted'&&navigator.serviceWorker){navigator.serviceWorker.ready.then(r=>r.showNotification('ТребаСвітло?',{body:m,icon:'icon-192.png',tag:'next-change-'+key,renotify:false,silent:false})).catch(()=>{})}}
+/* ---------- Web Push: сповіщення при закритому застосунку ---------- */
+const PUSH={on:false,err:''},PUSHK=['notify','pChg','pNew','emgN'];
+const pushOK=()=>'serviceWorker'in navigator&&'PushManager'in window&&'Notification'in window;
+const wantPush=()=>PUSHK.some(k=>ST[k]);
+const b64u=t=>{const r=atob((t+'='.repeat((4-t.length%4)%4)).replace(/-/g,'+').replace(/_/g,'/'));return Uint8Array.from(r,c=>c.charCodeAt(0))};
+const pushApi=(a,body)=>fetch(API+'/api/push',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({a,...body})}).then(r=>r.json().catch(()=>({ok:false})));
+function pushSync(){if(!ready()||!pushOK())return syncSwitches();clearTimeout(pushSync.t);pushSync.t=setTimeout(pushRun,500)}
+async function pushRun(){PUSH.err='';
+try{const reg=await navigator.serviceWorker.ready;let sub=await reg.pushManager.getSubscription();
+if(!wantPush()){if(sub){await pushApi('unsubscribe',{endpoint:sub.endpoint}).catch(()=>{});await sub.unsubscribe()}PUSH.on=false}
+else if(Notification.permission!=='granted'){PUSH.on=false}
+else{const k=await fetch(API+'/api/push?a=key',{cache:'no-store'}).then(r=>r.json()).catch(()=>null),kb=k&&k.ok&&k.key?b64u(k.key):null;if(!kb&&!sub)throw new Error('server');
+if(sub&&kb){const cur=sub.options&&sub.options.applicationServerKey;if(cur){const a=new Uint8Array(cur);if(a.length!==kb.length||a.some((v,i)=>v!==kb[i])){await pushApi('unsubscribe',{endpoint:sub.endpoint}).catch(()=>{});await sub.unsubscribe();sub=null}}}
+if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:kb});
+const r=await pushApi('subscribe',{sub:sub.toJSON(),city:P.c,group:P.q,lead:ST.lead,ev:{pre:!!ST.notify,chg:!!ST.pChg,nw:!!ST.pNew,emg:!!ST.emgN}});if(!r.ok)throw new Error('server');PUSH.on=true}
+}catch(e){PUSH.on=false;PUSH.err=e&&e.message==='server'?'server':'fail'}
+syncSwitches()}
+async function pushTest(){if(!pushOK()){toast('Цей пристрій не підтримує push');return}
+if(Notification.permission!=='granted'){const r=await Notification.requestPermission();if(r!=='granted'){syncSwitches();toast('Дозволь сповіщення в налаштуваннях пристрою');return}}
+if(!wantPush()){toast('Увімкни хоча б один тип сповіщень');return}
+await pushRun();if(!PUSH.on){toast(PUSH.err==='server'?'Сервер сповіщень ще не налаштований':'Не вдалося підписатися на push');return}
+const sub=await (await navigator.serviceWorker.ready).pushManager.getSubscription();const r=sub&&await pushApi('test',{endpoint:sub.endpoint}).catch(()=>null);toast(r&&r.ok?'Тестове сповіщення надіслано ✨':'Не вдалося надіслати сповіщення')}
+function noteText(){if(!wantPush())return '';if(!pushOK()){return /iP(hone|ad|od)/.test(navigator.userAgent)&&!navigator.standalone?'На iPhone push працює, коли застосунок додано на екран «Додому»: Поділитися → На екран «Додому».':'Цей пристрій не підтримує push — сповіщення показуватимемо в застосунку.'}
+if(Notification.permission==='denied')return 'Сповіщення заблоковано в налаштуваннях пристрою. Дозволь їх для цього сайту.';
+if(Notification.permission!=='granted')return 'Сповіщення ще не дозволено.';
+if(PUSH.on)return 'Push увімкнено: сповіщення приходитимуть, навіть коли застосунок закрито.';
+if(PUSH.err==='server')return 'Сервер push ще не налаштований — повідомлення показуватимемо, поки застосунок відкрито.';
+return 'Підключаємо push…'}
+if('serviceWorker'in navigator)navigator.serviceWorker.addEventListener('message',e=>{if(e.data&&e.data.type==='resub')pushSync()});
+/* ---------- віджет для iPhone (Scriptable) ---------- */
+function copyWidget(){const note=$('wgt-note'),out=$('wgt-out');if(!P){toast('Спочатку вкажи свою чергу');return}
+const t=$('wgt-src').textContent.replace('__ORIGIN__',(/^https?:\/\//.test(API)?API:/^https?:\/\//.test(location.origin)?location.origin:'https://veronichka.vercel.app')).replace('__CITY__',P.c).replace('__GROUP__',P.q).replace('__NAME__',PN());
+const manual=()=>{out.value=t;out.classList.remove('hid');out.focus();out.select();try{out.setSelectionRange(0,t.length)}catch(e){}note.textContent='Не вдалося скопіювати автоматично: текст виділено — натисни «Копіювати» у меню, що з’явилося, і встав у Scriptable.'};
+let ok=false;try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(()=>{out.classList.add('hid');note.textContent='Готово! Скрипт скопійовано — відкрий Scriptable, натисни «+» і встав.';toast('Скрипт скопійовано');play('ok')},manual);ok=true}}catch(e){}
+if(!ok)manual()}
+function renderInfo(){if(!P){$('info').innerHTML='';return}const k=kv(),t=day(k.date),m=day(addDay(k.date,1));
+const st=s=>!s?'немає даних':isEmpty(s)?'не підтверджено':'підтверджено';
+$('info').innerHTML=[['Місто / черга',PN()+' · '+P.q],['Джерело',esc(data&&data.source||'—')],['Графік оновлено',esc(data&&data.updated||'—')],['Востаннє перевірено',data&&data.fetchedAt?new Date(data.fetchedAt).toLocaleString('uk-UA',{timeZone:TZ,day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'—'],['Графік на сьогодні',st(t)],['Графік на завтра',st(m)],['З’єднання',navigator.onLine?'онлайн':'офлайн'],['Стан даних',err?'помилка оновлення':data?'ок':'очікуємо']].map(r=>`<div class="kv"><span>${r[0]}</span><span>${r[1]}</span></div>`).join('')}
+function checkSources(){if(!P)return;const b=$('chk-btn'),o=$('chk-out');b.disabled=true;o.innerHTML='<div class="meta">Перевіряємо джерела…</div>';
+fetch(API+'/api/schedule?group='+P.q+'&city='+P.c+'&debug=1&t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{const rep=j.report||[];if(!rep.length)throw new Error(j.error||'порожня відповідь');const okN=rep.filter(x=>x.ok).length;
+o.innerHTML=`<div class="meta">Працює джерел: <b>${okN} з ${rep.length}</b>${j.ok?'':' · підтвердженого графіка зараз немає'}</div>`+rep.map(x=>x.ok?`<div class="src ok"><b>✓ ${esc(SRC_NAME[x.src]||x.src)}</b>оновлено: ${esc(x.updated||'—')} · дні: ${(x.days||[]).map(fmtDate).join(', ')||'—'}${x.statuses&&Object.keys(x.statuses).length?' · статус: '+esc(JSON.stringify(x.statuses)):''}</div>`:`<div class="src bad"><b>✕ ${esc(SRC_NAME[x.src]||x.src)}</b>${esc(x.error||'помилка')}</div>`).join('');tgCheck(o)}).catch(e=>{o.innerHTML=`<div class="warn">Не вдалося перевірити: ${esc(e.message)}</div>`}).finally(()=>{b.disabled=false})}
+function tgCheck(o){fetch(API+'/api/outages?debug=1&t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{const ch=j.telegram||[],fl=j.dtekFlags||[];let h='';
+h+='<div class="meta" style="margin-top:8px"><b>Статус екстрених (сайт ДТЕК через дзеркало)</b></div>';
+h+=fl.length?fl.map(f=>'<div class="src ok"><b>✓ '+esc(f.file)+'</b>'+esc(f.region||'')+' · екстрені: <b>'+(f.enabled?'ТАК':'ні')+'</b>'+(f.districts?' · райони: '+esc(f.districts):'')+' · стабілізаційні: '+(f.stabilizing?'так':'ні')+' · оновлено '+(f.updatedTs?new Date(f.updatedTs).toLocaleString('uk-UA',{timeZone:TZ,day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'—')+'</div>').join(''):'<div class="src bad"><b>✕ дзеркало ДТЕК</b>'+esc((j.dtekErrors||[]).join(' | ')||'немає даних')+'</div>';
+h+='<div class="src '+(j.yasnoOk?'ok':'bad')+'"><b>'+(j.yasnoOk?'✓':'✕')+' YASNO (Дніпро)</b>'+(j.yasnoOk?'статуси черг отримано':esc(j.yasnoError||'не відповідає'))+'</div>';
+h+='<div class="meta" style="margin-top:8px">Офіційні канали Telegram: працює <b>'+ch.filter(x=>x.ok).length+' з '+ch.length+'</b>'+(j.ok?'':' · '+esc(j.error||''))+'</div>';
+h+=ch.map(x=>x.ok?'<div class="src ok"><b>✓ @'+esc(x.channel)+'</b>повідомлень зчитано: '+x.posts+(x.newest?' · останнє '+new Date(x.newest).toLocaleString('uk-UA',{timeZone:TZ,day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'')+'</div>':'<div class="src bad"><b>✕ @'+esc(x.channel)+'</b>канал не відповів</div>').join('');
+o.insertAdjacentHTML('beforeend',h)}).catch(()=>{})}
+function fillHist(){const c=$('h-c').value||(P?P.c:'kr'),q=$('h-q').value||(P?P.q:'1.1'),a=jget('histq',{})[c+':'+q]||[];
+$('hist').innerHTML=a.map(h=>`<div>${new Date(h.at).toLocaleString('uk-UA',{timeZone:TZ,day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}<br><small>Графік оновлено: ${esc(h.u||'—')}${h.s?' · '+esc(h.s):''}${h.t!=null?'<br>Сьогодні без світла: '+dh(h.t):''}${h.m!=null?' · завтра: '+dh(h.m):''}</small></div>`).join('')||'<small>Для цієї черги записів ще немає. Вони зʼявляються, коли застосунок бачить нову версію графіка (також під час перегляду на вкладці «Черги»).</small>'}
+function clearHist(){if(!confirm('Очистити історію оновлень для всіх черг?'))return;LS.removeItem('histq');fillHist();toast('Історію очищено')}
+function resetSettings(){if(!confirm('Скинути налаштування звуку, нагадувань і вигляду?'))return;ST={...DEF};saveST();LS.removeItem('theme');applyTheme();syncSwitches();toast('Налаштування скинуто')}
+$('ver').textContent=APP_V;$('bug').addEventListener('click',e=>{e.preventDefault();location.href='mailto:ssssssifo@gmail.com?subject='+encodeURIComponent('ТребаСвітло? — помилка')+'&body='+encodeURIComponent(`Опишіть проблему:\n\n\n---\nВерсія: ${APP_V}\nМісто/черга: ${P?PN()+' '+P.q:'—'}\nГрафік оновлено: ${data&&data.updated||'—'}\nДжерело: ${data&&data.source||'—'}`)});
+/* ---------- профіль ---------- */
+function fillP(p){const set=(s,v)=>{$(p+'-'+s).value=v};set('n',P?P.name:$(p+'-n').value);cpSet(p,P?P.c:'kr',P&&P.t);set('q',P?P.q:'1.1');set('a',P&&P.a?P.a:'')}
+function saveP(p){if(p!=='ob'&&!ready())return;const n=$(p+'-n').value.trim();if(!n){$(p+'-n').focus();toast('Вкажи ім’я');return}
+if(p==='ob'&&!$('ob-ok').checked){const c=$('ob-chk');c.classList.remove('shake');void c.offsetWidth;c.classList.add('shake');toast('Підтверди згоду з Умовами та Політикою');return}
+if((AINFO[$(p+'-c').value]||{}).soon){toast('Для цієї області графіки ще підключаємо. Обери іншу');return}
+if(p==='ob'){CON=true;LS.setItem('consent',JSON.stringify({v:'2026-11',t:Date.now()}))}
+const np={name:n,c:$(p+'-c').value,q:$(p+'-q').value,a:$(p+'-a').value.trim(),t:CP[p].a===$(p+'-c').value?CP[p].t:CITIES[$(p+'-c').value]};
+if(!P||P.c!==np.c||P.q!==np.q)resetData();
+const first=!ready();P=np;LS.setItem('profile',JSON.stringify(P));pushSync();QV.c=P.c;play('ok');if(!first)toast('Збережено');setView(1);tick();load(true)}
+function syncOb(){const o=$('ob-ok').checked,b=$('ob-go');b.setAttribute('aria-disabled',String(!o));$('ob-need').classList.toggle('ok',o)}
+$('ob-ok').addEventListener('change',()=>{syncOb();play($('ob-ok').checked?'on':'off','sSwitch')});
+function wipe(){if(confirm('Видалити всі дані з цього пристрою?')){loadSeq++;LS.clear();$('ob-n').value='';$('ob-a').value='';$('ob-ok').checked=false;CON=false;syncOb();['ob','st'].forEach(p=>{CP[p].list=null;cpSet(p,'kr')});try{sessionStorage.clear()}catch(e){}P=null;data=null;AV.j=null;AV.t=0;AV.c=null;AV.q=null;AV.S={};AV.tab=0;loading=false;ST={...DEF};setView(0);tick();applyTheme()}}
+/* ---------- навігація ---------- */
+function setView(i){requestAnimationFrame(moveThumb);if(!ready())i=0;view=i;[0,1,2,3,4].forEach(n=>{$('v'+n).className=n==i?'':'hid';if(n)$('n'+n).className=n==i?'a':''});document.body.classList.toggle('nonav',!ready());document.querySelector('.hello').style.display=ready()?'':'none';if(i==0){if(P)fillP('ob');syncOb()}
+if(i==3){fillP('st');syncSwitches();renderInfo();$('h-c').value=P.c;$('h-q').value=P.q;fillHist()}if(i==2){if(!QV.q){QV.c=P.c}renderQueues()}if(i==4){loadAv();loadAvS();renderAv()}if(i==1)render();scrollTo({top:0});enter($('v'+i))}
+function moveThumb(){const a=document.querySelector('#tabs .a'),t=document.querySelector('#tabs .thumb');if(!a||!t||!a.offsetWidth)return;t.style.width=a.offsetWidth+'px';t.style.transform='translateX('+a.offsetLeft+'px)'}
+addEventListener('resize',()=>requestAnimationFrame(moveThumb));if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>requestAnimationFrame(moveThumb));
+function setTab(i){tab=i;enter($('sched'));[0,1,2].forEach(n=>$('t'+n).className=n==i?'a':'');moveThumb();render()}
+function nowCls(p){return p<9?'nowm l':p>91?'nowm r':'nowm'}
+function nowFmt(s){return p2(Math.floor(s/3600))+':'+p2(Math.floor(s/60)%60)}
+function setNow(el,s){const p=s/864;el.style.setProperty('--p',p.toFixed(2));const t=nowFmt(s);if(el.dataset.t!==t)el.dataset.t=t;const c=nowCls(p);if(el.className!==c)el.className=c}
+function tlHtml(pr,sec){const sg=pr.map((p,i)=>`<i class="sg ${p.on?'on':'off'}" style="left:${(p.from/14.4).toFixed(3)}%;width:${((Math.min(p.to,1440)-p.from)/14.4).toFixed(3)}%;--r:${i}"></i>`).join(''),tk=[0,6,12,18,24].map(x=>`<span class="t${x}" style="left:${x/.24}%">${x}</span>`).join('');return `<div class="tlw"><div class="tlb">${sg}</div>${sec>=0?`<b id="nowm" class="${nowCls(sec/864)}" data-t="${nowFmt(sec)}" style="--p:${(sec/864).toFixed(2)}"></b>`:''}<div class="tlt">${tk}</div></div>`}
+function setHi(g){$('hi').innerHTML=g.split(' ').map((w,i)=>`<span class="w" style="--w:${i}">${esc(w)}</span>`).join(' ')}
+function tick(){const k=kv();$('clock').innerHTML=k.t.slice(0,5)+'<span class="sec">'+k.t.slice(5)+'</span>';$('date').textContent=`${DOW[new Date(Date.UTC(k.y,k.mo-1,k.d)).getUTCDay()]}, ${k.d} ${MON[k.mo-1]} ${k.y}`;const NM=$('nowm');if(NM&&tab===0)setNow(NM,k.sec);
+const nm=P?P.name:'',g=k.h<6?'Доброї ночі, '+nm+' 🌙':k.h<12?'Доброго ранку, '+nm+' ☀️':k.h<18?'Доброго дня, '+nm+' 💜':'Доброго вечора, '+nm+' ✨';if($('hi').textContent!==g)setHi(g);
+if(!tick.d)tick.d=k.date;if(tick.d!==k.date){tick.d=k.date;load()}
+if(nextCheck&&Date.now()>=nextCheck){nextCheck=0;load()}render();checkAlert();if(view===2&&k.sec%30===0&&QV.j)renderQueues();if(k.sec%10===0)navDot();if(view===4){if(Date.now()-AV.t>per()){loadAv();loadAvS()}else if(k.sec%30===0)renderAv()}}
+/* ---------- вступна анімація ---------- */
+let introT=null;const wide=()=>matchMedia('(min-width:900px)').matches;
+/* плавна поява елементів: вішаємо клас на секцію на ~1.4 с */
+function enter(el){if(!el||matchMedia('(prefers-reduced-motion: reduce)').matches)return;el.classList.remove('ent');void el.offsetWidth;el.classList.add('ent');clearTimeout(el._et);el._et=setTimeout(()=>el.classList.remove('ent'),1500)}
+function boot(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;document.body.classList.add('boot');enter($('v'+view));setTimeout(()=>document.body.classList.remove('boot'),2200)}
+let introStop=null;
+function runIntro(){const el=$('intro');const de=document.documentElement;if(matchMedia('(prefers-reduced-motion: reduce)').matches){de.classList.remove('intro-pre','intro-on');boot();return}try{if(sessionStorage.getItem('intro')){de.classList.remove('intro-pre','intro-on');boot();return}sessionStorage.setItem('intro','1')}catch(e){}
+el.classList.remove('hid');document.documentElement.classList.remove('intro-pre');el.setAttribute('aria-hidden','false');el.onclick=endIntro;document.documentElement.classList.add('intro-on');
+/* спершу декодуємо картинки (щоб не було ривків), потім стартуємо анімацію */
+introReady(el).then(()=>{if(el.classList.contains('out'))return;void el.offsetWidth;el.classList.add('go');introStop=introAnim(el);introSound();introT=setTimeout(endIntro,3500)})}
+/* Заставка: орбіти малюються на двох canvas (позаду та поперед дівчини), решта — CSS. */
+function introReady(el){const im=[...el.querySelectorAll('img')];return Promise.race([Promise.all(im.map(i=>i.decode?i.decode().catch(()=>{}):0)),new Promise(r=>setTimeout(r,1800))])}
+function introAnim(el){
+const st=el.querySelector('.stage'),cb=el.querySelector('.cv.back'),cf=el.querySelector('.cv.front');
+const dpr=Math.min(devicePixelRatio||1,1.25),S=Math.max(200,Math.round(st.clientWidth*dpr));
+cb.width=cb.height=cf.width=cf.height=S;
+const b=cb.getContext('2d'),f=cf.getContext('2d'),k=S/1254,PI=Math.PI;
+const sp=document.createElement('canvas');sp.width=sp.height=64;const sg=sp.getContext('2d'),g=sg.createRadialGradient(32,32,0,32,32,32);
+g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.25,'rgba(238,234,255,.85)');g.addColorStop(1,'rgba(168,158,255,0)');sg.fillStyle=g;sg.fillRect(0,0,64,64);
+const O=[{cx:600,cy:640,a:560,b:185,t:-24*PI/180,d:1,n:3,ph:0,w:1},{cx:620,cy:710,a:390,b:115,t:15*PI/180,d:-1,n:2,ph:1.3,w:1.35}];
+const pt=(o,r,th)=>{const x=o.a*r*Math.cos(th),y=o.b*r*Math.sin(th),c=Math.cos(o.t),s=Math.sin(o.t);return[(o.cx+x*c-y*s)*k,(o.cy+x*s+y*c)*k]};
+const ring=(c,o,r,a0,a1,al)=>{c.strokeStyle='rgba(244,242,252,'+al+')';c.lineWidth=1.6*k;c.beginPath();c.ellipse(o.cx*k,o.cy*k,o.a*r*k,o.b*r*k,o.t,a0,a1);c.stroke()};
+let raf=0,run=true;const t0=performance.now(),N=14,L=1.5;
+function fr(now){if(!run)return;const t=(now-t0)/1000;b.clearRect(0,0,S,S);f.clearRect(0,0,S,S);b.globalCompositeOperation=f.globalCompositeOperation='lighter';
+const boost=t>2.1?1+.7*Math.exp(-(t-2.1)*3.5):1,fade=Math.min(1,t/.45);
+for(const o of O){const p=Math.min(1,Math.max(0,(t-.15)/1.9)),e=1-Math.pow(1-p,3),r=1+1.2*Math.pow(1-e,2);
+ring(b,o,r,PI,2*PI,.16*e);ring(f,o,r,0,PI,.34*e);
+for(let i=0;i<o.n;i++){const th=o.ph+i*2*PI/o.n+o.d*(o.w*t+6.5*e);
+for(let j=0;j<N;j++){const ta=th-o.d*L*j/N,tb=th-o.d*L*(j+1)/N,q=1-j/N,c=Math.sin((ta+tb)/2)>0?f:b,A=Math.min(1,Math.pow(q,1.8)*.9*fade*boost),pa=pt(o,r,ta),pb=pt(o,r,tb);
+c.lineCap='round';c.beginPath();c.moveTo(pa[0],pa[1]);c.lineTo(pb[0],pb[1]);
+c.strokeStyle='rgba(176,166,255,'+A*.22+')';c.lineWidth=(9*q+2)*k;c.stroke();
+c.strokeStyle='rgba(248,246,255,'+A+')';c.lineWidth=(3.2*q+.8)*k;c.stroke()}
+const h=pt(o,r,th),c=Math.sin(th)>0?f:b,z=54*k*(1+.3*Math.sin(th));c.globalAlpha=Math.min(1,fade*boost);c.drawImage(sp,h[0]-z/2,h[1]-z/2,z,z);c.globalAlpha=1}}
+raf=requestAnimationFrame(fr)}
+raf=requestAnimationFrame(fr);return()=>{run=false;cancelAnimationFrame(raf)}}
+
+/* Звук входу. Ставимо ноти на годинник аудіо (точно в момент, коли загорається лампочка, ~1.45 с),
+   а не через setTimeout. Якщо браузер ще не дозволив звук (потрібен перший дотик) — граємо одразу після дотику,
+   поки заставка ще на екрані; запізнілий звук через 10–15 с більше не вмикається. */
+function introSound(){if(!ST.sound)return;const t0=performance.now();let done=false;
+const go=()=>{if(done)return;const a=ac();if(!a||a.state!=='running')return;const el=(performance.now()-t0)/1000;if(el>7){off();return}done=true;off();try{bus(a);SND.light(Math.max(0,2.1-el))}catch(e){}};
+const arm=()=>{const a=ac();if(!a)return;if(a.state==='running')go();else a.resume().then(go).catch(()=>{})};
+const evs=['pointerdown','touchstart','mousedown','keydown'],off=()=>evs.forEach(e=>removeEventListener(e,arm,true));
+evs.forEach(e=>addEventListener(e,arm,true));arm();setTimeout(off,7500)}
+function endIntro(){const el=$('intro');if(el.classList.contains('out'))return;clearTimeout(introT);el.classList.add('out');boot();setTimeout(()=>{el.classList.add('hid');if(introStop)introStop();setTimeout(()=>document.documentElement.classList.remove('intro-on'),700)},1000)}
+/* ---------- підказки адрес: вулиця + номер будинку ---------- */
+const PIN='<svg viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z"/><circle cx="12" cy="10" r="2.3"/></svg>',acMem=new Map();
+function acAttach(p){const inp=$(p+'-a'),wrap=$(p+'-ac'),box=$(p+'-al'),city=$(p+'-c');let items=[],sel=-1,seq=0,timer=0,ctl=null;
+const open=b=>{wrap.classList.toggle('o',b);inp.setAttribute('aria-expanded',String(b))};
+const hl=()=>{[...box.children].forEach((li,i)=>li.classList.toggle('s',i===sel));const e=box.children[sel];if(e&&e.scrollIntoView)e.scrollIntoView({block:'nearest'})};
+function draw(none){box.innerHTML=items.length?items.map((it,i)=>`<li class="acitem" role="option" data-i="${i}">${PIN}<span><b>${esc(it.label)}</b><small>${esc(it.sub||'')}</small></span></li>`).join(''):(none?'<li class="acnone">Нічого не знайдено — можна залишити, як є</li>':'');sel=-1;open(items.length>0||!!none)}
+function pick(i){const it=items[i];if(!it)return;inp.value=(it.kind==='street'?it.label+', ':it.label).slice(0,60);open(false);inp.focus();play('tap','sClick')}
+function run(){const q=inp.value.trim(),my=++seq;clearTimeout(timer);if(ctl)ctl.abort();
+if(q.length<3){wrap.classList.remove('ld');items=[];open(false);return}
+const c=city.value,key=c+'|'+q.toLowerCase(),hit=acMem.get(key);
+if(hit){wrap.classList.remove('ld');items=hit;draw(q.length>3);return}
+timer=setTimeout(()=>{ctl=new AbortController();wrap.classList.add('ld');
+fetch(API+'/api/address?city='+c+'&q='+encodeURIComponent(q),{signal:ctl.signal}).then(r=>r.ok?r.json():null).then(j=>{if(my!==seq)return;wrap.classList.remove('ld');if(!j||!j.ok){items=[];open(false);return}
+items=j.items||[];acMem.set(key,items);if(acMem.size>80)acMem.delete(acMem.keys().next().value);if(document.activeElement===inp)draw(q.length>3)}).catch(e=>{if(my===seq&&e.name!=='AbortError'){wrap.classList.remove('ld');items=[];open(false)}})},260)}
+inp.addEventListener('input',run);
+inp.addEventListener('focus',()=>{if(items.length&&inp.value.trim().length>=3)open(true)});
+inp.addEventListener('blur',()=>setTimeout(()=>open(false),140));
+inp.addEventListener('keydown',e=>{const o=wrap.classList.contains('o')&&items.length;
+if(e.key==='ArrowDown'&&o){e.preventDefault();sel=(sel+1)%items.length;hl()}else if(e.key==='ArrowUp'&&o){e.preventDefault();sel=(sel-1+items.length)%items.length;hl()}else if(e.key==='Enter'&&o&&sel>=0){e.preventDefault();pick(sel)}else if(e.key==='Escape')open(false)});
+box.addEventListener('mousedown',e=>e.preventDefault());
+box.addEventListener('click',e=>{const li=e.target.closest('.acitem');if(li)pick(+li.dataset.i)});
+city.addEventListener('change',()=>{items=[];open(false)})}
+/* ---------- живий фон: один маленький canvas на весь екран (градієнти м’які, тому розтягування непомітне, а GPU майже не навантажується) ---------- */
+(function(){const cv=$('bgc');if(!cv)return;const x=cv.getContext('2d'),RM=matchMedia('(prefers-reduced-motion: reduce)'),de=document.documentElement;
+/* [центр x (vmax; <0 — від правого краю), центр y (vmax; <0 — від нижнього), радіус, колір, прозорість, період, фаза] */
+const BL=[[13,9,39,'111,99,216',.34,46,0],[-7,43,35,'47,157,176',.26,54,2],[27,-1,37,'184,98,143',.26,60,4],[-14,-6,28,'217,205,180',.14,50,6]];
+let W=96,H=160,last=0,drawn=false;
+function size(){const r=Math.max(.3,Math.min(3,innerWidth/Math.max(1,innerHeight)));if(r>1){H=96;W=Math.round(96*r)}else{W=96;H=Math.round(96/r)}cv.width=W;cv.height=H;drawn=false}
+function draw(t){const m=Math.max(W,H),u=m/100;x.clearRect(0,0,W,H);
+ for(const b of BL){const a=(t/b[5])*Math.PI*2+b[6],cx=(b[0]<0?W+b[0]*u:b[0]*u)+Math.sin(a)*5*u,cy=(b[1]<0?H+b[1]*u:b[1]*u)+Math.cos(a*.83)*4*u,r=b[2]*u*(1+.05*Math.sin(a*1.3));
+  const g=x.createRadialGradient(cx,cy,0,cx,cy,r);g.addColorStop(0,'rgba('+b[3]+','+b[4]+')');g.addColorStop(.66,'rgba('+b[3]+',0)');g.addColorStop(1,'rgba('+b[3]+',0)');x.fillStyle=g;x.fillRect(0,0,W,H)}drawn=true}
+function loop(now){requestAnimationFrame(loop);if(document.hidden||de.classList.contains('intro-on'))return;
+ if(RM.matches){if(!drawn)draw(0);return}if(now-last<42)return;last=now;draw(now/1000)}
+size();draw(0);addEventListener('resize',()=>{size();draw(last/1000)});requestAnimationFrame(loop)})();
+/* ---------- запуск ---------- */
+['ob','st'].forEach(p=>{$(p+'-c').innerHTML=Object.entries(CITIES).map(c=>'<option value="'+c[0]+'">'+c[1]+'</option>').join('');$(p+'-q').innerHTML=QS.map(q=>'<option>'+q+'</option>').join('')});
+['ob','st'].forEach(cpInit);$('h-c').innerHTML=$('st-c').innerHTML;$('h-q').innerHTML=$('st-q').innerHTML;$('h-c').onchange=$('h-q').onchange=fillHist;
+function hideHint(){$('hint').className='hint hid';LS.setItem('hint','1')}
+if(/iPhone|iPad/.test(navigator.userAgent)&&!navigator.standalone&&!LS.getItem('hint'))$('hint').className='hint';
+/* міграція старої історії в історію по чергах */
+(()=>{const old=jget('hist',null);if(old&&P){const H=jget('histq',{}),k=P.c+':'+P.q;if(!H[k]){H[k]=old.map(h=>({at:h.at,u:h.u,s:null,t:null,m:null}));LS.setItem('histq',JSON.stringify(H))}LS.removeItem('hist')}})();
+addEventListener('online',()=>{netFail=false;load();loadOut()});addEventListener('offline',render);
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',applyTheme);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)return;tick();loadOut();if(ST.auto&&Date.now()-lastTry>6e4)load()});
+if(P&&data)recDays(P.c,P.q,data);applyMood('unk');
+applyTheme();syncSwitches();['ob','st'].forEach(acAttach);setView(ready()?1:0);runIntro();
+setInterval(()=>{if(!ST.auto)return;const need=per();if(Date.now()-lastTry>=need-5e3)load();if(Date.now()-lastOutT>=need-5e3)loadOut();if(view===2&&QV.q&&!QV.loading&&Date.now()-(QV.t||0)>=need-5e3)refreshQ()},30e3);setInterval(tick,1000);tick();load();loadOut();
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').then(()=>{if(ready())pushSync()});
+/* встановлення як застосунку (Chrome/Edge/Android: системне вікно; iPhone/Safari: підказка) */
+(function(){const box=document.getElementById('install-box'),btn=document.getElementById('install-btn'),hint=document.getElementById('install-hint');if(!box||!btn)return;
+const standalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;let dp=null;
+const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+function show(){box.hidden=standalone()}
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;btn.textContent='Встановити';show()});
+window.addEventListener('appinstalled',()=>{dp=null;box.hidden=true;try{toast('Застосунок встановлено ✨')}catch(_){}});
+btn.addEventListener('click',async()=>{if(dp){dp.prompt();try{await dp.userChoice}catch(_){}dp=null;show();return}
+if(ios){hint.textContent='У Safari натисни «Поділитися» → «На початковий екран».'}else{hint.textContent='У меню браузера (⋮ або значок встановлення в адресному рядку) обери «Встановити застосунок».'}});
+if(ios&&!standalone()){btn.textContent='Як встановити';show()}
+else if(!standalone()){setTimeout(()=>{if(!dp){btn.textContent='Як встановити';show()}},2500)}
+})();
+</script></body></html>
