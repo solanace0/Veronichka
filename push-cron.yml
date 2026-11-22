@@ -1,31 +1,41 @@
 name: push-cron
+# Пінгує /api/push-cron кожні 5 хвилин. Задача навмисно НІКОЛИ не завершується помилкою:
+# GitHub шле листи на пошту лише про «Run failed». Усі проблеми видно в журналі як ::warning::
+# (Actions -> push-cron -> відкрити запуск).
 on:
   schedule:
     - cron: "*/5 * * * *"
   workflow_dispatch:
+concurrency:
+  group: push-cron
+  cancel-in-progress: true
 jobs:
   ping:
     runs-on: ubuntu-latest
     timeout-minutes: 3
+    continue-on-error: true
     steps:
       - name: Ping /api/push-cron
+        continue-on-error: true
         env:
           APP_URL: ${{ secrets.APP_URL }}
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
+          set +e
           if [ -z "$APP_URL" ] || [ -z "$CRON_SECRET" ]; then
-            echo "::error::Не заданы secrets APP_URL и/или CRON_SECRET (Settings -> Secrets and variables -> Actions)"
-            exit 1
+            echo "::warning::Не задано secrets APP_URL і/або CRON_SECRET (Settings -> Secrets and variables -> Actions)"
+            exit 0
           fi
           URL="${APP_URL%/}/api/push-cron"
+          CODE=000
           for i in 1 2 3; do
-            CODE=$(curl -sS -m 40 -o resp.txt -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$URL" || echo 000)
-            echo "attempt $i: HTTP $CODE"; cat resp.txt 2>/dev/null; echo
-            if [ "$CODE" = "200" ]; then exit 0; fi
-            # 401/503 повтором не лечатся: неверный секрет или не настроен сервер
-            if [ "$CODE" = "401" ]; then echo "::error::401 — CRON_SECRET в GitHub не совпадает с CRON_SECRET в Vercel"; exit 1; fi
-            if [ "$CODE" = "503" ]; then echo "::error::503 — на Vercel не заданы VAPID_*/Upstash (KV_REST_API_*) переменные"; exit 1; fi
+            CODE=$(curl -sS -m 40 -o resp.txt -w "%{http_code}" -H "Authorization: Bearer $CRON_SECRET" "$URL" 2>curl.err)
+            [ -z "$CODE" ] && CODE=000
+            echo "спроба $i: HTTP $CODE"; head -c 600 resp.txt 2>/dev/null; echo; head -c 300 curl.err 2>/dev/null
+            [ "$CODE" = "200" ] && exit 0
+            [ "$CODE" = "401" ] && { echo "::warning::401: CRON_SECRET у GitHub не збігається з CRON_SECRET у Vercel"; exit 0; }
+            [ "$CODE" = "503" ] && { echo "::warning::503: на Vercel не задані VAPID_* або Upstash (KV_REST_API_*)"; exit 0; }
             sleep 8
           done
-          echo "::error::Сервер не ответил 200 за 3 попытки (последний код $CODE)"
-          exit 1
+          echo "::warning::Сервер не відповів 200 за 3 спроби (останній код $CODE). Наступний запуск через 5 хвилин."
+          exit 0
