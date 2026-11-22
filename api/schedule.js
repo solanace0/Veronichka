@@ -8,7 +8,6 @@
 // (інтерфейс не має малювати «24 години світла» без даних).
 import { fetchFlags, cityStatus } from './_dtek.js';
 import { AREAS, MIRROR_BASE } from './_regions.js';
-import { fetchLoe, scheduleFor } from './_loe.js';
 const kyivYmd = (s) => { const d = new Date(s); return isNaN(d) ? String(s).slice(0, 10) : new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Kyiv' }).format(d); };
 const YASNO = 'https://app.yasno.ua/api/blackout-service/public/shutdowns/regions/3/dsos/301/planned-outages';
 const KOLY = 'https://kolybude.com/dnipro/kryvyi-rih';
@@ -152,7 +151,7 @@ async function fromKoly(GROUP) {
 
 // ---------- Злиття ----------
 // Пріоритет за рівної/невідомої свіжості: дзеркало сайту ДТЕК > YASNO > kolybude.
-const PRIORITY = { 'сайт ДТЕК (дзеркало)': 0, 'YASNO / ДТЕК': 1, 'kolybude.com': 2, 'Львівобленерго': 0 };
+const PRIORITY = { 'сайт ДТЕК (дзеркало)': 0, 'YASNO / ДТЕК': 1, 'kolybude.com': 2 };
 
 export function merge(results) {
   const best = {}; // date -> {day, source}
@@ -173,6 +172,24 @@ export function merge(results) {
   return { days, sources: [...used], ts: ts || null };
 }
 
+
+// /api/schedule?probe=1 — перевіряє, які області вже є в дзеркалі (щоб додавати лише ті, де є справжні дані)
+const PROBE = ['vinnytsia','volyn','zhytomyr','zakarpattia','zaporizhzhia','ivano-frankivsk','kirovohrad','lviv','mykolaiv','poltava','rivne','sumy','ternopil','kharkiv','kherson','khmelnytskyi','cherkasy','chernivtsi','chernihiv','dnipro','dnipro-oblast','kyiv','kyiv-region','odesa'];
+async function probe(res) {
+  const out = await Promise.all(PROBE.map(async (n) => {
+    try {
+      const r = await fetch(MIRROR_BASE + n + '.json', { headers: UA, signal: AbortSignal.timeout(8000) });
+      if (!r.ok) return { file: n + '.json', ok: false, status: r.status };
+      const j = await r.json();
+      const days = Object.keys((j && j.fact && j.fact.data) || {}).map((t) => kyivYmd(+t * 1000));
+      const groups = Object.keys(Object.values((j && j.fact && j.fact.data) || {})[0] || {}).length;
+      return { file: n + '.json', ok: !!days.length, days, groups, updated: j && j.fact && j.fact.update };
+    } catch (e) { return { file: n + '.json', ok: false, error: String(e && e.message || e) }; }
+  }));
+  res.setHeader('Cache-Control', 'no-store');
+  return res.status(200).json({ ok: true, found: out.filter((x) => x.ok).map((x) => x.file), files: out });
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -187,6 +204,7 @@ export default async function handler(req, res) {
 
 async function run(req, res) {
   const q = req.query || {};
+  if (q.probe) return probe(res);
   const GROUP = String(q.group || '4.2');
   if (!/^[1-6]\.[12]$/.test(GROUP)) { res.setHeader('Cache-Control', 'no-store'); return res.status(400).json({ ok: false, error: 'Невірна черга' }); }
   const city = AREAS[String(q.city)] ? String(q.city) : 'kr';
@@ -196,18 +214,18 @@ async function run(req, res) {
     res.setHeader('Cache-Control', 'no-store');
     return res.status(503).json({ ok: false, soon: true, city, operator: area.operator, error: 'Для зони «' + area.name + '» джерело графіків ще не підключене (' + area.operator + ')' });
   }
-  const fns = area.loe ? { loe: async () => { const p = await fetchLoe(); const r = scheduleFor(p, GROUP); if (!Object.keys(r.days).length) throw new Error('Львівобленерго: немає опублікованого графіка (елементів: ' + p.itemCount + '; пропущено: ' + JSON.stringify(p.skipped) + ')'); r.debug = { skipped: p.skipped, itemCount: p.itemCount, days: p.days.map((d) => ({ date: d.date, groups: Object.keys(d.groups).length, emergency: d.emergency })) }; return r; } } : { mirror: () => fromMirror(GROUP, area.mirror) };
-  const all = area.loe ? ['loe'] : ['mirror'];
+  const fns = { mirror: () => fromMirror(GROUP, area.mirror) };
+  const all = ['mirror'];
   // YASNO і kolybude.com — лише для ДТЕК Дніпровських електромереж; для інших зон беремо тільки перевірене дзеркало
   if (area.yasno) { fns.yasno = () => fromYasno(GROUP); all.push('yasno'); }
   if (area.koly) { fns.kolybude = () => fromKoly(GROUP); all.push('kolybude'); }
   const names = q.src && fns[q.src] ? [q.src] : all;
-  const [settled, flagRes] = await Promise.all([Promise.allSettled(names.map(n => fns[n]())), (area.flags.length ? fetchFlags(area.flags) : Promise.resolve({ flags: [], errors: [] })).catch(() => ({ flags: [], errors: [] }))]);
+  const [settled, flagRes] = await Promise.all([Promise.allSettled(names.map(n => fns[n]())), fetchFlags(area.flags).catch(() => ({ flags: [], errors: [] }))]);
   const ok = [], errors = [], report = [];
   settled.forEach((s, i) => {
     if (s.status === 'fulfilled') {
       ok.push(s.value);
-      report.push({ src: names[i], ok: true, updated: fmtUpdated(s.value.ts), days: Object.keys(s.value.days), statuses: s.value.statuses, ...(q.debug && s.value.debug ? { debug: s.value.debug } : {}) });
+      report.push({ src: names[i], ok: true, updated: fmtUpdated(s.value.ts), days: Object.keys(s.value.days), statuses: s.value.statuses });
     } else {
       const msg = String(s.reason && s.reason.message || s.reason);
       errors.push(names[i] + ': ' + msg);
@@ -218,7 +236,7 @@ async function run(req, res) {
   // YASNO повідомляє статус «EmergencyShutdowns», коли діють екстрені відключення і планові графіки не застосовуються
   // Екстрені відключення: прапорець сайту ДТЕК для цього міста або статус YASNO (YASNO — лише для Дніпра)
   const dtekSt = cityStatus(flagRes.flags, city);
-  const emergency = dtekSt.emergency || ok.some((r) => r.emergency) || (city === 'dp' && ok.some(r => Object.values(r.statuses || {}).some(st => /emergency/i.test(String(st || '')))));
+  const emergency = dtekSt.emergency || (city === 'dp' && ok.some(r => Object.values(r.statuses || {}).some(st => /emergency/i.test(String(st || '')))));
   if (!Object.keys(m.days).length && emergency) {
     res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=30');
     return res.status(200).json({
