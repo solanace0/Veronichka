@@ -7,7 +7,7 @@
 // Якщо жодне джерело не дало підтвердженого графіка на день, цей день не повертається
 // (інтерфейс не має малювати «24 години світла» без даних).
 import { fetchFlags, cityStatus } from './_dtek.js';
-import { AREAS, MIRROR_BASE } from './_regions.js';
+import { AREAS, MIRROR_BASE, OE_BASE } from './_regions.js';
 const kyivYmd = (s) => { const d = new Date(s); return isNaN(d) ? String(s).slice(0, 10) : new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Kyiv' }).format(d); };
 const YASNO = 'https://app.yasno.ua/api/blackout-service/public/shutdowns/regions/3/dsos/301/planned-outages';
 const KOLY = 'https://kolybude.com/dnipro/kryvyi-rih';
@@ -91,15 +91,15 @@ function hoursToSlots(hmap) {
   return slots;
 }
 
-async function fromMirror(GROUP, files) {
+async function fromMirror(GROUP, files, base = MIRROR_BASE, source = 'сайт ДТЕК (дзеркало)') {
   let j = null, lastErr = null;
   for (const f of files) {
-    try { j = await getJson(MIRROR_BASE + f); break; } catch (e) { lastErr = e; }
+    try { j = await getJson(base + f); break; } catch (e) { lastErr = e; }
   }
-  if (!j) throw lastErr || new Error('Дзеркало ДТЕК недоступне');
+  if (!j) throw lastErr || new Error(source + ' недоступне');
   const fact = j.fact || (j.data && j.data.fact) || (j.data && j.data.data ? j.data : null) || j;
   const map = fact && fact.data;
-  if (!map || typeof map !== 'object') throw new Error('Дзеркало ДТЕК: немає fact.data');
+  if (!map || typeof map !== 'object') throw new Error(source + ': немає fact.data');
   let ts = null;
   const um = String(fact.update || j.lastUpdated || '').match(/(\d{1,2})\.(\d{1,2})\.(\d{4})\s+(\d{1,2}):(\d{2})/);
   if (um) ts = kyivToTs(+um[3], +um[2], +um[1], +um[4], +um[5]);
@@ -113,8 +113,8 @@ async function fromMirror(GROUP, files) {
     const date = tsDate(dayTs);
     days[date] = { date, slots: hoursToSlots(g), confirmed: true, ts };
   }
-  if (!Object.keys(days).length) throw new Error('Дзеркало ДТЕК: немає даних для черги ' + GROUP);
-  return { source: 'сайт ДТЕК (дзеркало)', ts, days, statuses: {} };
+  if (!Object.keys(days).length) throw new Error(source + ': немає даних для черги ' + GROUP);
+  return { source, ts, days, statuses: {} };
 }
 
 // ---------- kolybude.com ----------
@@ -151,7 +151,8 @@ async function fromKoly(GROUP) {
 
 // ---------- Злиття ----------
 // Пріоритет за рівної/невідомої свіжості: дзеркало сайту ДТЕК > YASNO > kolybude.
-const PRIORITY = { 'Львівобленерго': 0, 'сайт ДТЕК (дзеркало)': 0, 'YASNO / ДТЕК': 1, 'kolybude.com': 2 };
+const PRIORITY = { 'Львівобленерго': 0, 'сайт ДТЕК (дзеркало)': 0, 'OE_OUTAGE_DATA (сайт обленерго)': 1, 'poltava-outage-data (сайт Полтаваобленерго)': 1, 'YASNO / ДТЕК': 1, 'kolybude.com': 2 };
+const prio = (s) => (s in PRIORITY ? PRIORITY[s] : 1);
 
 // «Усе світло» від kolybude.com — це часто заглушка «ще не опубліковано», а не справжній графік.
 // Такий день слабкий: його не беруть, якщо інше джерело має цю дату, і не вважають підтвердженим.
@@ -162,7 +163,7 @@ export function merge(results) {
     for (const [date, d] of Object.entries(r.days)) {
       const cur = best[date], w = weak(r, d);
       const a = d.ts || 0, b = cur ? cur.day.ts || 0 : -1;
-      const better = !cur || (cur.weak && !w) || (!(w && !cur.weak) && (a > b || (a === b && PRIORITY[r.source] < PRIORITY[cur.source])));
+      const better = !cur || (cur.weak && !w) || (!(w && !cur.weak) && (a > b || (a === b && prio(r.source) < prio(cur.source))));
       if (better) best[date] = { day: d, source: r.source, weak: w };
     }
   }
@@ -287,6 +288,26 @@ async function probe(res) {
   return res.status(200).json({ ok: true, found: out.filter((x) => x.ok).map((x) => x.file), files: out });
 }
 
+// /api/schedule?probe=oe — перевіряє, які файли обленерго реально відповідають, у яких є черги 1.1–6.2 і наскільки свіжі
+async function probeOe(res) {
+  const out = await Promise.all(Object.entries(AREAS).filter(([, a]) => a.base === OE_BASE).map(async ([code, a]) => {
+    const tried = [];
+    for (const f of a.mirror) {
+      try {
+        const j = await getJson(OE_BASE + f);
+        const fact = j.fact || (j.data && j.data.fact) || j;
+        const map = (fact && fact.data) || {};
+        const first = Object.values(map)[0] || {};
+        const groups = Object.keys(first).filter((k) => /^GPV\d\.\d$/.test(k));
+        return { code, file: f, ok: !!Object.keys(map).length, days: Object.keys(map).map((t) => kyivYmd(+t * 1000)), groups: groups.length, updated: fact && fact.update || j.lastUpdated || null, tried };
+      } catch (e) { tried.push({ file: f, error: String(e && e.message || e) }); }
+    }
+    return { code, ok: false, tried };
+  }));
+  res.setHeader('Cache-Control', 'no-store');
+  return res.status(200).json({ ok: true, working: out.filter((x) => x.ok).map((x) => x.code), out });
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -302,6 +323,7 @@ export default async function handler(req, res) {
 async function run(req, res) {
   const q = req.query || {};
   if (q.probe === 'lv') return probeLoe(res);
+  if (q.probe === 'oe') return probeOe(res);
   if (q.probe) return probe(res);
   const GROUP = String(q.group || '4.2');
   if (!/^[1-6]\.[12]$/.test(GROUP)) { res.setHeader('Cache-Control', 'no-store'); return res.status(400).json({ ok: false, error: 'Невірна черга' }); }
@@ -314,7 +336,8 @@ async function run(req, res) {
   }
   const fns = {};
   const all = [];
-  if (area.mirror) { fns.mirror = () => fromMirror(GROUP, area.mirror); all.push('mirror'); }
+  if (area.mirror) { fns.mirror = () => fromMirror(GROUP, area.mirror, area.base || MIRROR_BASE, area.label || 'сайт ДТЕК (дзеркало)'); all.push('mirror'); }
+  if (area.alt) { fns.mirror2 = () => fromMirror(GROUP, area.alt.files, area.alt.base, area.alt.label); all.push('mirror2'); }
   if (area.loe) { fns.loe = () => fromLoe(GROUP); all.push('loe'); }
   // YASNO і kolybude.com — лише для ДТЕК Дніпровських електромереж; для інших зон беремо тільки перевірене дзеркало
   if (area.yasno) { fns.yasno = () => fromYasno(GROUP); all.push('yasno'); }
