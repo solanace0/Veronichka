@@ -153,7 +153,7 @@ export default async function handler(req, res) {
       cities[c] = buildCity(c, { dtek: cityStatus(F.flags, c), yasno: c === 'ky' ? yasnoKy : yasno, annYasno: A.items, tgItems: T.items });
       cities[c].feed = (T.feed || []).filter((a) => a.cities.includes(c)).slice(0, 8);
       cities[c].operator = AREAS[c].operator;
-      if (!AREAS[c].mirror) cities[c].soon = true;
+      if (!AREAS[c].mirror && !AREAS[c].loe) cities[c].soon = true;
     }
     if (!(F.flags.length || yasno || yasnoKy || T.ok || A.ok)) throw new Error('жодне джерело не відповіло');
     const groups = yasno ? yasno.groups : {};

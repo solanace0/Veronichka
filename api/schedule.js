@@ -151,7 +151,7 @@ async function fromKoly(GROUP) {
 
 // ---------- Злиття ----------
 // Пріоритет за рівної/невідомої свіжості: дзеркало сайту ДТЕК > YASNO > kolybude.
-const PRIORITY = { 'сайт ДТЕК (дзеркало)': 0, 'YASNO / ДТЕК': 1, 'kolybude.com': 2 };
+const PRIORITY = { 'Львівобленерго': 0, 'сайт ДТЕК (дзеркало)': 0, 'YASNO / ДТЕК': 1, 'kolybude.com': 2 };
 
 export function merge(results) {
   const best = {}; // date -> {day, source}
@@ -172,6 +172,99 @@ export function merge(results) {
   return { days, sources: [...used], ts: ts || null };
 }
 
+
+// ---------- Львівобленерго (api.loe.lviv.ua — той самий API, що живить poweron.loe.lviv.ua) ----------
+const LOE_URLS = ['https://api.loe.lviv.ua/api/menus?page=1&type=photo-grafic', 'https://api.loe.lviv.ua/api/menu_items/238', 'https://api.loe.lviv.ua/api/menu_items/256'];
+const LOE_H = { ...UA, accept: 'application/json', origin: 'https://poweron.loe.lviv.ua', referer: 'https://poweron.loe.lviv.ua/' };
+function loeCollect(node, out, depth = 0) {
+  if (!node || typeof node !== 'object' || depth > 8) return;
+  if (Array.isArray(node)) { node.forEach((x) => loeCollect(x, out, depth + 1)); return; }
+  if (typeof node.rawHtml === 'string' && node.rawHtml.trim()) out.push(node);
+  for (const v of Object.values(node)) if (v && typeof v === 'object') loeCollect(v, out, depth + 1);
+}
+function loeText(html) {
+  return String(html).replace(/<br\s*\/?>|<\/p>|<\/div>|<\/li>/gi, '\n').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/[ \t\u00a0]+/g, ' ');
+}
+export function parseLoe(html, GROUP) {
+  const text = loeText(html);
+  const dm = text.match(/(?:відключен\S*|графік\S*)\s+на\s+(\d{1,2})\.(\d{1,2})\.(\d{4})/i) || text.match(/(\d{1,2})\.(\d{1,2})\.(\d{4})/);
+  if (!dm) throw new Error('Львівобленерго: у тексті графіка немає дати');
+  const date = `${dm[3]}-${String(dm[2]).padStart(2, '0')}-${String(dm[1]).padStart(2, '0')}`;
+  let ts = null;
+  const um = text.match(/станом\s+на\s+(\d{1,2}):(\d{2})\s+(\d{1,2})\.(\d{1,2})\.(\d{4})/i);
+  if (um) ts = kyivToTs(+um[5], +um[4], +um[3], +um[1], +um[2]);
+  const segs = {};
+  const re = /Груп[аи]\s*(\d)\.(\d)\.?([\s\S]*?)(?=Груп[аи]\s*\d\.\d|$)/gi;
+  let m;
+  while ((m = re.exec(text))) segs[m[1] + '.' + m[2]] = m[3];
+  if (!Object.keys(segs).length) throw new Error('Львівобленерго: у тексті немає груп (графік не опубліковано або змінився формат)');
+  const slots = Array(48).fill(1);
+  const seg = segs[GROUP] || '';
+  const rr = /з\s*(\d{1,2}):(\d{2})\s*до\s*(\d{1,2}):(\d{2})/gi;
+  let r;
+  while ((r = rr.exec(seg))) {
+    const a = +r[1] * 60 + +r[2];
+    let b = +r[3] * 60 + +r[4];
+    if (b <= a) b = 24 * 60;
+    for (let t = a; t < Math.min(b, 1440); t += 30) slots[Math.floor(t / 30)] = 0;
+  }
+  return { date, ts, slots, listed: GROUP in segs };
+}
+async function fromLoe(GROUP) {
+  let lastErr = null;
+  for (const url of LOE_URLS.slice(0, 1)) {
+    try {
+      const r = await fetch(url, { headers: LOE_H, signal: AbortSignal.timeout(9000) });
+      if (!r.ok) throw new Error('HTTP ' + r.status + ' (api.loe.lviv.ua)');
+      const items = [];
+      loeCollect(await r.json(), items);
+      const days = {};
+      let ts = null, perr = null;
+      for (const it of items) {
+        try {
+          const d = parseLoe(it.rawHtml, GROUP);
+          if (!days[d.date] || (d.ts || 0) > (days[d.date].ts || 0)) days[d.date] = { date: d.date, slots: d.slots, confirmed: true, ts: d.ts };
+          if (d.ts && d.ts > (ts || 0)) ts = d.ts;
+        } catch (e) { perr = e; }
+      }
+      if (Object.keys(days).length) return { source: 'Львівобленерго', ts, days, statuses: {} };
+      throw perr || new Error('Львівобленерго: API не віддав графіків');
+    } catch (e) { lastErr = e; }
+  }
+  // запасний шлях: окремі елементи меню (сьогодні / завтра)
+  const days = {};
+  let ts = null;
+  for (const url of LOE_URLS.slice(1)) {
+    try {
+      const r = await fetch(url, { headers: LOE_H, signal: AbortSignal.timeout(9000) });
+      if (!r.ok) continue;
+      const items = [];
+      loeCollect(await r.json(), items);
+      for (const it of items) {
+        const d = parseLoe(it.rawHtml, GROUP);
+        days[d.date] = { date: d.date, slots: d.slots, confirmed: true, ts: d.ts };
+        if (d.ts && d.ts > (ts || 0)) ts = d.ts;
+      }
+    } catch (e) { lastErr = e; }
+  }
+  if (Object.keys(days).length) return { source: 'Львівобленерго', ts, days, statuses: {} };
+  throw lastErr || new Error('Львівобленерго недоступне');
+}
+// /api/schedule?probe=lv — діагностика: що реально віддає api.loe.lviv.ua і як ми це розібрали
+async function probeLoe(res) {
+  const out = [];
+  for (const url of LOE_URLS) {
+    try {
+      const r = await fetch(url, { headers: LOE_H, signal: AbortSignal.timeout(9000) });
+      const t = await r.text();
+      let items = [], parsed = null;
+      try { loeCollect(JSON.parse(t), items); parsed = items.map((it) => { try { const d = parseLoe(it.rawHtml, '1.1'); return { date: d.date, listed: d.listed, off: d.slots.filter((x) => !x).length / 2 }; } catch (e) { return { error: String(e.message) }; } }); } catch (e) { parsed = 'не JSON'; }
+      out.push({ url, status: r.status, bytes: t.length, head: t.slice(0, 700), items: items.length, parsed });
+    } catch (e) { out.push({ url, error: String(e && e.message || e) }); }
+  }
+  res.setHeader('Cache-Control', 'no-store');
+  return res.status(200).json({ ok: true, probe: 'lv', out });
+}
 
 // /api/schedule?probe=1 — перевіряє, які області вже є в дзеркалі (щоб додавати лише ті, де є справжні дані)
 const PROBE = ['vinnytsia','volyn','zhytomyr','zakarpattia','zaporizhzhia','ivano-frankivsk','kirovohrad','lviv','mykolaiv','poltava','rivne','sumy','ternopil','kharkiv','kherson','khmelnytskyi','cherkasy','chernivtsi','chernihiv','dnipro','dnipro-oblast','kyiv','kyiv-region','odesa'];
@@ -204,18 +297,21 @@ export default async function handler(req, res) {
 
 async function run(req, res) {
   const q = req.query || {};
+  if (q.probe === 'lv') return probeLoe(res);
   if (q.probe) return probe(res);
   const GROUP = String(q.group || '4.2');
   if (!/^[1-6]\.[12]$/.test(GROUP)) { res.setHeader('Cache-Control', 'no-store'); return res.status(400).json({ ok: false, error: 'Невірна черга' }); }
   const city = AREAS[String(q.city)] ? String(q.city) : 'kr';
   const area = AREAS[city];
-  if (!area.mirror) {
+  if (!area.mirror && !area.loe) {
     // для цієї зони джерело ще не підключене: чесно кажемо «скоро», а не малюємо «24 години світла»
     res.setHeader('Cache-Control', 'no-store');
     return res.status(503).json({ ok: false, soon: true, city, operator: area.operator, error: 'Для зони «' + area.name + '» джерело графіків ще не підключене (' + area.operator + ')' });
   }
-  const fns = { mirror: () => fromMirror(GROUP, area.mirror) };
-  const all = ['mirror'];
+  const fns = {};
+  const all = [];
+  if (area.mirror) { fns.mirror = () => fromMirror(GROUP, area.mirror); all.push('mirror'); }
+  if (area.loe) { fns.loe = () => fromLoe(GROUP); all.push('loe'); }
   // YASNO і kolybude.com — лише для ДТЕК Дніпровських електромереж; для інших зон беремо тільки перевірене дзеркало
   if (area.yasno) { fns.yasno = () => fromYasno(GROUP); all.push('yasno'); }
   if (area.koly) { fns.kolybude = () => fromKoly(GROUP); all.push('kolybude'); }

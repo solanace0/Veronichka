@@ -3,6 +3,7 @@
 //  mirror — файли дзеркала Baskerville42/outage-data-ua (копія сайту ДТЕК), перший робочий береться;
 //  flags  — файли з прапорцями екстрених відключень;
 //  yasno  — чи є YASNO-канал (лише ДТЕК Дніпровські електромережі, перевірений регіон 3 / ДСО 301);
+//  loe    — офіційний API Львівобленерго (api.loe.lviv.ua), текстовий графік по підчергах 1.1–6.2;
 //  koly   — чи є сторінка kolybude.com (лише Кривий Ріг);
 //  oblast — для міст Дніпровщини, окремих від трьох основних: прапорці районів не розбираємо по назві міста.
 // Для зон без джерела (mirror: null) графік не вигадуємо: API відповідає «скоро».
@@ -16,8 +17,8 @@ export const AREAS = {
   ky: { name: 'Київ', operator: 'ДТЕК Київські електромережі', mirror: ['kyiv.json'], flags: ['kyiv.json'] },
   kv: { name: 'Київська область', operator: 'ДТЕК Київські регіональні електромережі', mirror: ['kyiv-region.json'], flags: ['kyiv-region.json'] },
   od: { name: 'Одеса та Одеська область', operator: 'ДТЕК Одеські електромережі', mirror: ['odesa.json'], flags: ['odesa.json'] },
-  lv: { name: 'Львів та Львівська область', operator: 'Львівобленерго', mirror: null, flags: [] }
+  lv: { name: 'Львів та Львівська область', operator: 'Львівобленерго', mirror: null, loe: true, flags: [] }
 };
 export const AREA_CODES = Object.keys(AREAS);
-export const AREAS_WITH_DATA = AREA_CODES.filter((c) => AREAS[c].mirror);
+export const AREAS_WITH_DATA = AREA_CODES.filter((c) => AREAS[c].mirror || AREAS[c].loe);
 export const ALL_FLAG_FILES = [...new Set(AREA_CODES.flatMap((c) => AREAS[c].flags))];
