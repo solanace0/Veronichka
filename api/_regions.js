@@ -34,7 +34,8 @@ export const AREAS = {
   rv: oe('Рівненська область', 'Рівнеобленерго', ['Rivneoblenergo.json']),
   tp: oe('Тернопільська область', 'Тернопільобленерго', ['Ternopiloblenerho.json', 'Ternopiloblenergo.json']),
   km: oe('Хмельницька область', 'Хмельницькобленерго', ['Khmelnytskoblenerho.json', 'Khmelnytskyioblenerho.json', 'Khmelnytskyioblenergo.json']),
-  fr: oe('Івано-Франківська область', 'Прикарпаттяобленерго', ['Prykarpattiaoblenerho.json', 'Prykarpattiaoblenergo.json']),
+  // Прикарпаттяобленерго: файл у OE_OUTAGE_DATA не оновлюється з 20.10.2026 (issue #7), тому область вимкнена, щоб не показувати застарілий графік
+  fr: { name: 'Івано-Франківська область', operator: 'Прикарпаттяобленерго', mirror: null, flags: [] },
   zk: oe('Закарпатська область', 'Закарпаттяобленерго', ['Zakarpattiaoblenerho.json', 'Zakarpattiaoblenergo.json'])
 };
 export const AREA_CODES = Object.keys(AREAS);

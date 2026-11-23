@@ -114,6 +114,9 @@ async function fromMirror(GROUP, files, base = MIRROR_BASE, source = 'сайт �
     days[date] = { date, slots: hoursToSlots(g), confirmed: true, ts };
   }
   if (!Object.keys(days).length) throw new Error(source + ': немає даних для черги ' + GROUP);
+  // Застарілий файл (оператор чи парсер перестав оновлювати) не показуємо: у ньому немає ні сьогодні, ні завтра
+  const today = kyivDate();
+  if (!Object.keys(days).some((d) => d >= today)) throw new Error(source + ': дані застаріли (останній день ' + Object.keys(days).sort().pop() + ')');
   return { source, ts, days, statuses: {} };
 }
 
