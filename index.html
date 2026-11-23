@@ -706,7 +706,7 @@ html[data-theme=light] .rows summary{background:#00000010}
 <div class="f"><label for="ob-n">Ім’я</label><input type="text" id="ob-n" maxlength="30" autocomplete="given-name"><label for="ob-cps">Область, місто чи селище</label><div class="cp" id="ob-cp"></div><select id="ob-c" hidden></select><label for="ob-q">Черга</label><select id="ob-q"></select><label for="ob-a">Адреса або позначка (необов’язково)</label><div class="ac" id="ob-ac"><input type="text" id="ob-a" maxlength="60" placeholder="Почни вводити: проспект Металургів 12" autocomplete="off" autocapitalize="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="ob-al"><ul class="aclist" id="ob-al" role="listbox"></ul></div>
 <label class="chk" id="ob-chk"><input type="checkbox" id="ob-ok"><span>Я погоджуюсь з <a href="terms.html" target="_blank" rel="noopener">Умовами користування</a> та <a href="privacy.html" target="_blank" rel="noopener">Політикою конфіденційності</a>.</span></label>
 <button class="ref p w" id="ob-go" aria-disabled="true" onclick="saveP('ob')">Почати</button><div class="need" id="ob-need">Постав галочку згоди, щоб продовжити</div></div>
-<div class="meta">Дані зберігаються лише на твоєму пристрої. Не знаєш свою чергу? <a href="https://www.dtek-dnem.com.ua/ua/shutdowns" target="_blank" rel="noopener">Дізнатися за адресою на сайті ДТЕК</a>.</div></div></main>
+<div class="meta">Дані зберігаються лише на твоєму пристрої. Не знаєш свою чергу? <span class="opl" data-p="ob"></span></div></div></main>
 
 <main id="v1"><div id="offb"></div><div id="emg"></div>
 <div class="home"><div class="hm">
@@ -728,12 +728,12 @@ html[data-theme=light] .rows summary{background:#00000010}
 <div class="legend"><span><i style="background:var(--onx)"></i>за графіком</span><span><i class="r"></i>екстрено</span><span><i style="background:var(--wx)"></i>статус ще не оновлено</span></div><div class="meta" id="av-meta"></div></div>
 <div id="av-hero" class="card hero"></div>
 </div>
-<div class="c2"><div class="card avwhy"><div class="ic" aria-hidden="true">⚠️</div><div><b>Навіщо цей розділ</b><p>Він для випадків, коли за графіком світло має бути, а його немає. Тут видно, чи діють екстрені відключення (тоді графік не працює) і що показує графік для вибраного міста та черги. Якщо причини тут немає — найімовірніше, це локальна аварія: перевір свою адресу на сайті ДТЕК.</p></div></div>
-<div class="cen"><button class="ref" onclick="avRetry()">↻ Оновити</button></div><div class="card"><h2>Про ці дані</h2><div class="sub" style="font-size:13.5px">Статуси беруться з YASNO (ДТЕК Дніпровські електромережі) — з тих самих відкритих даних, що й графіки, і стосуються черги загалом. Вибір міста змінює, для якого міста завантажується графік. Адресні аварійні роботи (вулиця, будинок, причина, час відновлення) публікує лише сайт ДТЕК за захистом від автоматичних запитів, тому застосунок їх не показує і нічого не вигадує.</div><a class="ref w" style="text-decoration:none" href="https://www.dtek-dnem.com.ua/ua/shutdowns" target="_blank" rel="noopener">Перевірити адресу на сайті ДТЕК</a><a class="ref w" style="text-decoration:none" href="https://t.me/DTEKDniprovskiElektromerezhiBot" target="_blank" rel="noopener">Telegram-бот ДТЕК: аварії за адресою</a><a class="ref w" style="text-decoration:none" href="viber://pa?chatURI=dtekdniprovskielektromerezhi">Viber ДТЕК Дніпровські електромережі</a></div></div></div></main>
+<div class="c2"><div class="card avwhy"><div class="ic" aria-hidden="true">⚠️</div><div><b>Навіщо цей розділ</b><p>Він для випадків, коли за графіком світло має бути, а його немає. Тут видно, чи діють екстрені відключення (тоді графік не працює) і що показує графік для вибраного міста та черги. Якщо причини тут немає — найімовірніше, це локальна аварія: перевір свою адресу на сайті свого оператора.</p></div></div>
+<div class="cen"><button class="ref" onclick="avRetry()">↻ Оновити</button></div><div class="card" id="av-about"></div></div></div></main>
 
 <main id="v3" class="hid"><div class="sgrid"><div class="card prof"><div class="hello"><img src="icon-192.png" alt=""><div><h1 id="hi"></h1><p>Ось твоє світло!</p></div></div><div id="hint" class="hint hid"><span>Додай ТребаСвітло? на головний екран 💜 <small>(Поділитися → Додати на початковий екран)</small></span><button onclick="hideHint()" aria-label="Закрити">✕</button></div><div class="net" id="net"></div></div>
 <div class="card"><h2>Мій графік</h2><div class="f"><label for="st-n">Ім’я</label><input type="text" id="st-n" maxlength="30" autocomplete="given-name"><label for="st-cps">Область, місто чи селище</label><div class="cp" id="st-cp"></div><select id="st-c" hidden></select><label for="st-q">Черга</label><select id="st-q"></select><label for="st-a">Адреса або позначка (необов’язково)</label><div class="ac" id="st-ac"><input type="text" id="st-a" maxlength="60" placeholder="Почни вводити: проспект Металургів 12" autocomplete="off" autocapitalize="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="st-al"><ul class="aclist" id="st-al" role="listbox"></ul></div><button class="ref p" onclick="saveP('st')">Зберегти</button></div>
-<div class="meta">Не знаєш свою чергу? <a href="https://www.dtek-dnem.com.ua/ua/shutdowns" target="_blank" rel="noopener">Дізнатися за адресою на сайті ДТЕК</a>.</div></div>
+<div class="meta">Не знаєш свою чергу? <span class="opl" data-p="st"></span></div></div>
 
 <div class="card"><h2>Оформлення</h2>
 <div class="seg themeseg"><button data-t="dark" onclick="setTheme('dark')">🌙 Темна</button><button data-t="light" onclick="setTheme('light')">☀️ Світла</button><button data-t="auto" onclick="setTheme('auto')">Авто</button></div><div class="meta" style="margin-top:8px">«Авто» повторює тему твого телефона чи комп’ютера.</div>
@@ -749,7 +749,7 @@ html[data-theme=light] .rows summary{background:#00000010}
 
 <div class="card"><h2>Важливе</h2>
 <div class="opt"><div><b>Попередження про вимкнення</b><small>Push за кілька хвилин до вимкнення чи ввімкнення світла. Приходить навіть коли застосунок закрито.</small></div><button class="sw" role="switch" data-nosound="1" data-k="notify" aria-label="Попередження про вимкнення"></button></div>
-<div class="opt"><div><b>Графік змінився</b><small>Коли ДТЕК оновив графік на сьогодні чи завтра</small></div><button class="sw" role="switch" data-nosound="1" data-k="pChg" aria-label="Графік змінився"></button></div>
+<div class="opt"><div><b>Графік змінився</b><small>Коли оператор оновив графік на сьогодні чи завтра</small></div><button class="sw" role="switch" data-nosound="1" data-k="pChg" aria-label="Графік змінився"></button></div>
 <div class="opt"><div><b>З’явився графік на завтра</b><small>Одразу, як тільки графік опубліковано</small></div><button class="sw" role="switch" data-nosound="1" data-k="pNew" aria-label="З’явився графік на завтра"></button></div>
 <div class="opt"><div><b>Екстрені відключення</b><small>Коли для твого міста починають діяти екстрені відключення</small></div><button class="sw" role="switch" data-nosound="1" data-k="emgN" aria-label="Екстрені відключення"></button></div>
 <div class="opt"><div><b>Вібрація</b><small>Коротка вібрація, коли світло вмикається чи вимикається за графіком, і при екстрених відключеннях. Є на Android; iPhone вібрацію в застосунках не підтримує.</small></div><button class="sw" role="switch" data-nosound="1" data-k="vib" aria-label="Вібрація"></button></div>
@@ -765,7 +765,7 @@ html[data-theme=light] .rows summary{background:#00000010}
 
 <div class="card"><h2>Інформація про дані</h2><div id="info"></div>
 <button class="ref" onclick="checkSources()" id="chk-btn">Перевірити джерела</button><div id="chk-out"></div>
-<div class="meta">Дані беруться з публічних джерел: дзеркало сайту ДТЕК, YASNO і kolybude.com (для Кривого Рогу). Застосунок неофіційний — звіряйся з сайтом оператора.</div></div>
+<div class="meta">Дані беруться з публічних джерел: дзеркало сайту ДТЕК, YASNO, kolybude.com (для Кривого Рогу), офіційне API Львівобленерго та відкриті дані обленерго (OE_OUTAGE_DATA) для інших областей. Застосунок неофіційний — звіряйся з сайтом оператора.</div></div>
 
 <div class="card"><h2>Історія оновлень графіка</h2><div class="sub" style="margin-bottom:6px">Коли джерела змінювали графік для обраної черги.</div>
 <div class="f"><div style="display:grid;grid-template-columns:1.4fr 1fr;gap:8px"><div><label for="h-c">Місто</label><select id="h-c"></select></div><div><label for="h-q">Черга</label><select id="h-q"></select></div></div></div>
@@ -1031,7 +1031,7 @@ const CITIES={kr:'Кривий Ріг',dp:'Дніпро',kz:'Кам’янськ
 const nz=s=>String(s||'').toLowerCase().replace(/[’'ʼ`\-\s.]/g,'').replace(/ё/g,'е').replace(/ы/g,'и').replace(/э/g,'е').replace(/ї/g,'и').replace(/і/g,'и').replace(/є/g,'е').replace(/ґ/g,'г');
 
 const AINFO={kr:{op:'ДТЕК Дніпровські електромережі'},dp:{op:'ДТЕК Дніпровські електромережі'},kz:{op:'ДТЕК Дніпровські електромережі'},
- dn:{op:'ДТЕК Дніпровські електромережі',note:'Графік береться з сайту ДТЕК для Дніпропетровщини. Якщо в твоєму місті інший оператор, час відключень може відрізнятися.'},
+ dn:{op:'ДТЕК Дніпровські електромережі',note:'Графік береться з сайту ДТЕК для Дніпропетровщини. Це графік ДТЕК Дніпровські електромережі. У частині Дніпра електрику постачає інший оператор (ЦЕК) з власним графіком, а в інших містах області оператор теж може бути інший: тоді час відрізнятиметься.'},
  ky:{op:'ДТЕК Київські електромережі'},
  kv:{op:'ДТЕК Київські регіональні електромережі',note:'Графік береться з сайту ДТЕК для Київської області. Для частини міст області оператор інший, тоді графік може відрізнятися: звір із сайтом оператора.'},
  od:{op:'ДТЕК Одеські електромережі',note:'Графік береться з сайту ДТЕК для Одещини. Якщо у твоєму селищі інший оператор, графік може відрізнятися.'},
@@ -1045,7 +1045,7 @@ const AINFO={kr:{op:'ДТЕК Дніпровські електромережі'
  rv:{op:'Рівнеобленерго',note:'Графік береться з відкритих даних, які копіюють сайт оператора (OE_OUTAGE_DATA). Чергу 1.1–6.2 дивись за адресою на сайті обленерго: якщо у твоєму місті інший оператор, час може відрізнятися.'},
  tp:{op:'Тернопільобленерго',note:'Графік береться з відкритих даних, які копіюють сайт оператора (OE_OUTAGE_DATA). Чергу 1.1–6.2 дивись за адресою на сайті обленерго: якщо у твоєму місті інший оператор, час може відрізнятися.'},
  km:{op:'Хмельницькобленерго',note:'Графік береться з відкритих даних, які копіюють сайт оператора (OE_OUTAGE_DATA). Чергу 1.1–6.2 дивись за адресою на сайті обленерго: якщо у твоєму місті інший оператор, час може відрізнятися.'},
- fr:{op:'Прикарпаттяобленерго',note:'Графік береться з відкритих даних, які копіюють сайт оператора (OE_OUTAGE_DATA). Чергу 1.1–6.2 дивись за адресою на сайті обленерго: якщо у твоєму місті інший оператор, час може відрізнятися.'},
+ fr:{soon:true,op:'Прикарпаттяобленерго',note:'Графік береться з відкритих даних, які копіюють сайт оператора (OE_OUTAGE_DATA). Чергу 1.1–6.2 дивись за адресою на сайті обленерго: якщо у твоєму місті інший оператор, час може відрізнятися.'},
  zk:{op:'Закарпаттяобленерго',note:'Графік береться з відкритих даних, які копіюють сайт оператора (OE_OUTAGE_DATA). Чергу 1.1–6.2 дивись за адресою на сайті обленерго: якщо у твоєму місті інший оператор, час може відрізнятися.'}};
 const UO=[['vinnytsia','Вінницька область'],['volyn','Волинська область'],['dnipro','Дніпропетровська область'],['donetsk','Донецька область'],['zhytomyr','Житомирська область'],['zakarpattia','Закарпатська область'],['zaporizhzhia','Запорізька область'],['ivano','Івано-Франківська область'],['kyiv','Київ і Київська область'],['kirovohrad','Кіровоградська область'],['luhansk','Луганська область'],['lviv','Львівська область'],['mykolaiv','Миколаївська область'],['odesa','Одеська область'],['poltava','Полтавська область'],['rivne','Рівненська область'],['sumy','Сумська область'],['ternopil','Тернопільська область'],['kharkiv','Харківська область'],['kherson','Херсонська область'],['khmelnytskyi','Хмельницька область'],['cherkasy','Черкаська область'],['chernivtsi','Чернівецька область'],['chernihiv','Чернігівська область'],['crimea','АР Крим']];
 const OBL={dnp:'Дніпропетровська область',kyv:'Київ і Київська область',ode:'Одеська область',lvv:'Львівська область',plt:'Полтавська область',khr:'Харківська область',zpr:'Запорізька область',chk:'Черкаська область',chn:'Чернігівська область',zht:'Житомирська область',rvn:'Рівненська область',trn:'Тернопільська область',khm:'Хмельницька область',ifr:'Івано-Франківська область',zak:'Закарпатська область'};
@@ -1053,7 +1053,7 @@ const OBL_DEF={dnp:'dn',kyv:'kv',ode:'od',lvv:'lv',plt:'pl',khr:'kh',zpr:'zp',ch
 const OTH={dnp:'Дніпропетровська область',kyv:'Київська область',ode:'Одеська область',lvv:'Львівська область',plt:'Полтавська область',khr:'Харківська область',zpr:'Запорізька область',chk:'Черкаська область',chn:'Чернігівська область',zht:'Житомирська область',rvn:'Рівненська область',trn:'Тернопільська область',khm:'Хмельницька область',ifr:'Івано-Франківська область',zak:'Закарпатська область'};
 const AOBL={kr:'dnp',dp:'dnp',kz:'dnp',dn:'dnp',ky:'kyv',kv:'kyv',od:'ode',lv:'lvv',pl:'plt',kh:'khr',zp:'zpr',ck:'chk',cn:'chn',zt:'zht',rv:'rvn',tp:'trn',km:'khm',fr:'ifr',zk:'zak'};
 const OBK={dnp:'dnipro',kyv:'kyiv',ode:'odesa',lvv:'lviv',plt:'poltava',khr:'kharkiv',zpr:'zaporizhzhia',chk:'cherkasy',chn:'chernihiv',zht:'zhytomyr',rvn:'rivne',trn:'ternopil',khm:'khmelnytskyi',ifr:'ivano',zak:'zakarpattia'},KOB={},OBN={};for(const k in OBK)KOB[OBK[k]]=k;UO.forEach(u=>OBN[u[0]]=u[1]);
-const SAME={dnp:'Дніпро, Кривий Ріг і Кам’янське мають однакові черги й графіки: у них один оператор. Для інших міст області беремо той самий графік ДТЕК. Якщо у вас інший оператор, час може відрізнятися.',kyv:'Київ і Київська область обслуговують різні оператори, тому черга 3.1 у Києві й, наприклад, у Броварах може відрізнятися. Для міст області беремо графік ДТЕК Київські регіональні електромережі. Якщо у вас інший оператор, звірте із сайтом оператора.',ode:'Для Одеси й області беремо графік ДТЕК Одеські електромережі. Якщо у вашому селищі інший оператор, час може відрізнятися.'};
+const SAME={dnp:'У Дніпра, Кривого Рогу й Кам’янського графік ДТЕК Дніпровські електромережі однаковий. Для інших міст області беремо той самий графік. Якщо у вас інший оператор (наприклад, ЦЕК в частині Дніпра), час відрізнятиметься.',kyv:'Київ і Київська область обслуговують різні оператори, тому черга 3.1 у Києві й, наприклад, у Броварах може відрізнятися. Для міст області беремо графік ДТЕК Київські регіональні електромережі. Якщо у вас інший оператор, звірте із сайтом оператора.',ode:'Для Одеси й області беремо графік ДТЕК Одеські електромережі. Якщо у вашому селищі інший оператор, час може відрізнятися.'};
 SAME.lvv='Для Львова й області беремо графік Львівобленерго: це єдиний оператор області. Черги 1.1–6.2 — за адресою на сайті poweron.loe.lviv.ua.';
 SAME.oe=n=>'Для області беремо графік '+n+' з відкритих даних, які копіюють сайт обленерго. Черга 1.1–6.2 — за адресою на сайті оператора. Якщо у вашому місті інший оператор, час може відрізнятися.';
 SAME.plt=SAME.oe('Полтаваобленерго');
@@ -1088,7 +1088,7 @@ function cpPanel(p){const c=CP[p],L=$(p+'-cpp');
  if(!OBOK(k)){L.innerHTML=head+'<div class="cpw">Скоро. Для цієї області ще немає джерела графіків, а вигадувати дані ми не будемо.</div>';return}
  const o=KOB[k],list=PL.filter(x=>x.o===o),btn=(x,cl)=>'<button type="button" class="cpc'+cl+(x.n===c.t&&x.a===c.a?' a':'')+'" data-a="'+x.a+'" data-t="'+esc(x.n)+'">'+esc(x.n)+'</button>';
  L.innerHTML=head+'<div class="cpctr">'+btn(list[0],' big')+'</div><div class="cpl2">'+list.slice(1).map(x=>btn(x,'')).join('')+'<button type="button" class="cpc" data-a="'+OBL_DEF[o]+'" data-t="'+esc(OTH[o])+'">Інше селище області</button></div><div class="cpsame">'+esc(SAME[o])+'</div>'}
-function cpRender(p){const box=$(p+'-cp');if(!box||!box.firstChild)return;const c=CP[p],o=AOBL[c.a],I=AINFO[c.a]||{};
+function cpRender(p){fillOpl();const box=$(p+'-cp');if(!box||!box.firstChild)return;const c=CP[p],o=AOBL[c.a],I=AINFO[c.a]||{};
  $(p+'-cpc').innerHTML='<b>'+esc(c.t)+'</b><small>'+esc(OBL[o])+' · '+esc(I.op||'')+'</small>'+(I.soon?'<div class="cpw">Графіки для цієї області ще підключаємо: зараз джерела немає, а вигадувати дані ми не будемо. Обери іншу область.</div>':I.note?'<div class="cpn">'+esc(I.note)+'</div>':'');
  box.querySelectorAll('.mo').forEach(e=>{const k=e.dataset.m;e.classList.toggle('sel',k===c.sel);e.classList.toggle('cur',KOB[k]===o)});
  const ct=cpCity(c),mk=$(p+'-cpk');if(mk){const show=ct&&c.sel&&KOB[c.sel]===o;mk.style.display=show?'':'none';if(show){mk.dataset.x=ct.x;mk.dataset.y=ct.y}}
@@ -1116,7 +1116,17 @@ const AVT={emergency:['em','екстрено'],announced:['am','оголошен
 const AVL={local:'за офіційними оголошеннями',emergency:'діють екстрені відключення',waiting:'статус не оновлено',normal:'діє звичайний графік',unknown:'статус невідомий'};
 /* AV.c / AV.q = null означає «як у профілі» */
 /* вибір області: Дніпро, Кривий Ріг і Кам’янське мають один графік (один оператор, одне джерело), тому в списку вони об’єднані в «Дніпропетровську область» */
-const PICK=['dn','ky','kv','od','lv','kh','pl','zp','ck','cn','zt','rv','tp','km','fr','zk'],PNORM={kr:'dn',dp:'dn',kz:'dn'};
+const PICK=['dn','ky','kv','od','lv','kh','pl','zp','ck','cn','zt','rv','tp','km','zk'],PNORM={kr:'dn',dp:'dn',kz:'dn'};
+const DTEKZ=['kr','dp','kz','dn','ky','kv','od'];
+const OPURL={kr:'https://www.dtek-dnem.com.ua/ua/shutdowns',dp:'https://www.dtek-dnem.com.ua/ua/shutdowns',kz:'https://www.dtek-dnem.com.ua/ua/shutdowns',dn:'https://www.dtek-dnem.com.ua/ua/shutdowns',ky:'https://www.dtek-kem.com.ua/ua/shutdowns',kv:'https://www.dtek-krem.com.ua/ua/shutdowns',od:'https://www.dtek-oem.com.ua/ua/shutdowns',lv:'https://poweron.loe.lviv.ua',pl:'https://www.poe.pl.ua'};
+const OPNM=c=>DTEKZ.includes(c)?'ДТЕК':((AINFO[c]||{}).op||'свого оператора');
+const opBtn=c=>OPURL[c]?'<a class="ref" style="text-decoration:none" href="'+OPURL[c]+'" target="_blank" rel="noopener">Відкрити сайт '+esc(OPNM(c))+'</a>':'';
+function fillOpl(){document.querySelectorAll('.opl').forEach(el=>{const c=el.dataset.p==='ob'?CP.ob.a:el.dataset.p==='st'?CP.st.a:avC();el.innerHTML=OPURL[c]?'<a href="'+OPURL[c]+'" target="_blank" rel="noopener">Дізнатися за адресою на сайті '+esc(OPNM(c))+'</a>':'Дізнатися можна на сайті '+esc(OPNM(c))+'.'})}
+function avAbout(c){const dp=c==='dn';
+ const t=dp?'Статуси беруться з YASNO (ДТЕК Дніпровські електромережі) — з тих самих відкритих даних, що й графіки, і стосуються черги загалом. Вибір області змінює, для якої області завантажується графік. Адресні аварійні роботи (вулиця, будинок, причина, час відновлення) публікує лише сайт ДТЕК за захистом від автоматичних запитів, тому застосунок їх не показує і нічого не вигадує.'
+ :DTEKZ.includes(c)?'Графік беремо з відкритих даних сайту ДТЕК, статус екстрених відключень — з прапорців сайту ДТЕК та офіційних оголошень. Адресні аварійні роботи публікує лише сайт ДТЕК, тому застосунок їх не показує і нічого не вигадує.'
+ :'Для цієї області ми показуємо лише графік з відкритих даних, які копіюють сайт оператора ('+OPNM(c)+'). Екстрені відключення тут не відстежуються: у такі моменти графік може не діяти. Адресні аварії й актуальний стан дивись на сайті оператора.';
+ return '<h2>Про ці дані</h2><div class="sub" style="font-size:13.5px">'+t+'</div>'+(OPURL[c]?'<a class="ref w" style="text-decoration:none" href="'+OPURL[c]+'" target="_blank" rel="noopener">Перевірити адресу на сайті '+esc(OPNM(c))+'</a>':'')+(dp?'<a class="ref w" style="text-decoration:none" href="https://t.me/DTEKDniprovskiElektromerezhiBot" target="_blank" rel="noopener">Telegram-бот ДТЕК: аварії за адресою</a><a class="ref w" style="text-decoration:none" href="viber://pa?chatURI=dtekdniprovskielektromerezhi">Viber ДТЕК Дніпровські електромережі</a>':'')}
 const pNorm=c=>PNORM[c]||c,pickTo=c=>P&&pNorm(P.c)===c?P.c:c;
 const RP_PIN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>',RP_CH='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
 function rpHtml(id,cur){const el=$(id),open=!!(el&&el.classList.contains('open')),mine=P?pNorm(P.c):'';
@@ -1145,17 +1155,17 @@ function avRestore(sd,tm,k){if(!sd||isEmpty(sd))return null;const pr=periods(sd)
 if(cp.to<1440)return hmE(cp.to);if(tm&&!isEmpty(tm)&&tm[0]===1)return '00:00';return null}
 function avTime(ts){return ts?new Date(ts).toLocaleString('uk-UA',{timeZone:TZ,day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):null}
 function renderAv(){const hero=$('av-hero');if(!hero||!P)return;const c=avC(),q=avQ(),mine=avMine(),g=(['kr','dp','kz','dn'].includes(avC())&&AV.j&&AV.j.groups)||{},cs=AV.j&&AV.j.cities&&AV.j.cities[c],who=mine?'твоєї черги':'черги '+q;
-setH($('av-city'),rpHtml('av-city',pNorm(c)));
+setH($('av-city'),rpHtml('av-city',pNorm(c)));setH($('av-about'),avAbout(pNorm(c)));fillOpl();
 const loc='<div class="loc">'+CITIES[c]+' · Черга '+q+'</div>'+(mine&&P.a?'<div class="addr">'+esc(P.a)+'</div>':'');
-if(!cs){setH(hero,AV.loading||!AV.err?loc+'<div class="status" style="opacity:.4">⋯</div><div class="sub">Перевіряємо джерела…</div>':loc+`<div class="warn">Не вдалося отримати статус: ${esc(AV.err||'немає даних')}</div><button class="ref" onclick="avRetry()">Спробувати ще</button><div class="av-go"><span>Поки статус недоступний, перевір ситуацію на сайті ДТЕК.</span>${BTN}</div>`,'card hero');setH($('av-grid'),'<div class="sub" style="grid-column:1/-1">'+(AV.err?'Дані недоступні':'Завантаження…')+'</div>');setH($('av-meta'),'');return}
+if(!cs){setH(hero,AV.loading||!AV.err?loc+'<div class="status" style="opacity:.4">⋯</div><div class="sub">Перевіряємо джерела…</div>':loc+`<div class="warn">Не вдалося отримати статус: ${esc(AV.err||'немає даних')}</div><button class="ref" onclick="avRetry()">Спробувати ще</button><div class="av-go"><span>Поки статус недоступний, перевір ситуацію на сайті ${OPNM(pNorm(c))}.</span>${opBtn(pNorm(c))}</div>`,'card hero');setH($('av-grid'),'<div class="sub" style="grid-column:1/-1">'+(AV.err?'Дані недоступні':'Завантаження…')+'</div>');setH($('av-meta'),'');return}
 if(cs.soon){setH(hero,loc+'<div class="status">Скоро</div><div class="sub">Для цієї області ще немає джерела даних. Графіки й статус екстрених відключень ми не вигадуємо.</div>','card hero');setH($('av-grid'),'');setH($('av-meta'),'');return}
 const k=kv(),j=avJ(),sd=avDay(j,0),sdt=avDay(j,1),now=sd&&!isEmpty(sd)?!!sd[Math.floor(k.sec/1800)]:null,fa=AV.j.fetchedAt,stale=!!(fa&&Date.now()-fa>10*6e4),lv=(fa&&Date.now()-fa>30*6e4&&cs.level==='none')?'unknown':cs.level,stw=stale?'<div class="warn">'+(OFFL()?'Немає з’єднання. ':'')+'Показано статус, збережений '+avTime(fa)+' ('+agoTxt(Date.now()-fa)+'). Він міг змінитися.</div>':'';
 const qHit=cs.allQueues||(cs.queues||[]).includes(q);
 /* заголовок за рівнем */
 const HD={emergency:['off','Діють екстрені відключення','Для міста '+CITIES[c]+' планові графіки зараз не застосовуються: світло може зникати без попередження.'],
 announced:['','Є оголошення про екстрені відключення','Оператор повідомив про екстрені відключення, але сайт ДТЕК ще не підтвердив це в даних. Нижче дослівний текст і джерело.'],
-none:['on','Екстрених відключень не заявлено','Сайт ДТЕК і офіційні оголошення не повідомляють про екстрені відключення для міста '+CITIES[c]+'.'+(cs.stabilizing?' Діють погодинні (стабілізаційні) відключення: орієнтуйся на графік.':'')],
-unknown:['','Статус зараз невідомий','Не вдалося отримати свіжі дані сайту ДТЕК, тому не стверджуємо, що екстрених відключень немає. Перевір сайт ДТЕК; нижче повідомлення офіційних каналів.']}[lv];
+none:['on','Екстрених відключень не заявлено','Сайт '+OPNM(pNorm(c))+' і офіційні оголошення не повідомляють про екстрені відключення для міста '+CITIES[c]+'.'+(cs.stabilizing?' Діють погодинні (стабілізаційні) відключення: орієнтуйся на графік.':'')],
+unknown:['','Статус зараз невідомий',(DTEKZ.includes(c)?'Не вдалося отримати свіжі дані сайту ДТЕК, тому не стверджуємо, що екстрених відключень немає. Перевір сайт ДТЕК; нижче повідомлення офіційних каналів.':'Для цієї області статус екстрених відключень ми не відстежуємо, тому не стверджуємо, що їх немає. Перевір сайт '+OPNM(c)+'.')]}[lv];
 let H=HD;
 if(lv==='emergency'&&!cs.allQueues&&cs.queues&&cs.queues.length)H=[HD[0],qHit?'Для '+who+' діють екстрені відключення':'Екстрені відключення діють для інших черг',cs.queues.length?'Екстрені відключення діють для черг: '+cs.queues.join(', ')+'.':HD[2]];
 if(lv==='announced'&&cs.queues&&cs.queues.length&&!cs.allQueues)H=[HD[0],HD[1],HD[2]+' У тексті названо черги: '+cs.queues.join(', ')+'.'];
@@ -1170,15 +1180,15 @@ const feedHtml='<div class="note"><b>Останні повідомлення о�
 /* підказка «світла немає, а за графіком є» */
 let note='';
 if(lv==='emergency')note='<div class="note"><b>Світла немає, хоча за графіком воно є?</b>Так і має бути: під час екстрених відключень графік не діє. Це не помилка застосунку.</div>';
-else if(now===true&&(lv==='none'||lv==='unknown'))note='<div class="note"><b>Світла немає, хоча за графіком воно має бути?</b>Екстрених відключень для '+CITIES[c]+' не заявлено. Ймовірно, це локальна аварія на лінії, підстанції чи в будинку: такі випадки у відкритих даних не публікуються. Адресу й час відновлення показує сайт ДТЕК.</div>';
+else if(now===true&&(lv==='none'||lv==='unknown'))note='<div class="note"><b>Світла немає, хоча за графіком воно має бути?</b>Екстрених відключень для '+CITIES[c]+' не заявлено. Ймовірно, це локальна аварія на лінії, підстанції чи в будинку: такі випадки у відкритих даних не публікуються. Адресу й час відновлення показує сайт '+OPNM(pNorm(c))+'.</div>';
 else if(now===false&&lv==='none'){const r=avRestore(sd,sdt,k);note='<div class="note"><b>Зараз за графіком відключення</b>Це планова пауза, а не аварія.'+(r?'<br>Орієнтовний час відновлення за графіком: <b>'+r+'</b>.':'')+'</div>'}
 /* які джерела перевірено */
 const chk=(cs.checked||[]).map(x=>'<span class="ck '+(x.ok?'ok':'bad')+'">'+(x.ok?'✓ ':'✕ ')+esc(x.name)+(x.ok&&x.ts?' · '+avTime(x.ts):'')+(x.stale?' (застаріло)':'')+'</span>').join('')+(AV.j.telegramOk?'<span class="ck ok">✓ Telegram-канали</span>':'<span class="ck bad">✕ Telegram-канали</span>');
 const today=lv==='emergency'?'діють екстрені':lv==='announced'?'є оголошення':lv==='none'?'за графіком':'невідомо';
-setH(hero,loc+stw+`<div class="status">${H[1]}</div><div class="sub">${H[2]}</div><div class="grid"><div><span class="sub">Статус</span><b style="font-size:14px">${today}</b></div><div><span class="sub">Перевірено</span><b style="font-size:14px">${AV.j.fetchedAt?avTime(AV.j.fetchedAt):'—'}</b></div></div>${reasonHtml}${note}${feedHtml}<div class="ckrow">${chk}</div><div class="av-go"><span>Адреси аварій, причину й час відновлення показує лише сайт ДТЕК: його захист ми не обходимо.</span>${BTN}${mine?'':'<button class="ref w" onclick="avAdopt()">Зробити моєю чергою</button>'}</div>`,'card hero '+H[0]);
+setH(hero,loc+stw+`<div class="status">${H[1]}</div><div class="sub">${H[2]}</div><div class="grid"><div><span class="sub">Статус</span><b style="font-size:14px">${today}</b></div><div><span class="sub">Перевірено</span><b style="font-size:14px">${AV.j.fetchedAt?avTime(AV.j.fetchedAt):'—'}</b></div></div>${reasonHtml}${note}${feedHtml}<div class="ckrow">${chk}</div><div class="av-go"><span>${DTEKZ.includes(c)?'Адреси аварій, причину й час відновлення показує лише сайт ДТЕК: його захист ми не обходимо.':'Адреси аварій, причину й час відновлення дивись на сайті '+OPNM(pNorm(c))+'.'}</span>${opBtn(pNorm(c))}${mine?'':'<button class="ref w" onclick="avAdopt()">Зробити моєю чергою</button>'}</div>`,'card hero '+H[0]);
 /* сітка черг */
 setH($('av-grid'),QS.map(x=>{const st=avQSt(c,x),t=AVT[st]||AVT.unknown;return`<button class="chip aq ${t[0]} ${c===P.c&&x===P.q?'mine':''} ${x===q?'sel':''}" onclick="avPick('${x}')">${x}<small>${t[1]}</small></button>`}).join(''));
-setH($('av-meta'),lv==='emergency'?(cs.allQueues?'Екстрені відключення стосуються всіх черг міста '+CITIES[c]+'.':'Екстрені відключення діють для черг: <b>'+cs.queues.join(', ')+'</b>.'):lv==='announced'?'Є оголошення про екстрені відключення'+(cs.allQueues?' для всіх черг':cs.queues&&cs.queues.length?' для черг: <b>'+cs.queues.join(', ')+'</b>':'. Черги в тексті не названо')+'. Статус ще не підтверджено сайтом ДТЕК.':lv==='none'?'Екстрених відключень для міста '+CITIES[c]+' не заявлено; діє графік.':'Статус невідомий.')}
+setH($('av-meta'),lv==='emergency'?(cs.allQueues?'Екстрені відключення стосуються всіх черг міста '+CITIES[c]+'.':'Екстрені відключення діють для черг: <b>'+cs.queues.join(', ')+'</b>.'):lv==='announced'?'Є оголошення про екстрені відключення'+(cs.allQueues?' для всіх черг':cs.queues&&cs.queues.length?' для черг: <b>'+cs.queues.join(', ')+'</b>':'. Черги в тексті не названо')+'. Статус ще не підтверджено сайтом '+OPNM(pNorm(c))+'.':lv==='none'?'Екстрених відключень для міста '+CITIES[c]+' не заявлено; діє графік.':'Статус невідомий.')}
 /* ---------- налаштування ---------- */
 const DEF={sound:true,vol:45,sClick:true,sSwitch:true,sAlert:true,intro:true,notify:false,lead:15,stale:true,auto:true,vib:true,mood:true,emgN:true,pChg:true,pNew:true};
 let ST={...DEF,...jget('settings',{})};const saveST=()=>LS.setItem('settings',JSON.stringify(ST));
@@ -1187,21 +1197,35 @@ let AC=null;
 function ac(){try{if(!AC){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;AC=new C()}if(AC.state==='suspended')AC.resume();return AC}catch(e){return null}}
 function bus(a){if(a._m)return a._m;const m=a.createGain(),c=a.createDynamicsCompressor(),d=a.createDelay(.5),fb=a.createGain(),lp=a.createBiquadFilter(),wet=a.createGain();
 c.threshold.value=-18;c.ratio.value=3;d.delayTime.value=.13;fb.gain.value=.24;lp.type='lowpass';lp.frequency.value=1600;wet.gain.value=.22;
-m.connect(c);m.connect(d);d.connect(lp);lp.connect(fb);fb.connect(d);lp.connect(wet);wet.connect(c);c.connect(a.destination);return a._m=m}
-/* м’яка нота: чиста синусоїда з ледь чутними обертонами, плавна атака, довге згасання */
-function tone(f,t0,d,g){const a=ac();if(!a)return;const v=g*(ST.vol/100)*.2;if(v<=0)return;const t=a.currentTime+t0,out=bus(a),n=a.createGain(),lp=a.createBiquadFilter();
-lp.type='lowpass';lp.frequency.value=3200;n.gain.setValueAtTime(.0001,t);n.gain.linearRampToValueAtTime(v,t+.014);n.gain.exponentialRampToValueAtTime(.0001,t+d);n.connect(lp);lp.connect(out);
-[[1,1],[2,.1],[3,.03]].forEach(x=>{const o=a.createOscillator(),og=a.createGain();o.type='sine';o.frequency.value=f*x[0];og.gain.value=x[1];o.connect(og);og.connect(n);o.start(t);o.stop(t+d+.05)})}
-/* м’який «бульк» для кнопок: чиста синусоїда з коротким спадом висоти (як тихий тумблер), без шуму */
-function tick1(g){const a=ac();if(!a)return;const v=g*(ST.vol/100)*.5;if(v<=0)return;const t=a.currentTime,j=1+(Math.random()-.5)*.06,
-o=a.createOscillator(),h=a.createOscillator(),hg=a.createGain(),n=a.createGain(),lp=a.createBiquadFilter();
-o.type='sine';o.frequency.setValueAtTime(440*j,t);o.frequency.exponentialRampToValueAtTime(235*j,t+.075);
-h.type='sine';h.frequency.setValueAtTime(880*j,t);h.frequency.exponentialRampToValueAtTime(470*j,t+.05);hg.gain.value=.16;
-lp.type='lowpass';lp.frequency.value=1700;
-n.gain.setValueAtTime(.0001,t);n.gain.linearRampToValueAtTime(v,t+.007);n.gain.exponentialRampToValueAtTime(.0001,t+.12);
-o.connect(n);h.connect(hg);hg.connect(n);n.connect(lp);lp.connect(a.destination);o.start(t);h.start(t);o.stop(t+.14);h.stop(t+.14)}
-const SND={tap:()=>tick1(.55),on:()=>{tone(659,0,.28,.7);tone(988,.09,.4,.6)},off:()=>{tone(784,0,.26,.6);tone(523,.09,.36,.55)},
-ok:()=>{tone(784,0,.5,.6);tone(1175,.12,.7,.5)},alert:()=>{tone(880,0,.55,.65);tone(659,.2,.8,.6)},light:(o=0)=>{tone(523,o,.6,.5);tone(659,o+.16,.6,.5);tone(784,o+.32,.9,.5)},dark:()=>{tone(784,0,.5,.55);tone(587,.16,.55,.5);tone(392,.32,.95,.5)}};
+m.connect(c);m.connect(d);d.connect(lp);lp.connect(fb);fb.connect(d);lp.connect(wet);wet.connect(c);c.connect(a.destination);a._c=c;return a._m=m}
+/* ---------- набір «Карбон»: сухий, точний, матовий (студійний рушій: справжній імпульс реверберації, панорама, спад кожної гармоніки) ---------- */
+const VL=()=>ST.vol/100;
+function bus2(a){if(a._b)return a._b;bus(a);const cv=a.createConvolver(),d=a.createGain(),s=a.createGain(),n=a.sampleRate*1.6|0,b=a.createBuffer(2,n,a.sampleRate);
+for(let c=0;c<2;c++){const x=b.getChannelData(c);for(let i=0;i<n;i++)x[i]=(Math.random()*2-1)*Math.pow(1-i/n,3.4)}
+cv.buffer=b;s.gain.value=.5;d.connect(a._c);s.connect(cv);cv.connect(a._c);return a._b={d,s}}
+function rt(a,n,o){const B=bus2(a);let x=n;if(o.lp){const l=a.createBiquadFilter();l.type='lowpass';l.frequency.value=o.lp;x.connect(l);x=l}
+if(a.createStereoPanner&&o.pan){const p=a.createStereoPanner();p.pan.value=o.pan;x.connect(p);x=p}
+x.connect(B.d);if(o.rv){const g=a.createGain();g.gain.value=o.rv;x.connect(g);g.connect(B.s)}}
+function SP(f,t0,d,v,o){o=o||{};const a=ac();if(!a)return;const vv=v*VL()*.3;if(vv<=0)return;const t=a.currentTime+t0+.02,g=a.createGain();
+g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(vv,t+(o.a||.003));g.gain.exponentialRampToValueAtTime(.0001,t+d);
+(o.p||[[1,1,1]]).forEach(x=>{const s=a.createOscillator(),sg=a.createGain();s.type=o.type||'sine';s.frequency.setValueAtTime(f*x[0],t);
+if(o.f2)s.frequency.exponentialRampToValueAtTime(o.f2*x[0],t+(o.gd||.05));sg.gain.setValueAtTime(x[1],t);
+if(x[2]&&x[2]<1)sg.gain.exponentialRampToValueAtTime(.0001,t+d*x[2]);s.connect(sg);sg.connect(g);s.start(t);s.stop(t+d+.05)});rt(a,g,o)}
+function NZ(t0,d,v,f,q,o){o=o||{};const a=ac();if(!a)return;const vv=v*VL()*.3;if(vv<=0)return;const t=a.currentTime+t0+.02,n=a.sampleRate*(d+.05)|0,b=a.createBuffer(1,n,a.sampleRate),x=b.getChannelData(0);
+for(let i=0;i<n;i++)x[i]=Math.random()*2-1;const s=a.createBufferSource(),bp=a.createBiquadFilter(),g=a.createGain();
+s.buffer=b;bp.type='bandpass';bp.Q.value=q;bp.frequency.setValueAtTime(f,t);if(o.f2)bp.frequency.exponentialRampToValueAtTime(o.f2,t+d);
+g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(vv,t+(o.a||.002));g.gain.exponentialRampToValueAtTime(.0001,t+d);
+s.connect(bp);bp.connect(g);s.start(t);rt(a,g,o)}
+const CH=[[1,1,1],[2.01,.22,.5],[3,.09,.3]],CT=(f,t,d,v,pan)=>SP(f,t,d,v,{p:CH,type:'triangle',lp:3200,a:.004,rv:.32,pan:pan||0});
+const SND={
+/* натискання: м’який фетровий «тап» з мікровідхиленням висоти, щоб повтори не звучали як кулемет */
+tap:()=>{const j=1+(Math.random()-.5)*.08;SP(1500*j,0,.05,.5,{f2:880*j,gd:.035,a:.001,p:[[1,1,1],[2.4,.14,.4]],lp:4200,rv:.07});SP(125,0,.06,.4,{f2:80,gd:.045,a:.001})},
+on:()=>{NZ(0,.015,.35,4200,1);SP(392,0,.17,.6,{f2:523,gd:.08,rv:.15});SP(784,.07,.32,.5,{p:[[1,1,1],[2,.12,.4]],rv:.28,pan:.1})},
+off:()=>{NZ(0,.015,.35,3200,1);SP(587,0,.17,.6,{f2:440,gd:.08,rv:.15});SP(392,.07,.34,.5,{p:[[1,1,1],[2,.12,.4]],rv:.28,pan:-.1})},
+ok:()=>{SP(523,0,.6,.5,{p:[[1,1,1],[1.5,.7,.9],[3,.1,.3]],rv:.3,pan:-.08});SP(1047,.13,.8,.38,{p:[[1,1,1],[2,.1,.3]],rv:.45,pan:.08})},
+alert:()=>{SP(90,0,.2,.6,{f2:60,gd:.15,a:.002});CT(659,0,.6,.65,-.05);CT(494,.24,.8,.65,.05);CT(659,.62,.6,.6,-.05);CT(494,.86,1.1,.6,.05)},
+light:(o=0)=>{NZ(o,.75,.3,350,.9,{f2:5200,a:.3,rv:.3});SP(98,o,1.6,.5,{a:.18,rv:.2});[392,587,784].forEach((f,i)=>SP(f,o+.28+i*.1,1.9,.4,{p:[[1,1,1],[2,.2,.6]],rv:.6,pan:(i-1)*.25}))},
+dark:()=>{NZ(0,.8,.3,5200,.9,{f2:300,a:.05,rv:.3});[784,587,392].forEach((f,i)=>SP(f,i*.14,1.7,.42,{p:[[1,1,1],[2,.2,.6]],rv:.6,pan:(1-i)*.25}));SP(110,.3,1.6,.65,{f2:55,gd:1.3,a:.01,rv:.2})}};
 function play(k,cat){if(!ST.sound||(cat&&!ST[cat]))return;try{SND[k]()}catch(e){}}
 document.addEventListener('pointerdown',e=>{const t=e.target.closest&&e.target.closest('button,.chip,a.ref,a.lnk,select');if(t&&!t.dataset.nosound)play('tap','sClick')},true);
 function testSound(){const was=ST.sound;ST.sound=true;SND.tap();setTimeout(SND.on,260);setTimeout(SND.ok,800);ST.sound=was;if(!was)toast('Звуки зараз вимкнено — це лише перевірка')}
@@ -1318,7 +1342,7 @@ setH(hero,loc+(today.approx?'<div class="warn">Показано графік з�
 ${known?`<div class="sub" style="margin-top:8px">${on?'До вимкнення залишилося':'Світло буде через'}</div><div class="big" style="font-size:40px;margin:0 0 6px">${dur(end*60-k.sec)}</div><div class="sub">${on?'Наступне вимкнення':'Наступне ввімкнення'}: <b>${hmE(end)}</b></div>`:`<div class="sub">Наступних змін за графіком поки немає</div>`}
 <div class="grid"><div><span class="sub">${on?'Зі світлом уже':'Без світла вже'}</span><b>${dur(Math.max(0,k.sec-since*60))}</b></div><div><span class="sub">Оновлено</span><b>${data.updated?data.updated.split(' ').pop():'—'}</b></div></div>`,'card hero '+(on?'on':'off'))}
 const s0=tab==1?tom:tab==2?yest:today,s=s0&&!isEmpty(s0)?s0:null,sd=$('sched');
-if(!s){const c=Math.max(0,Math.round((nextCheck-Date.now())/1000)),msg=tab==1?'Графіка на завтра ще немає. Зазвичай він з’являється ввечері — ми перевіримо знову.':tab==2?'Графік за вчора не збережено. Застосунок запам’ятовує лише ті дні, які встиг побачити.':'Дані на сьогодні ще не підтверджено джерелом. Перевір на офіційному сайті ДТЕК.';
+if(!s){const c=Math.max(0,Math.round((nextCheck-Date.now())/1000)),msg=tab==1?'Графіка на завтра ще немає. Зазвичай він з’являється ввечері — ми перевіримо знову.':tab==2?'Графік за вчора не збережено. Застосунок запам’ятовує лише ті дні, які встиг побачити.':'Дані на сьогодні ще не підтверджено джерелом. Перевір на офіційному сайті '+OPNM(pNorm(P.c))+'.';
 setS(sd,`<div class="empty"><div class="ico">💡</div><p>${msg}</p>${tab==2?'':BTN}${tab==1?`<div class="sub" style="margin-top:10px">Наступна перевірка через <span id="ncd"></span></div>`:''}</div>`);const nc=$('ncd');if(nc)nc.textContent=nextCheck?p2(Math.floor(c/60))+':'+p2(c%60):'скоро'}
 else{const pr=periods(s),isT=tab===0,nm=k.sec/60,cp=pr.find(p=>nm>=p.from&&nm<p.to);
 setS(sd,'<div id="hslot"></div>'+(isT?'':`<div class="pill n">${tab==1?'Завтра':'Вчора'} · ${fmtDate(addDay(k.date,tab==1?1:-1))}</div>`)+`<details class="rows"${ROWS_OPEN?' open':''} ontoggle="ROWS_OPEN=this.open"><summary>Детально за годинами<small>${pr.length} періодів</small></summary>`+pr.map((p,ri)=>`<div style="--r:${ri}" class="row ${p.on?'on':'off'} ${isT&&nm>=p.from&&nm<p.to?'cur':''}"><span>${hm(p.from)} – ${hmE(p.to)}</span><span>${p.on?'Світло є':'Світла немає'}</span></div>`).join('')+'</details>'+
@@ -1382,7 +1406,7 @@ async function doShare(){if(!SH.blob){toast('Картка ще готуєтьс�
  try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'ТребаСвітло?',text:PN()+', черга '+P.q});return}}catch(e){if(e&&e.name==='AbortError')return}
  saveCard()}
 function cardText(){const d=cardData();if(!d)return null;
- return`ТребаСвітло? · ${PN()}, черга ${P.q}, ${fmtDate(d.date)}\n`+d.pr.map(p=>`${hm(p.from)}–${hmE(p.to)} ${p.on?'світло є':'світла немає'}`).join('\n')+(d.s.approx?`\n(збережений графік за ${fmtDate(d.s.approx)}, на сьогодні даних немає)`:'')+'\nНеофіційні дані, звіряйся з сайтом ДТЕК.'}
+ return`ТребаСвітло? · ${PN()}, черга ${P.q}, ${fmtDate(d.date)}\n`+d.pr.map(p=>`${hm(p.from)}–${hmE(p.to)} ${p.on?'світло є':'світла немає'}`).join('\n')+(d.s.approx?`\n(збережений графік за ${fmtDate(d.s.approx)}, на сьогодні даних немає)`:'')+'\nНеофіційні дані, звіряйся з сайтом '+OPNM(pNorm(P.c))+'.'}
 function shareText(){const txt=cardText();if(!txt){toast('Поки немає підтвердженого графіка');return}
  if(navigator.share)navigator.share({text:txt}).catch(()=>{});else if(navigator.clipboard)navigator.clipboard.writeText(txt).then(()=>toast('Графік скопійовано'),()=>toast('Не вдалося скопіювати'))}
 /* ---------- вкладка «Черги» ---------- */
