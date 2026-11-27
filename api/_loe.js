@@ -42,7 +42,7 @@ const KEY = new RegExp('(?:груп|(?:під)?черг)[а-яіїєґ\']*\\s*�
 const BARE = new RegExp('^\\s*(\\d\\s*[.,]\\s*\\d(?!\\d)' + TAIL + ')\\s*(?=[-–—:]|\\s|$)');
 const NOOUT = /(?:електроенергі[яю]|світло)\s+є(?![а-яіїєґ])|відключень\s+(?:немає|нема|не\s+заплановано)|не\s+вимика|без\s+(?:планових\s+)?відключень/i;
 const INFO = /станом|оновлен|актуальн|опублік|гаряч[а-яіїєґ]*\s+лін|телефон|call[-\s]?центр|диспетчер|контакт/i;
-const groupsOf = (s) => [...new Set([...String(s).matchAll(/(\d)\s*[.,]\s*(\d)/g)].map((m) => m[1] + '.' + m[2]))].filter((g) => /^[1-6]\.[12]$/.test(g));
+const groupsOf = (s) => [...new Set([...String(s).matchAll(/(\d{1,2})\s*[.,]\s*(\d)/g)].map((m) => m[1] + '.' + m[2]))].filter((g) => /^\d{1,2}\.[1-9]$/.test(g));
 const merge = (arr) => { const r = []; for (const [s, e] of arr.sort((a, b) => a[0] - b[0])) { if (r.length && s <= r[r.length - 1][1]) r[r.length - 1][1] = Math.max(r[r.length - 1][1], e); else r.push([s, e]); } return r; };
 
 // Текст → { '1.1': [[хв_початку, хв_кінця], …], … } (лише групи з відключеннями)

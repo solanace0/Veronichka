@@ -202,7 +202,7 @@ export function parseLoe(html, GROUP) {
   const um = text.match(/станом\s+на\s+(\d{1,2}):(\d{2})\s+(\d{1,2})\.(\d{1,2})\.(\d{4})/i);
   if (um) ts = kyivToTs(+um[5], +um[4], +um[3], +um[1], +um[2]);
   const segs = {};
-  const re = /Груп[аи]\s*(\d)\.(\d)\.?([\s\S]*?)(?=Груп[аи]\s*\d\.\d|$)/gi;
+  const re = /Груп[аи]\s*(\d{1,2})\.(\d)\.?([\s\S]*?)(?=Груп[аи]\s*\d{1,2}\.\d|$)/gi;
   let m;
   while ((m = re.exec(text))) segs[m[1] + '.' + m[2]] = m[3];
   if (!Object.keys(segs).length) throw new Error('Львівобленерго: у тексті немає груп (графік не опубліковано або змінився формат)');
@@ -301,7 +301,7 @@ async function probeOe(res) {
         const fact = j.fact || (j.data && j.data.fact) || j;
         const map = (fact && fact.data) || {};
         const first = Object.values(map)[0] || {};
-        const groups = Object.keys(first).filter((k) => /^GPV\d\.\d$/.test(k));
+        const groups = Object.keys(first).filter((k) => /^GPV\d{1,2}\.\d$/.test(k));
         return { code, file: f, ok: !!Object.keys(map).length, days: Object.keys(map).map((t) => kyivYmd(+t * 1000)), groups: groups.length, updated: fact && fact.update || j.lastUpdated || null, tried };
       } catch (e) { tried.push({ file: f, error: String(e && e.message || e) }); }
     }
@@ -323,13 +323,68 @@ export default async function handler(req, res) {
   }
 }
 
+const gSort = (a, b) => { const [x, y] = a.split('.').map(Number), [u, v] = b.split('.').map(Number); return x - u || y - v; };
+// Перелік черг, які реально є в джерелах цієї зони (схема може змінитись: 6×2 → 12×1 тощо).
+async function groupsList(q, res) {
+  const city = AREAS[String(q.city)] ? String(q.city) : 'kr';
+  const area = AREAS[city];
+  const set = new Set();
+  const jobs = [];
+  if (area.mirror) jobs.push((async () => {
+    for (const f of area.mirror) {
+      try {
+        const j = await getJson((area.base || MIRROR_BASE) + f);
+        const fact = j.fact || (j.data && j.data.fact) || j;
+        for (const v of Object.values((fact && fact.data) || {})) for (const k of Object.keys(v || {})) { const m = k.match(/^GPV(\d{1,2}\.\d)$/); if (m) set.add(m[1]); }
+        return;
+      } catch (e) { /* наступний файл */ }
+    }
+  })());
+  if (area.yasno) jobs.push((async () => {
+    const j = await getJson(YASNO);
+    const src = (j.groups && typeof j.groups === 'object') ? j.groups : (j.data && typeof j.data === 'object') ? j.data : j;
+    for (const k of Object.keys(src)) if (/^\d{1,2}\.\d$/.test(k)) set.add(k);
+  })().catch(() => {}));
+  if (area.loe) for (let i = 1; i <= 6; i++) for (let j = 1; j <= 2; j++) set.add(i + '.' + j);
+  await Promise.all(jobs);
+  const groups = [...set].sort(gSort);
+  res.setHeader('Cache-Control', groups.length ? 's-maxage=600, stale-while-revalidate=300' : 'no-store');
+  return res.status(200).json({ ok: groups.length > 0, city, groups });
+}
+
+// Графіки всіх черг зони за кожен день (для підбору своєї черги за годинами відключень)
+async function allGroups(q, res) {
+  const city = AREAS[String(q.city)] ? String(q.city) : 'kr';
+  const area = AREAS[city];
+  if (!area.mirror) { res.setHeader('Cache-Control', 'no-store'); return res.status(503).json({ ok: false, error: 'Джерело не підключене' }); }
+  let j = null;
+  for (const f of area.mirror) { try { j = await getJson((area.base || MIRROR_BASE) + f); break; } catch (e) { /* далі */ } }
+  if (!j) { res.setHeader('Cache-Control', 'no-store'); return res.status(502).json({ ok: false, error: 'Джерело недоступне' }); }
+  const fact = j.fact || (j.data && j.data.fact) || j;
+  const groups = {};
+  for (const [k, v] of Object.entries((fact && fact.data) || {})) {
+    const dayTs = Number(k) * (Number(k) < 1e12 ? 1000 : 1);
+    if (!dayTs) continue;
+    const date = tsDate(dayTs);
+    for (const [gk, hm] of Object.entries(v || {})) {
+      const m = gk.match(/^GPV(\d{1,2}\.\d)$/);
+      if (m && hm) (groups[m[1]] = groups[m[1]] || {})[date] = hoursToSlots(hm).join('');
+    }
+  }
+  const ok = Object.keys(groups).length > 0;
+  res.setHeader('Cache-Control', ok ? 's-maxage=120, stale-while-revalidate=60' : 'no-store');
+  return res.status(ok ? 200 : 502).json({ ok, city, groups, error: ok ? undefined : 'Немає даних' });
+}
+
 async function run(req, res) {
   const q = req.query || {};
   if (q.probe === 'lv') return probeLoe(res);
   if (q.probe === 'oe') return probeOe(res);
   if (q.probe) return probe(res);
+  if (q.groups) return groupsList(q, res);
+  if (q.all) return allGroups(q, res);
   const GROUP = String(q.group || '4.2');
-  if (!/^[1-6]\.[12]$/.test(GROUP)) { res.setHeader('Cache-Control', 'no-store'); return res.status(400).json({ ok: false, error: 'Невірна черга' }); }
+  if (!/^\d{1,2}\.[1-9]$/.test(GROUP)) { res.setHeader('Cache-Control', 'no-store'); return res.status(400).json({ ok: false, error: 'Невірна черга' }); }
   const city = AREAS[String(q.city)] ? String(q.city) : 'kr';
   const area = AREAS[city];
   if (!area.mirror && !area.loe) {

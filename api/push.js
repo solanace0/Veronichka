@@ -32,7 +32,7 @@ export default async function handler(req, res) {
     if (b.a !== 'subscribe') return res.status(400).json({ ok: false, error: 'Невідома дія' });
     const s = b.sub, keys = s && s.keys;
     if (!keys || typeof keys.p256dh !== 'string' || typeof keys.auth !== 'string' || keys.p256dh.length > 200 || keys.auth.length > 100) return res.status(400).json({ ok: false, error: 'Невірні ключі' });
-    if (!CITIES.includes(b.city) || !/^[1-6]\.[12]$/.test(String(b.group))) return res.status(400).json({ ok: false, error: 'Невірне місто або черга' });
+    if (!CITIES.includes(b.city) || !/^\d{1,2}\.[1-9]$/.test(String(b.group))) return res.status(400).json({ ok: false, error: 'Невірне місто або черга' });
     const prev = await getSub(id);
     const ev = b.ev || {};
     const keepSt = prev && prev.city === b.city && prev.group === b.group ? prev.st : undefined; // змінилась черга → новий «чистий» старт без шквалу повідомлень

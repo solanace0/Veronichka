@@ -85,7 +85,7 @@ export function citiesOf(t, channel) {
 export function queuesOf(t) {
   if (!/черг/i.test(t)) return { queues: [], allQueues: RE.allq.test(t) };
   const q = new Set();
-  for (const m of t.matchAll(/(?<![\d.,:])([1-6])\.([12])(?![\d])/g)) q.add(m[1] + '.' + m[2]);
+  for (const m of t.matchAll(/(?<![\d.,:])(\d{1,2})\.([1-9])(?![\d])/g)) q.add(m[1] + '.' + m[2]);
   return { queues: [...q].sort(), allQueues: RE.allq.test(t) };
 }
 const clip = (s, n) => (s.length > n ? s.slice(0, n - 1) + '…' : s);

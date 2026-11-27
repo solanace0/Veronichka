@@ -15,7 +15,7 @@ const YASNO_KY = 'https://app.yasno.ua/api/blackout-service/public/shutdowns/reg
 const YASNO_CITIES = ['dp', 'ky']; // зони, для яких статус екстрених береться з YASNO
 const ANNOUNCE = 'https://static.yasno.ua/dnipro/outages';
 const UA = { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/130 Safari/537.36', 'accept-language': 'uk-UA,uk;q=0.9' };
-const GROUP_RE = /^\d{1,2}\.[12]$/;
+const GROUP_RE = /^\d{1,2}\.[1-9]$/;
 import { AREA_CODES, AREAS } from './_regions.js';
 const CITIES = AREA_CODES;
 const kyivYmd = (s) => { const d = new Date(s); return isNaN(d) ? String(s).slice(0, 10) : new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Kyiv' }).format(d); };

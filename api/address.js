@@ -3,6 +3,7 @@
 // Сервер приймає ввід українською і російською: нормалізує «проспект/просп./пр-т», «улица/ул.» тощо,
 // додає український варіант назви (металургов → металургів) і шукає лише в межах вибраного міста.
 // Якщо номер будинку введено, а його немає в OSM, вулиця все одно підтверджується, і номер додається до підказки.
+import { resolveQueue, probeYasno, AUTO_CITIES, OFFICIAL } from './_yasno-addr.js';
 const UA_HDR = { 'user-agent': 'TrebaSvitlo/2.4 (+mailto:ssssssifo@gmail.com)', 'accept-language': 'uk' };
 const CITY = {
   kr: { name: 'Кривий Ріг', bbox: [33.18, 47.80, 33.65, 48.04], alias: ['кривийріг', 'кривойрог'] },
@@ -154,6 +155,23 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   if (req.method === 'OPTIONS') return res.status(204).end();
   const q = req.query || {};
+  // /api/address?resolve=1&city=kr&q=проспект Металургів 9  — черга за адресою (YASNO); &probe=yasno — діагностика
+  if (q.probe === 'yasno') {
+    res.setHeader('Cache-Control', 'no-store');
+    try { return res.status(200).json({ ok: true, ...(await probeYasno(String(q.city || 'kr'))) }); } catch (e) { return res.status(200).json({ ok: false, error: String(e && e.message || e) }); }
+  }
+  if (q.resolve) {
+    const rc = String(q.city || 'kr').slice(0, 4);
+    try {
+      const r = await resolveQueue(rc, String(q.street || q.q || '').slice(0, 90), String(q.house || '').slice(0, 12));
+      res.setHeader('Cache-Control', r.ok ? 'public, s-maxage=1800, stale-while-revalidate=3600' : 'no-store');
+      return res.status(200).json(r);
+    } catch (e) {
+      res.setHeader('Cache-Control', 'no-store');
+      return res.status(200).json({ ok: false, reason: 'unavailable', official: OFFICIAL[rc] || null });
+    }
+  }
+  if (q.auto === '1') { res.setHeader('Cache-Control', 'public, s-maxage=3600'); return res.status(200).json({ ok: true, cities: AUTO_CITIES }); }
   const city = CITY[String(q.city)] ? String(q.city) : 'kr';
   const text = String(q.q || '').slice(0, 80);
   if (text.trim().length < 3) { res.setHeader('Cache-Control', 'no-store'); return res.status(200).json({ ok: true, items: [] }); }
