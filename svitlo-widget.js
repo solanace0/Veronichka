@@ -10,7 +10,7 @@ const TZ = "Europe/Kyiv";
 
 let city = CFG.city, group = CFG.group;
 const prm = (args.widgetParameter || "").trim().split(/\s+/);
-if (prm.length === 2 && CITY_NAMES[prm[0]] && /^[1-6]\.[12]$/.test(prm[1])) { city = prm[0]; group = prm[1]; }
+if (prm.length === 2 && CITY_NAMES[prm[0]] && /^\d{1,2}\.[1-9]$/.test(prm[1])) { city = prm[0]; group = prm[1]; }
 const cityName = CITY_NAMES[city] || CFG.name;
 
 // ---------- палітра застосунку: чорний, перлинний, м’які фіолетовий / бірюзовий / рожевий відблиски ----------
