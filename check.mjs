@@ -15,11 +15,11 @@ for (const f of ['api/schedule.js', 'api/push.js', 'api/outages.js']) {
   const t = readFileSync(f, 'utf8');
   if (/\[1-6\]\\\.\[12\]/.test(t)) bad.push(f + ': жорстко зашита схема черг 1.1–6.2');
 }
-// Автопідбір черги за адресою: модуль, підключення в address.js і поле адреси в інтерфейсі
-const ya = readFileSync('api/_yasno-addr.js', 'utf8'), ad = readFileSync('api/address.js', 'utf8'), ix = readFileSync('index.html', 'utf8');
-if (!/addresses\/v2/.test(ya) || !/export async function resolveQueue/.test(ya)) bad.push('api/_yasno-addr.js: немає адресного ланцюжка YASNO');
-if (!/resolveQueue/.test(ad) || !/q\.resolve/.test(ad)) bad.push('api/address.js: не підключено ?resolve=1');
-if (!/qaResolve/.test(ix) || !/id="ob-qa"/.test(ix) || !/id="st-qa"/.test(ix)) bad.push('index.html: немає автопідбору черги за адресою');
+// Автопідбір черги: 3 запитання «світло було?» (без адрес). Є майстер в інтерфейсі й ендпоінт /api/schedule?all=1
+const ix = readFileSync('index.html', 'utf8'), sc = readFileSync('api/schedule.js', 'utf8');
+if (!/function wzStart/.test(ix) || !/id="ob-wz"/.test(ix) || !/id="st-wz"/.test(ix)) bad.push('index.html: немає майстра підбору черги (wzStart / ob-wz / st-wz)');
+if (!/async function allGroups/.test(sc) || !/q\.all/.test(sc)) bad.push('api/schedule.js: немає ендпоінта ?all=1 для майстра');
+if (/api\/address/.test(ix)) bad.push('index.html: лишився виклик /api/address (адресний пошук прибрано)');
 const wf = readFileSync('.github/workflows/push-cron.yml', 'utf8');
 if (!/continue-on-error/.test(wf)) bad.push('push-cron.yml: без continue-on-error GitHub шле листи «Run failed»');
 if (bad.length) { console.error('ПОМИЛКИ:\n- ' + bad.join('\n- ')); process.exit(1); }
