@@ -352,14 +352,14 @@ async function groupsList(q, res) {
   return res.status(200).json({ ok: groups.length > 0, city, groups });
 }
 
-// Графіки всіх черг зони за кожен день (для підбору своєї черги за годинами відключень)
-async function allGroups(q, res) {
-  const city = AREAS[String(q.city)] ? String(q.city) : 'kr';
-  const area = AREAS[city];
-  if (!area.mirror) { res.setHeader('Cache-Control', 'no-store'); return res.status(503).json({ ok: false, error: 'Джерело не підключене' }); }
+// Графіки всіх черг зони за кожен день: з них застосунок сам підбирає чергу за 3 запитаннями «світло було?».
+// Джерела: дзеркало сайту оператора, а для зон ДТЕК Дніпровські електромережі ще й YASNO (резерв).
+// Застарілі файли (без сьогодні/завтра) не віддаємо: за ними не можна питати, що було «сьогодні».
+const addDays = (ymd, n) => { const [y, m, d] = ymd.split('-').map(Number); return new Date(Date.UTC(y, m - 1, d + n)).toISOString().slice(0, 10); };
+async function allFromMirror(area) {
   let j = null;
   for (const f of area.mirror) { try { j = await getJson((area.base || MIRROR_BASE) + f); break; } catch (e) { /* далі */ } }
-  if (!j) { res.setHeader('Cache-Control', 'no-store'); return res.status(502).json({ ok: false, error: 'Джерело недоступне' }); }
+  if (!j) throw new Error('Джерело недоступне');
   const fact = j.fact || (j.data && j.data.fact) || j;
   const groups = {};
   for (const [k, v] of Object.entries((fact && fact.data) || {})) {
@@ -371,9 +371,49 @@ async function allGroups(q, res) {
       if (m && hm) (groups[m[1]] = groups[m[1]] || {})[date] = hoursToSlots(hm).join('');
     }
   }
+  return groups;
+}
+async function allFromYasno() {
+  const j = await getJson(YASNO);
+  const src = (j.groups && typeof j.groups === 'object') ? j.groups : (j.data && typeof j.data === 'object') ? j.data : j;
+  const groups = {};
+  for (const [gk, g] of Object.entries(src)) {
+    if (!/^\d{1,2}\.\d$/.test(gk) || !g) continue;
+    for (const k of ['today', 'tomorrow']) {
+      const d = g[k];
+      if (!d || !d.date) continue;
+      const st = String(d.status || '');
+      const hasSlots = Array.isArray(d.slots) && d.slots.length > 0;
+      if (/wait|not.?publ|unknown|emergency/i.test(st)) continue;
+      if (!hasSlots && !/no.?outage|not.?planned|nothing/i.test(st)) continue;
+      (groups[gk] = groups[gk] || {})[kyivYmd(d.date)] = yasnoSlots(d).join('');
+    }
+  }
+  return groups;
+}
+const freshGroups = (groups) => {
+  const today = kyivDate(), keep = addDays(today, -1), out = {};
+  let hasFresh = false;
+  for (const [g, days] of Object.entries(groups)) for (const [d, s] of Object.entries(days)) {
+    if (d < keep) continue;
+    if (d >= today) hasFresh = true;
+    (out[g] = out[g] || {})[d] = s;
+  }
+  return hasFresh ? out : {};
+};
+async function allGroups(q, res) {
+  const city = AREAS[String(q.city)] ? String(q.city) : 'kr';
+  const area = AREAS[city];
+  if (!area.mirror) { res.setHeader('Cache-Control', 'no-store'); return res.status(503).json({ ok: false, soon: true, error: 'Джерело не підключене' }); }
+  const tries = [() => allFromMirror(area)];
+  if (area.yasno) tries.push(() => allFromYasno());
+  let groups = {}, lastErr = null;
+  for (const t of tries) {
+    try { groups = freshGroups(await t()); if (Object.keys(groups).length) break; } catch (e) { lastErr = e; }
+  }
   const ok = Object.keys(groups).length > 0;
   res.setHeader('Cache-Control', ok ? 's-maxage=120, stale-while-revalidate=60' : 'no-store');
-  return res.status(ok ? 200 : 502).json({ ok, city, groups, error: ok ? undefined : 'Немає даних' });
+  return res.status(ok ? 200 : 502).json({ ok, city, groups, fetchedAt: Date.now(), error: ok ? undefined : (lastErr && lastErr.message) || 'Немає свіжих даних' });
 }
 
 async function run(req, res) {
